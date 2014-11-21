@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+  	<meta charset="utf-8"/>
+  	<title>React Mentions</title>
+  	<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+  	<style type="text/css">
+  		body {
+  			color: #222;
+  			font-family: "Helvetica Neue", sans-serif;
+  			font-weight: 200;
+  			margin: 0 50px;
+  		}
+  	</style>
+  </head>
+  <body>
+    <script src="http://fb.me/react-with-addons-0.12.1.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.1.js"></script>
+    <script src="../dist/react-mentions.js"></script>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      var MentionsInput = ReactMentions.MentionsInput;
+      var Mention = ReactMentions.Mention;
+
+
+      var users = [
+        {
+          id: "johndoe",
+          display: "John Doe"
+        }
+      ];
+
+      var App = React.createClass({
+        getInitialState: function() {
+          return {
+            value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation... ",
+            emailsCount: 0
+          };
+        },
+    
+        render: function() {
+          var emailRegex = /([^\s@]+@[^\s@]+\.[^\s@]+)/; // use capture group to extract search string from match
+          return (
+            <div>
+              <h1>React Mentions Input</h1>
+              <p>Mention people using '@' + username or email addresses</p>
+
+              <MentionsInput value={this.state.value} onChange={this.handleChange} markup="@[__display__](__type__:__id__)">
+                <Mention 
+                  trigger="@" 
+                  data={users} 
+                  renderSuggestion={this.renderSuggestion} />
+                {/*<Mention 
+                  trigger={emailRegex} 
+                  requestData={this.requestData} 
+                  onAdd={this.handleEmailAdd} />*/}
+              </MentionsInput>
+              
+              
+            </div>
+          );
+        },
+
+        handleChange: function(valueKey, ev) {
+          this.setState({ value: ev.target.value });
+        },
+
+        requestData: function(search) {
+          return [
+            { id: search, display: search }
+          ];
+        },
+
+        renderSuggestion: function(match, search) {
+          return (
+            <div className="user">
+              <img src={"img/" + match.id + ".png"} />
+              { match.display }
+            </div>
+          );
+        },
+
+        //handleEmailAdd: function(email) {
+        //  this.setState({ emailsCount: this.state.emailsCount+1 });
+        //}
+
+      });
+    
+      React.render(<App/>, document.body);
+    </script>
+  </body>
+</html>

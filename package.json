@@ -1,0 +1,60 @@
+{
+  "name": "react-mentions",
+  "version": "0.1.0",
+  "description": "React mentions input",
+  "main": "index.js",
+  "scripts": {
+    "test": "script/test --browsers Chrome --single-run",
+    "start": "script/build"
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/effektif/react-mentions.git"
+  },
+  "keywords": [
+    "react",
+    "mentions",
+    "react-component"
+  ],
+  "author": "Jan-Felix Schwarz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/effektif/react-mentions/issues"
+  },
+  "homepage": "https://github.com/effektif/react-mentions",
+  "devDependencies": {
+    "browserify": "4.2.3",
+    "browserify-shim": "3.6.0",
+    "bundle-loader": "0.5.1",
+    "chai": "1.10.0",
+    "envify": "1.2.0",
+    "jsx-loader": "0.11.2",
+    "karma": "0.12.16",
+    "karma-browserify": "^0.2.1",
+    "karma-chrome-launcher": "0.1.4",
+    "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "0.1.3",
+    "karma-mocha": "0.1.3",
+    "mocha": "1.20.1",
+    "react": "0.12.x",
+    "reactify": "0.15.x",
+    "rf-release": "0.3.2",
+    "uglify-js": "2.4.15",
+    "webpack": "1.4.5",
+    "webpack-dev-server": "1.6.5"
+  },
+  "peerDependencies": {
+    "react": "0.12.x"
+  },
+  "browserify-shim": {
+    "react": "global:React"
+  },
+  "dependencies": {
+    "chai": "~1.10.0"
+  }
+}

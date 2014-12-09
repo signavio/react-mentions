@@ -7,11 +7,6 @@
     "test": "script/test --browsers Chrome --single-run",
     "start": "script/build"
   },
-  "browserify": {
-    "transform": [
-      "reactify"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/effektif/react-mentions.git"
@@ -53,8 +48,5 @@
   },
   "browserify-shim": {
     "react": "global:React"
-  },
-  "dependencies": {
-    "chai": "~1.10.0"
   }
 }

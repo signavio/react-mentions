@@ -52,7 +52,7 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      React.createElement("b", null,  this.props.display)
+      React.createElement("strong", null,  this.props.display)
     );
   },
 
@@ -135,8 +135,9 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    console.log("render", LinkedValueUtils.getValue(this), this.getPlainText());
     return (
-      React.createElement("div", null, 
+      React.createElement("div", {className: "react-mentions"}, 
         React.createElement("div", {className: "highlighter"}, 
            this.renderHighlighter() 
         ), 
@@ -253,13 +254,17 @@ module.exports = React.createClass({
     // Derive the new value to set by applying the local change in the textarea's plain text
     var newValue = utils.applyChangeToValue(
       value, this.props.markup,
-      value,
+      newPlainTextValue,
       this._selectionStart, this._selectionEnd, 
       ev.target.selectionEnd
     );
 
-    //var handleChange = LinkedValueUtils.getOnChange(this);
-    //handleChange(ev, newValue);
+    // save current selection after change to be able to restore caret position after rerendering
+    this._selectionStart = ev.target.selectionStart;
+    this._selectionEnd = ev.target.selectionEnd;
+
+    var handleChange = LinkedValueUtils.getOnChange(this);
+    handleChange(ev, newValue);
     
     // TODO match the trigger patterns of all Mention children to the end of the string so see whether to show suggestions
 
@@ -270,20 +275,22 @@ module.exports = React.createClass({
     // keep track of selection range / caret position
     this._selectionStart = ev.target.selectionStart;
     this._selectionEnd = ev.target.selectionEnd;
+    console.log(this._selectionStart, this._selectionEnd);
   },
 
-  
-  applyChangeToValue: function(ev) {
-    
+  autogrowTextarea: function() {
+    var el = this.refs.input.getDOMNode();
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  },
 
-    var changedSubstr = newPlainTextValue.
+  componentDidMount: function() {
+    this.autogrowTextarea();
+  },
 
-    
-    console.log(ev);
-    console.log(ev.target.selectionStart, ev.target.selectionEnd);
+  componentDidUpdate: function() {
+    this.autogrowTextarea();
   }
-
-
 
     
 });

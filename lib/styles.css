@@ -1,0 +1,47 @@
+.react-mentions {
+  background: #fff;
+  font-family: "Consolas","Monaco","Lucida Console","Courier New", monospace;
+  font-size: 11px;
+  border: 1px solid silver;
+
+  position: relative;
+  font-weight: normal;
+  overflow-y: auto;
+}
+
+.react-mentions textarea {
+  padding: 9px;
+  min-height: 63px;
+
+  width: 100%;
+  display: block;
+  margin: 0;
+  border: none;
+  background: transparent;
+  position: relative;
+  outline: 0;
+  font: inherit;
+  overflow: hidden;
+  resize: none;
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.react-mentions .highlighter {
+  padding: 9px;
+
+  position: absolute;
+  color: white;
+  font: inherit;
+  overflow: hidden;
+
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.react-mentions .highlighter strong {
+  font-weight: normal;
+  background: #cee4e5;
+}

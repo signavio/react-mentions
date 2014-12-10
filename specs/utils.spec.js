@@ -5,7 +5,15 @@ describe("utils", function() {
 
   describe("#markupToRegex", function() {
 
-    it("should return a regex that matches ");
+    it("should return a regex that matches ...");
+
+  });
+
+  describe("#spliceString", function() {
+
+    it("should replace the substring between start and end with the provided insertion", function() {
+      expect( utils.spliceString("012345678", 1, 4, "xx") ).to.equal("0xx45678");
+    })
 
   });
 
@@ -73,14 +81,103 @@ describe("utils", function() {
       expect(result).to.equal(10);
     });
 
-    it("should return the index of the corresponding markup if the plain text index lies inside a mention", function() {
+    it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention", function() {
+      // index for first char of markup
       var plainTextIndex = plainText.indexOf("John Doe");
       var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
       expect(result).to.equal(value.indexOf("@[John Doe](user:johndoe)"));
 
+      // index of char inside the markup
+      var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
       plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
       result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
-      expect(result).to.equal(value.indexOf("@[joe@smoe.com](email:joe@smoe.com)"));
+      expect(result).to.equal(value.indexOf(joeMarkup));
+
+      // index of markup's last char
+      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length;
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
+      expect(result).to.equal(value.indexOf(joeMarkup));
+    });
+
+    it("should return the index of the corresponding markup's last character if the plain text index lies inside a mention and the `toEndOfMarkup` flag is set", function() {
+      // index for first char of markup
+      var plainTextIndex = plainText.indexOf("John Doe");
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      expect(result).to.equal(value.indexOf("@[John Doe](user:johndoe)"));
+
+      // index of char inside the markup
+      var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
+      plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
+
+      // index of markup's last char
+      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length;
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
+    });
+
+  });
+
+  describe("#applyChangeToValue", function() {
+
+    var defaultMarkup = "@[__display__](__type__:__id__)";
+    var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
+    var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
+
+    it("should correctly add a character at the end, beginning, and in the middle of text", function() {
+      var changed = "S" + plainText;
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 0, 0, 1);
+      expect(result).to.equal("S" + value);
+
+      changed = plainText + "E";
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.length, plainText.length, changed.length, changed.length);
+      expect(result).to.equal(value + "E");
+
+      changed = "Hi John Doe, \n\nlet's Madd joe@smoe.com to this conversation...";
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, 21, 21, 22);
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's Madd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
+    it("should correctly delete single characters and ranges of selected text", function() {
+      // delete "i"
+      var changed = "H John Doe, \n\nlet's add joe@smoe.com to this conversation...";
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 2, 2, 1);
+      expect(result).to.equal("H @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+
+      // delete "add "
+      changed = "Hi John Doe, \n\nlet's joe@smoe.com to this conversation...";
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.indexOf("add "), plainText.indexOf("add ") + "add ".length, plainText.indexOf("add "));
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
+    it("should correctly add ranges of pasted text and replace the selected range with the new range", function() {
+      // add range
+      var changed = plainText.replace("add", "add add");
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.indexOf("add") + "add".length, plainText.indexOf("add") + "add".length, plainText.indexOf("add") + "add add".length);
+      expect(result).to.equal(value.replace("add", "add add"));
+
+      // replace range
+      changed = plainText.replace("add", "remove");
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.indexOf("add"), plainText.indexOf("add") + "add".length, plainText.indexOf("add") + "remove".length);
+      expect(result).to.equal(value.replace("add", "remove"));
+    });
+
+    it("should remove mentions markup contained in deleted text ranges", function() {
+      // delete without a range selection
+      var changed = "Hi John Do, \n\nlet's add joe@smoe.com to this conversation...";
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 11, 11, 10);
+      expect(result).to.equal("Hi , \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    
+      // delete mention inside the range
+      changed = "Hi let's add joe@smoe.com to this conversation...";
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, 3, 15, 3);
+      expect(result).to.equal("Hi let's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+
+      // delete mention partially inside the range
+      changed = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.indexOf(" add"), plainText.indexOf(" add") + " add joe@".length, plainText.indexOf(" add"));
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's to this conversation...");
     });
 
   });

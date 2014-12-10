@@ -89,6 +89,7 @@ var _generateComponentKey = function(usedKeys, id) {
   return id + "_" + usedKeys[id];
 };
 
+
 module.exports = React.createClass({
 
   displayName: 'MentionsInput',
@@ -122,7 +123,8 @@ module.exports = React.createClass({
 
   getInitialState: function () {
     return {
-      highlighterValue: ""
+      selectionStart: null,
+      selectionEnd: null
     };
   },
 
@@ -145,7 +147,10 @@ module.exports = React.createClass({
 
   renderInput: function() {
     return (
-      React.createElement("textarea", {value: this.getPlainText(), onChange: this.handleChange})
+      React.createElement("textarea", {ref: "input", 
+        value: this.getPlainText(), 
+        onChange: this.handleChange, 
+        onSelect: this.handleSelect})
     );
   },
 
@@ -235,22 +240,47 @@ module.exports = React.createClass({
     var value = LinkedValueUtils.getValue(this);
     var regex = utils.markupToRegex(this.props.markup);
     var displayPos = utils.getPositionOfCapturingGroup(this.props.markup, "display");
-    var idPos = utils.getPositionOfCapturingGroup(this.props.markup, "id");
     return value.replace(regex, function() {
-       // first argument is the whole match, capturing groups are following
-      return "\uFFF9" + arguments[displayPos+1] + "\uFFFA" + arguments[idPos+1] + "\uFFFB";
+      // first argument is the whole match, capturing groups are following
+      return arguments[displayPos+1];
     });
   },
 
   handleChange: function(ev) {
-    // 1. map change in plain text to change in the value with markups using the caret position / selection range
+    var value = LinkedValueUtils.getValue(this);
+    var newPlainTextValue = ev.target.value;
 
-    // 2. match the trigger patterns of all Mention children to the end of the string so see whether to show suggestions
+    // Derive the new value to set by applying the local change in the textarea's plain text
+    var newValue = utils.applyChangeToValue(
+      value, this.props.markup,
+      value,
+      this._selectionStart, this._selectionEnd, 
+      ev.target.selectionEnd
+    );
 
+    //var handleChange = LinkedValueUtils.getOnChange(this);
+    //handleChange(ev, newValue);
+    
+    // TODO match the trigger patterns of all Mention children to the end of the string so see whether to show suggestions
 
+    
+  },
 
-    var handleChange = LinkedValueUtils.getOnChange(this);
-    handleChange(ev, newValue);
+  handleSelect: function(ev) {
+    // keep track of selection range / caret position
+    this._selectionStart = ev.target.selectionStart;
+    this._selectionEnd = ev.target.selectionEnd;
+  },
+
+  
+  applyChangeToValue: function(ev) {
+    
+
+    var changedSubstr = newPlainTextValue.
+
+    
+    console.log(ev);
+    console.log(ev.target.selectionStart, ev.target.selectionEnd);
   }
 
 
@@ -306,12 +336,20 @@ module.exports = {
       return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   },
 
-  markupToRegex: function(markup) {
+  markupToRegex: function(markup, matchAtEnd) {
     var markupPattern = this.escapeRegex(markup);
     markupPattern = markupPattern.replace(PLACEHOLDERS.display, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.id, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.type, "(.+?)");
+    if(matchAtEnd) { 
+      // append a $ to match at the end of the string
+      markupPattern = markupPattern + "$";
+    }
     return new RegExp(markupPattern, "g");
+  },
+
+  spliceString: function(str, start, end, insert) {
+    return str.substring(0, start) + insert + str.substring(end);
   },
 
   /**
@@ -354,6 +392,63 @@ module.exports = {
     if(parameterName === "display") return sortedIndices.indexOf(indexDisplay);
     if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
 
+  },
+
+  // For the passed character index in the plain text string, returns the corresponding index
+  // in the marked up value string.
+  // If the passed character index lies inside a mention, returns the index of the mention 
+  // markup's first char, or respectively its last char, if the flag `toEndOfMarkup` is set.
+  mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup) {
+    var regex = this.markupToRegex(markup);
+    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
+
+    var match;
+    var start = 0;
+    var currentPlainTextIndex = 0;
+
+    // detect all mention markup occurences in the value and iterate the matches
+    while((match = regex.exec(value)) !== null) {
+      var display = match[displayPos+1];
+
+      var plainTextIndexDelta = match.index - start;
+      if(currentPlainTextIndex + plainTextIndexDelta >= indexInPlainText) {
+        // found the corresponding position in the text range before the current match
+        return start + indexInPlainText - currentPlainTextIndex;
+      } else if(currentPlainTextIndex + plainTextIndexDelta + display.length >= indexInPlainText) {
+        // found the corresponding position inside current match,
+        // return the index of the first or last char of the matching markup
+        // depending on whether the `toEndOfMarkup` is set
+        return match.index + (toEndOfMarkup ? match[0].length : 0);
+      }
+
+      currentPlainTextIndex += plainTextIndexDelta + display.length;
+      start = regex.lastIndex;
+    }
+
+    // index lies in the range after the last mention
+    return start + indexInPlainText - currentPlainTextIndex
+  },
+
+  // Applies a change from the plain text textarea to the underlying marked up value
+  // guided by the textarea text selection ranges before and after the change 
+  applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange) {
+    // extract the insertion from the new plain text value
+    var insert = plainTextValue.slice(selectionStartBeforeChange, selectionEndAfterChange);
+
+    var spliceStart = selectionStartBeforeChange;
+    if(spliceStart > 0 && selectionEndAfterChange < selectionStartBeforeChange) {
+      // special situation: removed a single char without a range selection, but simple caret
+      // emulate a single char selection, e.g.: abc|d is emulated as ab[c]d when backspace is hit
+      spliceStart--;
+    }
+
+    // splice the current marked up value and insert new chars
+    return this.spliceString(
+      value,
+      this.mapPlainTextIndex(value, markup, spliceStart, false),
+      this.mapPlainTextIndex(value, markup, selectionEndBeforeChange, true),
+      insert
+    );
   }
 
 }

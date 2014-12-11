@@ -5,6 +5,9 @@ exports.Mention = _dereq_('./lib/Mention');
 /** @jsx React.DOM */
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var emptyFunction = _dereq_('react/lib/emptyFunction');
+var utils = _dereq_('./utils');
+
+
 
 
 module.exports = React.createClass({
@@ -56,25 +59,28 @@ module.exports = React.createClass({
     );
   },
 
-  onComponentDidMount: function() {
+  componentDidMount: function() {
     this.props.onAdd(this.props.id, this.props.display, this.props.type);
   },
 
-  onComponentWillUnmount: function() {
+  componentWillUnmount: function() {
     this.props.onRemove(this.props.id, this.props.display, this.props.type);
   }
 
     
 });
 
-},{"react/lib/emptyFunction":13}],3:[function(_dereq_,module,exports){
+},{"./utils":5,"react/lib/emptyFunction":14}],3:[function(_dereq_,module,exports){
 /** @jsx React.DOM */
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var LinkedValueUtils = _dereq_('react/lib/LinkedValueUtils');
 var emptyFunction = _dereq_('react/lib/emptyFunction');
 
-var Mention = _dereq_('./Mention');
+
 var utils = _dereq_('./utils');
+var Mention = _dereq_('./Mention');
+var SuggestionsOverlay = _dereq_('./SuggestionsOverlay');
+
 
 var _generateComponentKey = function(usedKeys, id) {
   if(!usedKeys.hasOwnProperty(id)) {
@@ -83,6 +89,34 @@ var _generateComponentKey = function(usedKeys, id) {
     usedKeys[id]++;
   }
   return id + "_" + usedKeys[id];
+};
+
+var _getTriggerRegex = function(trigger) {
+  if(trigger instanceof RegExp) {
+    return trigger;
+  } else {
+    var escapedTriggerChar = utils.escapeRegex(trigger);
+    return new RegExp("\\s" + escapedTriggerChar + "([^\\s" + escapedTriggerChar + "]*)$");
+  }
+};
+
+var _getDataProvider = function(data) {
+  if(data instanceof Array) {
+    // if data is an array, create a function to query that
+    return function(query, callback) {
+      var results = [];
+      for(var i=0, l=data.length; i < l; ++i) {
+        var display = data[i].display || data[i].id;
+        if(display.indexOf(query) >= 0) {
+          results.push(data[i]);
+        }
+      }
+      return results;
+    };
+  } else {
+    // expect data to be a query function
+    return data;
+  }
 };
 
 
@@ -120,7 +154,10 @@ module.exports = React.createClass({
   getInitialState: function () {
     return {
       selectionStart: null,
-      selectionEnd: null
+      selectionEnd: null,
+
+      showSuggestions: false,
+      suggestions: {}
     };
   },
 
@@ -136,7 +173,8 @@ module.exports = React.createClass({
         React.createElement("div", {className: "highlighter"}, 
            this.renderHighlighter() 
         ), 
-         this.renderInput() 
+         this.renderInput(), 
+         this.renderSuggestionsOverlay() 
       )
     );
   },
@@ -147,6 +185,14 @@ module.exports = React.createClass({
         value: this.getPlainText(), 
         onChange: this.handleChange, 
         onSelect: this.handleSelect})
+    );
+  },
+
+  renderSuggestionsOverlay: function() {
+    if(!this.state.showSuggestions) return null;
+    return (
+      React.createElement(SuggestionsOverlay, {
+        suggestions: this.state.suggestions})
     );
   },
 
@@ -242,6 +288,7 @@ module.exports = React.createClass({
     });
   },
 
+  // Handle input element's change event
   handleChange: function(ev) {
     var value = LinkedValueUtils.getValue(this);
     var newPlainTextValue = ev.target.value;
@@ -267,14 +314,15 @@ module.exports = React.createClass({
     this._selectionStart = utils.findStartOfMentionInPlainText(value, this.props.markup, this._selectionStart);
     this._selectionEnd = this._selectionStart;
 
+    // Show, hide, or update suggestions overlay
+    this.updateMentionsQueries(newPlainTextValue);
+
+    // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this);
     handleChange(ev, newValue);
-    
-    // TODO match the trigger patterns of all Mention children to the end of the string so see whether to show suggestions
-
-    
   },
 
+  // Handle input element's select event
   handleSelect: function(ev) {
     // keep track of selection range / caret position
     this._selectionStart = ev.target.selectionStart;
@@ -311,12 +359,154 @@ module.exports = React.createClass({
       range.moveStart('character', selectionStart);
       range.select();
     }
-  }
+  },
+
+  updateMentionsQueries: function(plainTextValue) {
+    // Invalidate previous queries. Async results for previous queries will be neglected.
+    this._queryId++;
+    this.setState({
+      suggestions: {}
+    });
+    
+    // Check if suggestions have to be shown:
+    // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
+    var substring = plainTextValue.substring(0, this._selectionStart);
+    var showSuggestions = false;
+    var that = this;
+    React.Children.forEach(this.props.children, function(child) {
+      var regex = _getTriggerRegex(child.props.trigger);
+      var match = substring.match(regex);
+      if(match) {
+        that.queryData(match[1], child);
+        showSuggestions = true;
+      }
+    });
+
+    // If any mentions queries have been started, show suggestions overlay
+    this.setState({
+      showSuggestions: showSuggestions
+    });
+  },
+
+  queryData: function(query, mentionDescriptor) {
+    var provideData = _getDataProvider(mentionDescriptor.props.data);
+    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query));
+    if(snycResult instanceof Array) {
+      this.updateSuggestions(this._queryId, mentionDescriptor, query, snycResult);
+    }
+  },
+
+  updateSuggestions: function(queryId, mentionDescriptor, query, suggestions) {
+    // neglect async results from previous queries
+    if(queryId !== this._queryId) return;
+
+    var update = {};
+    update[mentionDescriptor.type] = {
+      query: query,
+      mentionDescriptor: mentionDescriptor,
+      results: suggestions
+    };
+
+    this.setState({
+      suggestions: utils.extend({}, this.state.suggestions, update)
+    });
+  },
+
+  _queryId: 0
 
     
 });
 
-},{"./Mention":2,"./utils":4,"react/lib/LinkedValueUtils":5,"react/lib/emptyFunction":13}],4:[function(_dereq_,module,exports){
+},{"./Mention":2,"./SuggestionsOverlay":4,"./utils":5,"react/lib/LinkedValueUtils":6,"react/lib/emptyFunction":14}],4:[function(_dereq_,module,exports){
+/** @jsx React.DOM */
+var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var emptyFunction = _dereq_('react/lib/emptyFunction');
+var utils = _dereq_('./utils');
+
+
+
+
+
+
+module.exports = React.createClass({
+
+  displayName: 'SuggestionsOverlay',
+
+  getDefaultProps: function () {
+    return {
+      suggestions: {}
+    };
+  },
+
+  render: function() {
+    var suggestions = this.renderSuggestions();
+
+    // for the moment being, do not show suggestions until there is some data
+    // later we might show a loading spinner / empty message
+    if(suggestions.length === 0) return null;
+
+    return (
+      React.createElement("div", {className: "react-mentions-suggestions"}, 
+        React.createElement("ul", null, suggestions )
+      )
+    );
+  },
+
+  renderSuggestions: function() {
+    var listItems = [];
+    for(var mentionType in this.props.suggestions) {
+      if(!this.props.suggestions.hasOwnProperty(mentionType)) return;
+      var suggestions = this.props.suggestions[mentionType];
+
+      for(var i=0, l=suggestions.results.length; i < l; ++i) {
+        listItems.push(
+          this.renderSuggestion(suggestions.results[i], suggestions.query, suggestions.mentionDescriptor)
+        );
+      }
+    }
+    return listItems;
+  },
+
+  renderSuggestion: function(suggestion, query, mentionDescriptor) {
+    var id, display;
+    var type = mentionDescriptor.props.type;
+
+    if(suggestion instanceof String) {
+      id = display = suggestion;
+    } else if(!suggestion.id || !suggestion.display) {
+      id = display = suggestion.id || suggestion.id;
+    } else {
+      id = suggestion.id;
+      display = suggestion.display;
+    }
+
+    return (
+      React.createElement("li", {key: id, onClick: this.select.bind(null, suggestion)}, 
+         this.renderHighlightedDisplay(display, query) 
+      )
+    );
+  },
+
+  renderHighlightedDisplay: function(display, query) {
+    var i = display.indexOf(query);
+    if(i === -1) return React.createElement("span", null, display );
+
+    return (
+      React.createElement("span", null, 
+         display.substring(0, i), 
+        React.createElement("b", null, query ), 
+         display.substring(i+query.length) 
+      )
+    );
+  },
+
+  select: function(suggestion) {
+    console.log("selected", suggestion.display);
+  }
+    
+});
+
+},{"./utils":5,"react/lib/emptyFunction":14}],5:[function(_dereq_,module,exports){
 var PLACEHOLDERS = {
   id: "__id__",
   display: "__display__",
@@ -378,6 +568,19 @@ module.exports = {
 
   spliceString: function(str, start, end, insert) {
     return str.substring(0, start) + insert + str.substring(end);
+  },
+
+  extend: function(obj) {
+    var source, prop;
+    for (var i = 1, length = arguments.length; i < length; i++) {
+      source = arguments[i];
+      for (prop in source) {
+        if (hasOwnProperty.call(source, prop)) {
+            obj[prop] = source[prop];
+        }
+      }
+    }
+    return obj;
   },
 
   /**
@@ -512,7 +715,7 @@ module.exports = {
   }
 
 }
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -666,7 +869,7 @@ var LinkedValueUtils = {
 
 module.exports = LinkedValueUtils;
 
-},{"./ReactPropTypes":11,"./invariant":14}],6:[function(_dereq_,module,exports){
+},{"./ReactPropTypes":12,"./invariant":15}],7:[function(_dereq_,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -713,7 +916,7 @@ function assign(target, sources) {
 
 module.exports = assign;
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -775,7 +978,7 @@ var ReactContext = {
 
 module.exports = ReactContext;
 
-},{"./Object.assign":6}],8:[function(_dereq_,module,exports){
+},{"./Object.assign":7}],9:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -809,7 +1012,7 @@ var ReactCurrentOwner = {
 
 module.exports = ReactCurrentOwner;
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -1053,7 +1256,7 @@ ReactElement.isValidElement = function(object) {
 
 module.exports = ReactElement;
 
-},{"./ReactContext":7,"./ReactCurrentOwner":8,"./warning":15}],10:[function(_dereq_,module,exports){
+},{"./ReactContext":8,"./ReactCurrentOwner":9,"./warning":16}],11:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -1079,7 +1282,7 @@ if ("production" !== "production") {
 
 module.exports = ReactPropTypeLocationNames;
 
-},{}],11:[function(_dereq_,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -1433,7 +1636,7 @@ function getPreciseType(propValue) {
 
 module.exports = ReactPropTypes;
 
-},{"./ReactElement":9,"./ReactPropTypeLocationNames":10,"./deprecated":12,"./emptyFunction":13}],12:[function(_dereq_,module,exports){
+},{"./ReactElement":10,"./ReactPropTypeLocationNames":11,"./deprecated":13,"./emptyFunction":14}],13:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -1482,7 +1685,7 @@ function deprecated(namespace, oldName, newName, ctx, fn) {
 
 module.exports = deprecated;
 
-},{"./Object.assign":6,"./warning":15}],13:[function(_dereq_,module,exports){
+},{"./Object.assign":7,"./warning":16}],14:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -1516,7 +1719,7 @@ emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
 module.exports = emptyFunction;
 
-},{}],14:[function(_dereq_,module,exports){
+},{}],15:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -1571,7 +1774,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -1614,6 +1817,6 @@ if ("production" !== "production") {
 
 module.exports = warning;
 
-},{"./emptyFunction":13}]},{},[1])
+},{"./emptyFunction":14}]},{},[1])
 (1)
 });

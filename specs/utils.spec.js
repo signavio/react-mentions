@@ -3,6 +3,14 @@ var utils = require('../lib/utils');
 
 describe("utils", function() {
 
+
+
+  var defaultMarkup = "@[__display__](__type__:__id__)";
+  var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
+  var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
+
+
+
   describe("#markupToRegex", function() {
 
     it("should return a regex that matches ...");
@@ -54,10 +62,6 @@ describe("utils", function() {
 
 
   describe("#mapPlainTextIndex", function() {
-
-    var defaultMarkup = "@[__display__](__type__:__id__)";
-    var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
-    var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
 
     it("should correctly calculate the index of a character in the plain text between mentions", function() {
       var plainTextIndex = plainText.indexOf("let's add");
@@ -119,11 +123,21 @@ describe("utils", function() {
 
   });
 
-  describe("#applyChangeToValue", function() {
+  describe("#findStartOfMentionInPlainText", function() {
 
-    var defaultMarkup = "@[__display__](__type__:__id__)";
-    var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
-    var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
+    it("should return the index of the mention's first char in the plain text if the passed index lies inside a mention", function() {
+      var result = utils.findStartOfMentionInPlainText(value, defaultMarkup, plainText.indexOf("Doe"));
+      expect(result).to.equal(plainText.indexOf("John Doe"));
+    });
+
+    it("should return the passed index, if it does not lie inside a mention", function() {
+      var result = utils.findStartOfMentionInPlainText(value, defaultMarkup, plainText.indexOf("add"));
+      expect(result).to.equal(plainText.indexOf("add"));
+    });
+
+  });
+
+  describe("#applyChangeToValue", function() {
 
     it("should correctly add a character at the end, beginning, and in the middle of text", function() {
       var changed = "S" + plainText;

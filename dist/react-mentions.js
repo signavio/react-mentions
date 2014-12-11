@@ -57,15 +57,11 @@ module.exports = React.createClass({
   },
 
   onComponentDidMount: function() {
-    if(this.props.onAdd) {
-      this.props.onAdd();
-    }
+    this.props.onAdd(this.props.id, this.props.display, this.props.type);
   },
 
   onComponentWillUnmount: function() {
-    if(this.props.onRemove) {
-      this.props.onRemove();
-    }
+    this.props.onRemove(this.props.id, this.props.display, this.props.type);
   }
 
     
@@ -135,7 +131,6 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    console.log("render", LinkedValueUtils.getValue(this), this.getPlainText());
     return (
       React.createElement("div", {className: "react-mentions"}, 
         React.createElement("div", {className: "highlighter"}, 
@@ -259,9 +254,18 @@ module.exports = React.createClass({
       ev.target.selectionEnd
     );
 
-    // save current selection after change to be able to restore caret position after rerendering
+    // Save current selection after change to be able to restore caret position after rerendering
     this._selectionStart = ev.target.selectionStart;
     this._selectionEnd = ev.target.selectionEnd;
+
+    // Assert that there's no range selection after a change
+    if(this._selectionStart !== this._selectionEnd) {
+      throw new Error("Unexpected range selection after a change");
+    }
+
+    // Adjust selection range in case a mention will be deleted
+    this._selectionStart = utils.findStartOfMentionInPlainText(value, this.props.markup, this._selectionStart);
+    this._selectionEnd = this._selectionStart;
 
     var handleChange = LinkedValueUtils.getOnChange(this);
     handleChange(ev, newValue);
@@ -275,7 +279,6 @@ module.exports = React.createClass({
     // keep track of selection range / caret position
     this._selectionStart = ev.target.selectionStart;
     this._selectionEnd = ev.target.selectionEnd;
-    console.log(this._selectionStart, this._selectionEnd);
   },
 
   autogrowTextarea: function() {
@@ -290,6 +293,24 @@ module.exports = React.createClass({
 
   componentDidUpdate: function() {
     this.autogrowTextarea();
+
+    // maintain selection in case a mention is added/removed causing
+    // the cursor to jump to the end
+    this.setSelection(this._selectionStart, this._selectionEnd);
+  },
+
+  setSelection: function(selectionStart, selectionEnd) {
+    var el = this.refs.input.getDOMNode();
+    if(el.setSelectionRange) {
+      el.setSelectionRange(selectionStart, selectionEnd);
+    }
+    else if(el.createTextRange) {
+      var range = el.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', selectionEnd);
+      range.moveStart('character', selectionStart);
+      range.select();
+    }
   }
 
     
@@ -436,6 +457,38 @@ module.exports = {
     return start + indexInPlainText - currentPlainTextIndex
   },
 
+  // For a given indexInPlainText that lies inside a mention,
+  // returns a the index of of the first char of the mention in the plain text.
+  // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
+  findStartOfMentionInPlainText: function(value, markup, indexInPlainText) {
+    var regex = this.markupToRegex(markup);
+    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
+
+    var match;
+    var start = 0;
+    var currentPlainTextIndex = 0;
+
+    // detect all mention markup occurences in the value and iterate the matches
+    while((match = regex.exec(value)) !== null) {
+      var display = match[displayPos+1];
+
+      var plainTextIndexDelta = match.index - start;
+      if(currentPlainTextIndex + plainTextIndexDelta >= indexInPlainText) {
+        // found the corresponding position in the text range before the current match
+        return indexInPlainText;
+      } else if(currentPlainTextIndex + plainTextIndexDelta + display.length >= indexInPlainText) {
+        // found the corresponding position inside current match,
+        // return the index of the first char of the mention
+        return currentPlainTextIndex + plainTextIndexDelta;
+      }
+
+      currentPlainTextIndex += plainTextIndexDelta + display.length;
+      start = regex.lastIndex;
+    }
+
+    return indexInPlainText;
+  },
+
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change 
   applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange) {
@@ -444,7 +497,7 @@ module.exports = {
 
     var spliceStart = selectionStartBeforeChange;
     if(spliceStart > 0 && selectionEndAfterChange < selectionStartBeforeChange) {
-      // special situation: removed a single char without a range selection, but simple caret
+      // special situation: removed a single char without a range selection but simple caret,
       // emulate a single char selection, e.g.: abc|d is emulated as ab[c]d when backspace is hit
       spliceStart--;
     }

@@ -50,7 +50,9 @@
                   type="user"
                   trigger="@" 
                   data={users} 
-                  renderSuggestion={this.renderSuggestion} />
+                  renderSuggestion={this.renderSuggestion}
+                  onAdd={this.handleAdd}
+                  onRemove={this.handleRemove} />
                 {/*<Mention 
                   type="email"
                   trigger={emailRegex} 
@@ -81,6 +83,14 @@
             </div>
           );
         },
+
+        handleAdd: function() {
+          console.log("added a new mention", arguments);
+        },
+
+        handleRemove: function() {
+          console.log("removed a mention", arguments);
+        }
 
         //handleEmailAdd: function(email) {
         //  this.setState({ emailsCount: this.state.emailsCount+1 });

@@ -247,6 +247,13 @@ module.exports = React.createClass({
     return resultComponents;
   },
 
+  // Renders an component to be inserted in the highlighter at the current caret position
+  renderHighlighterCaret: function() {
+    return (
+      React.createElement("span", null)
+    );
+  },
+
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
   getMentionComponentForMatch: function(id, display, type, key) {
     var childrenCount = React.Children.count(this.props.children);
@@ -297,22 +304,27 @@ module.exports = React.createClass({
     var newValue = utils.applyChangeToValue(
       value, this.props.markup,
       newPlainTextValue,
-      this._selectionStart, this._selectionEnd, 
+      this.state.selectionStart, this.state.selectionEnd, 
       ev.target.selectionEnd
     );
 
     // Save current selection after change to be able to restore caret position after rerendering
-    this._selectionStart = ev.target.selectionStart;
-    this._selectionEnd = ev.target.selectionEnd;
+    var selectionStart = ev.target.selectionStart;
+    var selectionEnd = ev.target.selectionEnd;
 
     // Assert that there's no range selection after a change
-    if(this._selectionStart !== this._selectionEnd) {
+    if(selectionStart !== selectionEnd) {
       throw new Error("Unexpected range selection after a change");
     }
 
     // Adjust selection range in case a mention will be deleted
-    this._selectionStart = utils.findStartOfMentionInPlainText(value, this.props.markup, this._selectionStart);
-    this._selectionEnd = this._selectionStart;
+    selectionStart = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart);
+    selectionEnd = selectionStart;
+
+    this.setState({
+      selectionStart: selectionStart,
+      selectionEnd: selectionEnd
+    });
 
     // Show, hide, or update suggestions overlay
     this.updateMentionsQueries(newPlainTextValue);
@@ -325,8 +337,10 @@ module.exports = React.createClass({
   // Handle input element's select event
   handleSelect: function(ev) {
     // keep track of selection range / caret position
-    this._selectionStart = ev.target.selectionStart;
-    this._selectionEnd = ev.target.selectionEnd;
+    this.setState({
+      selectionStart: ev.target.selectionStart,
+      selectionEnd: ev.target.selectionEnd
+    });
   },
 
   autogrowTextarea: function() {
@@ -344,7 +358,7 @@ module.exports = React.createClass({
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
-    this.setSelection(this._selectionStart, this._selectionEnd);
+    this.setSelection(this.state.selectionStart, this.state.selectionEnd);
   },
 
   setSelection: function(selectionStart, selectionEnd) {
@@ -370,7 +384,7 @@ module.exports = React.createClass({
     
     // Check if suggestions have to be shown:
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
-    var substring = plainTextValue.substring(0, this._selectionStart);
+    var substring = plainTextValue.substring(0, this.state.selectionStart);
     var showSuggestions = false;
     var that = this;
     React.Children.forEach(this.props.children, function(child) {
@@ -488,7 +502,7 @@ module.exports = React.createClass({
   },
 
   renderHighlightedDisplay: function(display, query) {
-    var i = display.indexOf(query);
+    var i = display.toLowerCase().indexOf(query.toLowerCase());
     if(i === -1) return React.createElement("span", null, display );
 
     return (

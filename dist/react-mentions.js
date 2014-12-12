@@ -107,7 +107,7 @@ var _getDataProvider = function(data) {
       var results = [];
       for(var i=0, l=data.length; i < l; ++i) {
         var display = data[i].display || data[i].id;
-        if(display.indexOf(query) >= 0) {
+        if(display.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
           results.push(data[i]);
         }
       }
@@ -170,10 +170,12 @@ module.exports = React.createClass({
   render: function() {
     return (
       React.createElement("div", {className: "react-mentions"}, 
-        React.createElement("div", {className: "highlighter"}, 
-           this.renderHighlighter() 
+        React.createElement("div", {className: "control"}, 
+          React.createElement("div", {className: "highlighter"}, 
+             this.renderHighlighter() 
+          ), 
+           this.renderInput() 
         ), 
-         this.renderInput(), 
          this.renderSuggestionsOverlay() 
       )
     );
@@ -320,7 +322,7 @@ module.exports = React.createClass({
     });
 
     // Show, hide, or update suggestions overlay
-    this.updateMentionsQueries(newPlainTextValue);
+    this.updateMentionsQueries(newPlainTextValue, selectionStart);
 
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this);
@@ -368,7 +370,7 @@ module.exports = React.createClass({
     }
   },
 
-  updateMentionsQueries: function(plainTextValue) {
+  updateMentionsQueries: function(plainTextValue, caretPosition) {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
     this.setState({
@@ -377,7 +379,8 @@ module.exports = React.createClass({
     
     // Check if suggestions have to be shown:
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
-    var substring = plainTextValue.substring(0, this.state.selectionStart);
+    var substring = plainTextValue.substring(0, caretPosition);
+
     //var showSuggestions = false;
     var that = this;
     React.Children.forEach(this.props.children, function(child) {
@@ -406,7 +409,7 @@ module.exports = React.createClass({
   updateSuggestions: function(queryId, mentionDescriptor, query, suggestions) {
     // neglect async results from previous queries
     if(queryId !== this._queryId) return;
-console.log(query);
+
     var update = {};
     update[mentionDescriptor.type] = {
       query: query,
@@ -501,7 +504,7 @@ module.exports = React.createClass({
     return (
       React.createElement("span", null, 
          display.substring(0, i), 
-        React.createElement("b", null, query ), 
+        React.createElement("b", null,  display.substring(i, i+query.length) ), 
          display.substring(i+query.length) 
       )
     );

@@ -1,12 +1,14 @@
 .react-mentions {
-  background: #fff;
-  font-family: "Consolas","Monaco","Lucida Console","Courier New", monospace;
-  font-size: 11px;
-  border: 1px solid silver;
-
   position: relative;
-  font-weight: normal;
   overflow-y: visible;
+}
+
+.react-mentions .control {
+  background: #fff;
+  font-family: monospace;
+  font-size: 12px;
+  border: 1px solid silver;
+  font-weight: normal;
 }
 
 .react-mentions textarea {

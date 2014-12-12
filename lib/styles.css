@@ -27,8 +27,11 @@
   resize: none;
 
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  -khtml-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .react-mentions .highlighter {
@@ -50,4 +53,32 @@
 
 .react-mentions .suggestions {
   position: absolute;
+
+  border: 1px solid rgba(0,0,0,0.15);
+  background-color: white;
+  margin-top: 14px;
+  font-size: 10pt;
+
+  -webkit-box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+  -khtml-box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+  -moz-box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+  -ms-box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+  -o-box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
 }
+
+.react-mentions .suggestions ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.react-mentions .suggestions ul li {
+  padding: 5px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,0.15);;
+}
+.react-mentions .suggestions ul li:last-child {
+  border-bottom: none;
+}
+
+

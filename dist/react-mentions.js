@@ -194,6 +194,7 @@ module.exports = React.createClass({
     //if(!this.state.showSuggestions) return null;
     return (
       React.createElement(SuggestionsOverlay, {
+        ref: "suggestions", 
         suggestions: this.state.suggestions})
     );
   },
@@ -344,12 +345,25 @@ module.exports = React.createClass({
     el.style.height = el.scrollHeight + "px";
   },
 
+  updateSuggestionsPosition: function() {
+    if(!this.refs.caret || !this.refs.suggestions) return;
+
+    var caretEl = this.refs.caret.getDOMNode();
+    var suggestionsEl = this.refs.suggestions.getDOMNode();
+    if(!suggestionsEl) return;
+
+    suggestionsEl.style.left = caretEl.offsetLeft + "px";
+    suggestionsEl.style.top = caretEl.offsetTop + "px";
+  },
+
   componentDidMount: function() {
     this.autogrowTextarea();
+    this.updateSuggestionsPosition();
   },
 
   componentDidUpdate: function() {
     this.autogrowTextarea();
+    this.updateSuggestionsPosition();
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end

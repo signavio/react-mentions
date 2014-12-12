@@ -59,14 +59,14 @@ module.exports = React.createClass({
     );
   },
 
-  componentDidMount: function() {
-    this.props.onAdd(this.props.id, this.props.display, this.props.type);
-  },
-
-  componentWillUnmount: function() {
-    this.props.onRemove(this.props.id, this.props.display, this.props.type);
-  }
-
+  //componentDidMount: function() {
+  //  this.props.onAdd(this.props.id, this.props.display, this.props.type);
+  //},
+//
+  //componentWillUnmount: function() {
+  //  this.props.onRemove(this.props.id, this.props.display, this.props.type);
+  //}
+//
     
 });
 
@@ -156,7 +156,7 @@ module.exports = React.createClass({
       selectionStart: null,
       selectionEnd: null,
 
-      showSuggestions: false,
+      //showSuggestions: false,
       suggestions: {}
     };
   },
@@ -189,60 +189,51 @@ module.exports = React.createClass({
   },
 
   renderSuggestionsOverlay: function() {
-    if(!this.state.showSuggestions) return null;
+    //if(!this.state.showSuggestions) return null;
     return (
       React.createElement(SuggestionsOverlay, {
         suggestions: this.state.suggestions})
     );
   },
 
-  // Returns an array of strings and Mention components to be inserted in the highlighter
-  // element
   renderHighlighter: function() {
     var value = LinkedValueUtils.getValue(this);
+
     var resultComponents = [];
-
-    var regex = utils.markupToRegex(this.props.markup);
-
-    var idPos = utils.getPositionOfCapturingGroup(this.props.markup, "id");
-    var displayPos = utils.getPositionOfCapturingGroup(this.props.markup, "display");
-    var typePos = utils.getPositionOfCapturingGroup(this.props.markup, "type");
-
-    var match, substr;
-    var start = 0;
-
+    var components = resultComponents;
     var componentKeys = {};
 
-    // detect all mention markup occurences in the value and iterate the matches
-    while((match = regex.exec(value)) !== null) {
+    // If there's a caret (i.e. no range selection), get the position of the
+    var caretPositionInMarkup;
+    if(this.state.selectionStart === this.state.selectionEnd) {
+      caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart);
+    }
 
-      // extract attribute values from the capturing groups
-      // (+1 is required because the first item is the match as a whole)
-      var id = match[idPos+1];
-      var display = match[displayPos+1];
-      var type = typePos && match[typePos+1];
+    var textIteratee = function(substr, index, indexInPlainText) {
+      // check whether the caret element has to be inserted inside the current plain substring
+      if(caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
+        // if yes, split substr at the caret position and insert the caret component
+        var splitIndex = caretPositionInMarkup - index;
+        components.push(substr.substring(0, splitIndex));
+        var caretComponent = this.renderHighlighterCaret();
+        resultComponents.push(caretComponent);
 
+        // add all following substrings and mention components as children of the caret component
+        components = caretComponent.props.children = [ substr.substring(splitIndex) ];
+      } else {
+        // otherwise just push the plain text substring
+        components.push(substr);
+      }
+    }.bind(this);
+
+    var mentionIteratee = function( markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
       // generate a component key based on the id
       var key = _generateComponentKey(componentKeys, id);
-
-      // append plain substring between last and current mention
-      if(match.index > 0) {
-        substr = value.substring(start, match.index);
-        resultComponents.push(substr);
-      }
-
-      // append the Mention component for the current match
-      resultComponents.push(
+      components.push(
         this.getMentionComponentForMatch(id, display, type, key)
       );
-      start = regex.lastIndex;
-    }
-
-    // append rest of the string after the last mention 
-    if(start < value.length) {
-      substr = value.substring(start);
-      resultComponents.push(substr);
-    }
+    }.bind(this);
+    utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee);
 
     return resultComponents;
   },
@@ -250,7 +241,9 @@ module.exports = React.createClass({
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret: function() {
     return (
-      React.createElement("span", null)
+      React.createElement("span", {className: "caret", ref: "caret"}, 
+         this.renderSuggestionsOverlay() 
+      )
     );
   },
 
@@ -385,21 +378,21 @@ module.exports = React.createClass({
     // Check if suggestions have to be shown:
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
     var substring = plainTextValue.substring(0, this.state.selectionStart);
-    var showSuggestions = false;
+    //var showSuggestions = false;
     var that = this;
     React.Children.forEach(this.props.children, function(child) {
       var regex = _getTriggerRegex(child.props.trigger);
       var match = substring.match(regex);
       if(match) {
         that.queryData(match[1], child);
-        showSuggestions = true;
+        //showSuggestions = true;
       }
     });
 
     // If any mentions queries have been started, show suggestions overlay
-    this.setState({
-      showSuggestions: showSuggestions
-    });
+    //this.setState({
+    //  showSuggestions: showSuggestions
+    //});
   },
 
   queryData: function(query, mentionDescriptor) {
@@ -413,7 +406,7 @@ module.exports = React.createClass({
   updateSuggestions: function(queryId, mentionDescriptor, query, suggestions) {
     // neglect async results from previous queries
     if(queryId !== this._queryId) return;
-
+console.log(query);
     var update = {};
     update[mentionDescriptor.type] = {
       query: query,
@@ -460,7 +453,7 @@ module.exports = React.createClass({
     if(suggestions.length === 0) return null;
 
     return (
-      React.createElement("div", {className: "react-mentions-suggestions"}, 
+      React.createElement("div", {className: "suggestions"}, 
         React.createElement("ul", null, suggestions )
       )
     );
@@ -639,45 +632,91 @@ module.exports = {
 
   },
 
-  // For the passed character index in the plain text string, returns the corresponding index
-  // in the marked up value string.
-  // If the passed character index lies inside a mention, returns the index of the mention 
-  // markup's first char, or respectively its last char, if the flag `toEndOfMarkup` is set.
-  mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup) {
+  // Finds all occurences of the markup in the value and iterates the plain text sub strings
+  // in between those markups using `textIteratee` and the markup occurrences using the
+  // `markupIteratee`.
+  iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee) {
     var regex = this.markupToRegex(markup);
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
+    var idPos = this.getPositionOfCapturingGroup(markup, "id");
+    var typePos = this.getPositionOfCapturingGroup(markup, "type");
 
     var match;
     var start = 0;
     var currentPlainTextIndex = 0;
 
-    // detect all mention markup occurences in the value and iterate the matches
+     // detect all mention markup occurences in the value and iterate the matches
     while((match = regex.exec(value)) !== null) {
+
+      var id = match[idPos+1];
       var display = match[displayPos+1];
+      var type = typePos ? match[typePos+1] : null;
 
-      var plainTextIndexDelta = match.index - start;
-      if(currentPlainTextIndex + plainTextIndexDelta >= indexInPlainText) {
-        // found the corresponding position in the text range before the current match
-        return start + indexInPlainText - currentPlainTextIndex;
-      } else if(currentPlainTextIndex + plainTextIndexDelta + display.length >= indexInPlainText) {
-        // found the corresponding position inside current match,
-        // return the index of the first or last char of the matching markup
-        // depending on whether the `toEndOfMarkup` is set
-        return match.index + (toEndOfMarkup ? match[0].length : 0);
-      }
+      var substr = value.substring(start, match.index);
+      textIteratee( substr, start, currentPlainTextIndex );
+      currentPlainTextIndex += substr.length;
 
-      currentPlainTextIndex += plainTextIndexDelta + display.length;
+      markupIteratee( match[0], match.index, currentPlainTextIndex, id, display, type, start );
+      currentPlainTextIndex += display.length;
+
       start = regex.lastIndex;
     }
 
-    // index lies in the range after the last mention
-    return start + indexInPlainText - currentPlainTextIndex
+    if(start < value.length) {
+      textIteratee( value.substring(start), start, currentPlainTextIndex );
+    }
+  },
+
+  // For the passed character index in the plain text string, returns the corresponding index
+  // in the marked up value string.
+  // If the passed character index lies inside a mention, returns the index of the mention 
+  // markup's first char, or respectively tho one after its last char, if the flag `toEndOfMarkup` is set.
+  mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup) {
+    var result;
+    var textIteratee = function(substr, index, substrPlainTextIndex) {
+      if(result !== undefined) return;
+
+      if(substrPlainTextIndex + substr.length >= indexInPlainText) {
+        // found the corresponding position in the current plain text range
+        result = index + indexInPlainText - substrPlainTextIndex;
+      }
+    };
+    var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
+      if(result !== undefined) return;
+
+      if(mentionPlainTextIndex + display.length > indexInPlainText) {
+        // found the corresponding position inside current match,
+        // return the index of the first or after the last char of the matching markup
+        // depending on whether the `toEndOfMarkup` is set
+        result = index + (toEndOfMarkup ? markup.length : 0);
+      }
+    };
+
+    this.iterateMentionsMarkup(value, markup, textIteratee, markupIteratee);
+
+    return result;
   },
 
   // For a given indexInPlainText that lies inside a mention,
   // returns a the index of of the first char of the mention in the plain text.
   // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
   findStartOfMentionInPlainText: function(value, markup, indexInPlainText) {
+    var result = indexInPlainText;
+    var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
+      if(mentionPlainTextIndex < indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
+        result = mentionPlainTextIndex;
+      }
+    };
+    this.iterateMentionsMarkup(value, markup, function(){}, markupIteratee);
+    return result;
+  },
+
+
+
+  // For a given indexInPlainText that lies inside a mention,
+  // returns a the index of of the first char of the mention in the plain text.
+  // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
+ /* findStartOfMentionInPlainText: function(value, markup, indexInPlainText) {
     var regex = this.markupToRegex(markup);
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
 
@@ -694,7 +733,7 @@ module.exports = {
         // found the corresponding position in the text range before the current match
         return indexInPlainText;
       } else if(currentPlainTextIndex + plainTextIndexDelta + display.length >= indexInPlainText) {
-        // found the corresponding position inside current match,
+        // found the corresponding position inside the current match,
         // return the index of the first char of the mention
         return currentPlainTextIndex + plainTextIndexDelta;
       }
@@ -704,7 +743,7 @@ module.exports = {
     }
 
     return indexInPlainText;
-  },
+  },*/
 
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change 

@@ -27,6 +27,8 @@
     "browserify-shim": "3.6.0",
     "bundle-loader": "0.5.1",
     "chai": "1.10.0",
+    "sinon": "~1.12.1",
+    "sinon-chai": "~2.6.0",
     "envify": "1.2.0",
     "jsx-loader": "0.11.2",
     "karma": "0.12.16",

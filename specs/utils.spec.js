@@ -1,5 +1,11 @@
-var expect = require('chai').expect;
+var chai = require("chai");
+var sinon = require("sinon");
+var sinonChai = require("sinon-chai");
+var expect = chai.expect;
+chai.use(sinonChai);
+
 var utils = require('../lib/utils');
+
 
 describe("utils", function() {
 
@@ -9,13 +15,6 @@ describe("utils", function() {
   var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
   var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
 
-
-
-  describe("#markupToRegex", function() {
-
-    it("should return a regex that matches ...");
-
-  });
 
   describe("#spliceString", function() {
 
@@ -60,6 +59,52 @@ describe("utils", function() {
       
   });
 
+  describe("#iterateMentionsMarkup", function() {
+
+    it("should call the `markupIteratee` for every markup occurrence", function() {
+      var markupIteratee = sinon.spy();
+      utils.iterateMentionsMarkup(value, defaultMarkup, function(){}, markupIteratee);
+
+      expect(markupIteratee).to.have.been.calledTwice;
+      expect(markupIteratee).to.have.been.calledWith(
+        "@[John Doe](user:johndoe)",
+        value.indexOf("@[John Doe](user:johndoe)"),
+        plainText.indexOf("John Doe"),
+        "johndoe", "John Doe", "user",
+        0
+      );
+      expect(markupIteratee).to.have.been.calledWith(
+        "@[joe@smoe.com](email:joe@smoe.com)",
+        value.indexOf("@[joe@smoe.com](email:joe@smoe.com)"),
+        plainText.indexOf("joe@smoe.com"),
+        "joe@smoe.com", "joe@smoe.com", "email",
+        value.indexOf("@[John Doe](user:johndoe)") + "@[John Doe](user:johndoe)".length
+      );
+    });
+
+    it("should call the `textIteratee` for all plain text sub string between markups", function() {
+      var textIteratee = sinon.spy();
+      utils.iterateMentionsMarkup(value, defaultMarkup, textIteratee, function(){});
+
+      expect(textIteratee).to.have.been.calledThrice;
+      expect(textIteratee).to.have.been.calledWith(
+        "Hi ", 
+        0,
+        0
+      );
+      expect(textIteratee).to.have.been.calledWith(
+        ", \n\nlet's add ",
+        value.indexOf(", \n\nlet's add "),
+        plainText.indexOf(", \n\nlet's add ")
+      );
+      expect(textIteratee).to.have.been.calledWith(
+        " to this conversation...",
+        value.indexOf(" to this conversation..."),
+        plainText.indexOf(" to this conversation...")
+      );
+    });
+
+  });
 
   describe("#mapPlainTextIndex", function() {
 
@@ -80,6 +125,12 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf("..."));
     });
 
+    it("should correctly calculate the index of the first plain text character after a mention", function() {
+      var plainTextIndex = plainText.indexOf(","); // first char after John Doe mention
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
+      expect(result).to.equal(value.indexOf(","));
+    });
+
     it("should return the input index if there are no mentions", function() {
       var result = utils.mapPlainTextIndex(plainText, defaultMarkup, 10);
       expect(result).to.equal(10);
@@ -98,7 +149,7 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf(joeMarkup));
 
       // index of markup's last char
-      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length;
+      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length - 1;
       result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
       expect(result).to.equal(value.indexOf(joeMarkup));
     });
@@ -116,7 +167,7 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
 
       // index of markup's last char
-      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length;
+      plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length - 1;
       result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
     });

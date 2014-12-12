@@ -6,7 +6,7 @@
 
   position: relative;
   font-weight: normal;
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
 .react-mentions textarea {
@@ -44,4 +44,8 @@
 .react-mentions .highlighter strong {
   font-weight: normal;
   background: #cee4e5;
+}
+
+.react-mentions .suggestions {
+  position: absolute;
 }

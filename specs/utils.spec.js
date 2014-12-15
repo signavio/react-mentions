@@ -172,6 +172,13 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
     });
 
+    it("should return the correctly mapped caret position at the end of the string after a mention", function() {
+      var value = "Hi @[John Doe](user:johndoe)";
+      var plainText = "Hi John Doe";
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainText.length, true);
+      expect(result).to.equal(value.length);
+    });
+
   });
 
   describe("#findStartOfMentionInPlainText", function() {
@@ -243,6 +250,14 @@ describe("utils", function() {
       changed = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
       result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.indexOf(" add"), plainText.indexOf(" add") + " add joe@".length, plainText.indexOf(" add"));
       expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's to this conversation...");
+    });
+
+    it("should correctly add a new character after a mention at the end of the string", function() {
+      var value = "Hi @[John Doe](user:johndoe)";
+      var changed = "Hi John Doe,";
+
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 11, 11, 12);
+      expect(result).to.equal("Hi @[John Doe](user:johndoe),");
     });
 
   });

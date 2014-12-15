@@ -740,7 +740,9 @@ module.exports = {
 
     this.iterateMentionsMarkup(value, markup, textIteratee, markupIteratee);
 
-    return result;
+    // when a mention is at the end of the value and we want to get the caret position
+    // at the end of the string, result is undefined
+    return result === undefined ? value.length : result;
   },
 
   // For a given indexInPlainText that lies inside a mention,
@@ -756,40 +758,6 @@ module.exports = {
     this.iterateMentionsMarkup(value, markup, function(){}, markupIteratee);
     return result;
   },
-
-
-
-  // For a given indexInPlainText that lies inside a mention,
-  // returns a the index of of the first char of the mention in the plain text.
-  // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
- /* findStartOfMentionInPlainText: function(value, markup, indexInPlainText) {
-    var regex = this.markupToRegex(markup);
-    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
-
-    var match;
-    var start = 0;
-    var currentPlainTextIndex = 0;
-
-    // detect all mention markup occurences in the value and iterate the matches
-    while((match = regex.exec(value)) !== null) {
-      var display = match[displayPos+1];
-
-      var plainTextIndexDelta = match.index - start;
-      if(currentPlainTextIndex + plainTextIndexDelta >= indexInPlainText) {
-        // found the corresponding position in the text range before the current match
-        return indexInPlainText;
-      } else if(currentPlainTextIndex + plainTextIndexDelta + display.length >= indexInPlainText) {
-        // found the corresponding position inside the current match,
-        // return the index of the first char of the mention
-        return currentPlainTextIndex + plainTextIndexDelta;
-      }
-
-      currentPlainTextIndex += plainTextIndexDelta + display.length;
-      start = regex.lastIndex;
-    }
-
-    return indexInPlainText;
-  },*/
 
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change 

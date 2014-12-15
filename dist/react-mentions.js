@@ -314,12 +314,18 @@ module.exports = React.createClass({
 
     // Assert that there's no range selection after a change
     if(selectionStart !== selectionEnd) {
-      throw new Error("Unexpected range selection after a change");
+      // used browser's undo/redo
+      //throw new Error("Unexpected range selection after a change");
     }
 
-    // Adjust selection range in case a mention will be deleted
-    selectionStart = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart);
-    selectionEnd = selectionStart;
+    // Adjust selection range in case a mention will be deleted by the characters outside of the 
+    // selection range that are automatically deleted
+    var startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart);
+    if(this.state.selectionEnd > startOfMention) {
+      // only if a deletion has taken place
+      selectionStart = startOfMention;
+      selectionEnd = selectionStart;
+    }
 
     this.setState({
       selectionStart: selectionStart,

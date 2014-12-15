@@ -114,7 +114,7 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf("let's add"));
     });
 
-    it("should correctly calculate the index of a character in the plain text before the first mention", function() {
+    it("should correctly calculate the indices of the character in the plain text before the first mention", function() {
       var result = utils.mapPlainTextIndex(value, defaultMarkup, 2);
       expect(result).to.equal(2);
     });

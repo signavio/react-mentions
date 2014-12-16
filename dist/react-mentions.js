@@ -288,6 +288,8 @@ module.exports = React.createClass({
 
   // Handle input element's change event
   handleChange: function(ev) {
+    console.log("handle change", ev.target.selectionStart);
+
     var value = LinkedValueUtils.getValue(this);
     var newPlainTextValue = ev.target.value;
 
@@ -331,6 +333,8 @@ module.exports = React.createClass({
 
   // Handle input element's select event
   handleSelect: function(ev) {
+    console.log("handle select", ev.target.selectionStart);
+
     // keep track of selection range / caret position
     this.setState({
       selectionStart: ev.target.selectionStart,
@@ -527,12 +531,10 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    // always reset the focus when a new query is started
-    //if(this.countSuggestions(nextProps) === 0) {
-      this.setState({
-        focusIndex: 0
-      });
-    //}
+    // always reset the focus on update
+    this.setState({
+      focusIndex: 0
+    });
   },
 
   render: function() {

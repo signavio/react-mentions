@@ -17,7 +17,7 @@
     "react-component"
   ],
   "author": "Jan-Felix Schwarz",
-  "license": "MIT",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/effektif/react-mentions/issues"
   },

@@ -1,6 +1,0 @@
-#!/bin/sh
-mkdir -p dist
-NODE_ENV=production node_modules/.bin/browserify index.js -t reactify -t browserify-shim -t envify --detect-globals false -s ReactMentions > dist/react-mentions.js
-node_modules/.bin/uglifyjs dist/react-mentions.js --compress warnings=false > dist/react-mentions.min.js
-echo "gzipped, the global build is:"
-echo "`gzip -c dist/react-mentions.min.js | wc -c` bytes"

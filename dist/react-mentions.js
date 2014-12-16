@@ -312,11 +312,9 @@ module.exports = React.createClass({
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;
 
-    // Assert that there's no range selection after a change
-    if(selectionStart !== selectionEnd) {
-      // used browser's undo/redo
-      //throw new Error("Unexpected range selection after a change");
-    }
+    //if(selectionStart !== selectionEnd) {
+    //  // used browser's undo/redo
+    //}
 
     // Adjust selection range in case a mention will be deleted by the characters outside of the 
     // selection range that are automatically deleted
@@ -347,6 +345,12 @@ module.exports = React.createClass({
       selectionStart: ev.target.selectionStart,
       selectionEnd: ev.target.selectionEnd
     });
+
+    var caret = ev.target.selectionStart === ev.target.selectionEnd ?
+      ev.target.selectionStart : 0;
+    var el = this.refs.input.getDOMNode();
+
+    this.updateMentionsQueries(el.value, caret);
   },
 
   autogrowTextarea: function() {

@@ -80,5 +80,7 @@
 .react-mentions .suggestions ul li:last-child {
   border-bottom: none;
 }
-
+.react-mentions .suggestions ul li.focus {
+  background-color: #cee4e5;
+}
 

@@ -18,7 +18,6 @@ module.exports = React.createClass({
 
     
 
-
     /**
      * Called when a new mention is added in the input
      *
@@ -57,17 +56,8 @@ module.exports = React.createClass({
     return (
       React.createElement("strong", null,  this.props.display)
     );
-  },
+  }
 
-  //componentDidMount: function() {
-  //  this.props.onAdd(this.props.id, this.props.display, this.props.type);
-  //},
-//
-  //componentWillUnmount: function() {
-  //  this.props.onRemove(this.props.id, this.props.display, this.props.type);
-  //}
-//
-    
 });
 
 },{"./utils":5,"react/lib/emptyFunction":14}],3:[function(_dereq_,module,exports){
@@ -122,6 +112,8 @@ var _getDataProvider = function(data) {
   }
 };
 
+var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
+
 
 module.exports = React.createClass({
 
@@ -159,7 +151,6 @@ module.exports = React.createClass({
       selectionStart: null,
       selectionEnd: null,
 
-      //showSuggestions: false,
       suggestions: {}
     };
   },
@@ -189,12 +180,12 @@ module.exports = React.createClass({
       React.createElement("textarea", {ref: "input", 
         value: this.getPlainText(), 
         onChange: this.handleChange, 
-        onSelect: this.handleSelect})
+        onSelect: this.handleSelect, 
+        onKeyDown: this.handleKeyDown})
     );
   },
 
   renderSuggestionsOverlay: function() {
-    //if(!this.state.showSuggestions) return null;
     return (
       React.createElement(SuggestionsOverlay, {
         ref: "suggestions", 
@@ -233,7 +224,7 @@ module.exports = React.createClass({
       }
     }.bind(this);
 
-    var mentionIteratee = function( markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
+    var mentionIteratee = function(markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
       // generate a component key based on the id
       var key = _generateComponentKey(componentKeys, id);
       components.push(
@@ -346,11 +337,38 @@ module.exports = React.createClass({
       selectionEnd: ev.target.selectionEnd
     });
 
-    var caret = ev.target.selectionStart === ev.target.selectionEnd ?
-      ev.target.selectionStart : 0;
+    // refresh suggestions queries
     var el = this.refs.input.getDOMNode();
+    if(ev.target.selectionStart === ev.target.selectionEnd) {
+      this.updateMentionsQueries(el.value, ev.target.selectionStart);
+    } else {
+      this.clearSuggestions();
+    }
+  },
 
-    this.updateMentionsQueries(el.value, caret);
+  handleKeyDown: function(ev) {
+    // do not intercept key events if the suggestions overlay is not shown
+    var suggestionsCount = 0;
+    for(var prop in this.state.suggestions) {
+      if(this.state.suggestions.hasOwnProperty(prop)) {
+        suggestionsCount += this.state.suggestions[prop].results.length;
+      }
+    }
+    if(suggestionsCount === 0) return;
+
+    var suggestionsComp = this.refs.suggestions;
+
+    var keyHandlers = {};
+    keyHandlers[KEY.ESC] = this.clearSuggestions;
+    keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
+    keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);
+    keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused;
+    keyHandlers[KEY.TAB] = suggestionsComp.selectFocused;
+
+    if(keyHandlers[ev.keyCode]) {
+      keyHandlers[ev.keyCode]();
+      ev.preventDefault();
+    }
   },
 
   autogrowTextarea: function() {
@@ -409,7 +427,6 @@ module.exports = React.createClass({
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
     var substring = plainTextValue.substring(0, caretPosition);
 
-    //var showSuggestions = false;
     var that = this;
     React.Children.forEach(this.props.children, function(child) {
       var regex = _getTriggerRegex(child.props.trigger);
@@ -417,14 +434,16 @@ module.exports = React.createClass({
       if(match) {
         var querySequenceStart = substring.indexOf(match[1], match.index);
         that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length);
-        //showSuggestions = true;
       }
     });
+  },
 
-    // If any mentions queries have been started, show suggestions overlay
-    //this.setState({
-    //  showSuggestions: showSuggestions
-    //});
+  clearSuggestions: function() {
+    // Invalidate previous queries. Async results for previous queries will be neglected.
+    this._queryId++;
+    this.setState({
+      suggestions: {}
+    });
   },
 
   queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd) {
@@ -494,23 +513,36 @@ module.exports = React.createClass({
 
   displayName: 'SuggestionsOverlay',
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       suggestions: {},
       onSelect: emptyFunction
     };
   },
 
-  render: function() {
-    var suggestions = this.renderSuggestions();
+  getInitialState: function() {
+    return {
+      focusIndex: 0
+    };
+  },
 
+  componentWillReceiveProps: function(nextProps) {
+    // always reset the focus when a new query is started
+    //if(this.countSuggestions(nextProps) === 0) {
+      this.setState({
+        focusIndex: 0
+      });
+    //}
+  },
+
+  render: function() {
     // for the moment being, do not show suggestions until there is some data
     // later we might show a loading spinner / empty message
-    if(suggestions.length === 0) return null;
+    if(this.countSuggestions() === 0) return null;
 
     return (
       React.createElement("div", {className: "suggestions"}, 
-        React.createElement("ul", null, suggestions )
+        React.createElement("ul", null,  this.renderSuggestions() )
       )
     );
   },
@@ -523,14 +555,18 @@ module.exports = React.createClass({
 
       for(var i=0, l=suggestions.results.length; i < l; ++i) {
         listItems.push(
-          this.renderSuggestion(suggestions.results[i], suggestions.query, suggestions.querySequenceStart, suggestions.querySequenceEnd, suggestions.mentionDescriptor)
+          this.renderSuggestion(
+            suggestions.results[i], suggestions.query, 
+            suggestions.querySequenceStart, suggestions.querySequenceEnd, 
+            suggestions.mentionDescriptor, listItems.length
+          )
         );
       }
     }
     return listItems;
   },
 
-  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor) {
+  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor, index) {
     var id, display;
     var type = mentionDescriptor.props.type;
 
@@ -543,8 +579,11 @@ module.exports = React.createClass({
       display = suggestion.display;
     }
 
+    var isFocused = (index === this.state.focusIndex);
+    var cls = isFocused ? "focus" : "";
+    var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
     return (
-      React.createElement("li", {key: id, onClick: this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd)}, 
+      React.createElement("li", {key: id, ref: isFocused && "focused", className: cls, onClick: handleClick, onMouseEnter: this.handleMouseEnter.bind(null, index)}, 
          this.renderHighlightedDisplay(display, query) 
       )
     );
@@ -563,8 +602,36 @@ module.exports = React.createClass({
     );
   },
 
+  handleMouseEnter: function(index, ev) {
+    this.setState({
+      focusIndex: index
+    });
+  },
+
   select: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
     this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
+  },
+
+  selectFocused: function() {
+    // call click handler of the focused element
+    this.refs.focused.props.onClick();
+  },
+
+  shiftFocus: function(delta) {
+    this.setState({
+      focusIndex: (this.state.focusIndex + delta) % this.countSuggestions()
+    });
+  },
+
+  countSuggestions: function(props) {
+    props = props || this.props;
+    var result = 0;
+    for(var prop in this.props.suggestions) {
+      if(this.props.suggestions.hasOwnProperty(prop)) {
+        result += this.props.suggestions[prop].results.length;
+      }
+    }
+    return result;
   }
     
 });

@@ -278,17 +278,12 @@ module.exports = React.createClass({
   // Returns the text to set as the value of the textarea with all markups removed
   getPlainText: function() {
     var value = LinkedValueUtils.getValue(this);
-    var regex = utils.markupToRegex(this.props.markup);
-    var displayPos = utils.getPositionOfCapturingGroup(this.props.markup, "display");
-    return value.replace(regex, function() {
-      // first argument is the whole match, capturing groups are following
-      return arguments[displayPos+1];
-    });
+    return utils.getPlainText(value, this.props.markup);
   },
 
   // Handle input element's change event
   handleChange: function(ev) {
-    console.log("handle change", ev.target.selectionStart);
+    console.log("handle change", ev);
 
     var value = LinkedValueUtils.getValue(this);
     var newPlainTextValue = ev.target.value;
@@ -333,7 +328,7 @@ module.exports = React.createClass({
 
   // Handle input element's select event
   handleSelect: function(ev) {
-    console.log("handle select", ev.target.selectionStart);
+    console.log("handle select", ev);
 
     // keep track of selection range / caret position
     this.setState({
@@ -844,20 +839,38 @@ module.exports = {
     // extract the insertion from the new plain text value
     var insert = plainTextValue.slice(selectionStartBeforeChange, selectionEndAfterChange);
 
-    var spliceStart = selectionStartBeforeChange;
-    if(spliceStart > 0 && selectionEndAfterChange < selectionStartBeforeChange) {
+    // handling for Backspace key with no range selection
+    var spliceStart = Math.min(selectionStartBeforeChange, selectionEndAfterChange);
+
+    var spliceEnd = selectionEndBeforeChange;
+    if(selectionStartBeforeChange === selectionEndAfterChange) {
+      var oldPlainTextValue = this.getPlainText(value, markup);
+      var lengthDelta = oldPlainTextValue.length - plainTextValue.length;
+      // handling for Delete key with no range selection
+      spliceEnd = Math.max(selectionEndBeforeChange, selectionStartBeforeChange + lengthDelta);
+    }
+    /*if(spliceStart > 0 && selectionEndAfterChange < selectionStartBeforeChange) {
       // special situation: removed a single char without a range selection but simple caret,
       // emulate a single char selection, e.g.: abc|d is emulated as ab[c]d when backspace is hit
       spliceStart--;
-    }
+    }*/
 
     // splice the current marked up value and insert new chars
     return this.spliceString(
       value,
       this.mapPlainTextIndex(value, markup, spliceStart, false),
-      this.mapPlainTextIndex(value, markup, selectionEndBeforeChange, true),
+      this.mapPlainTextIndex(value, markup, spliceEnd, true),
       insert
     );
+  },
+
+  getPlainText: function(value, markup) {
+    var regex = this.markupToRegex(markup);
+    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
+    return value.replace(regex, function() {
+      // first argument is the whole match, capturing groups are following
+      return arguments[displayPos+1];
+    });
   },
 
   makeMentionsMarkup: function(markup, id, display, type) {

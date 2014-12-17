@@ -260,6 +260,20 @@ describe("utils", function() {
       expect(result).to.equal("Hi @[John Doe](user:johndoe),");
     });
 
+    it("should support deletion of whole words (Alt + Backspace) and whole lines (Cmd + Backspace)", function() {
+      var changed = plainText.replace("add", "");
+
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 24, 24, 21);
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's  @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
+    it("should support deletion to the right using Del key", function() {
+      var changed = plainText.replace("add", "dd");
+
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 21, 21, 21);
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's dd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
   });
 
 });

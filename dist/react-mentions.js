@@ -283,8 +283,6 @@ module.exports = React.createClass({
 
   // Handle input element's change event
   handleChange: function(ev) {
-    console.log("handle change", ev);
-
     var value = LinkedValueUtils.getValue(this);
     var newPlainTextValue = ev.target.value;
 
@@ -319,7 +317,7 @@ module.exports = React.createClass({
     });
 
     // Show, hide, or update suggestions overlay
-    this.updateMentionsQueries(newPlainTextValue, selectionStart);
+    //this.updateMentionsQueries(newPlainTextValue, selectionStart);
 
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this);
@@ -328,8 +326,6 @@ module.exports = React.createClass({
 
   // Handle input element's select event
   handleSelect: function(ev) {
-    console.log("handle select", ev);
-
     // keep track of selection range / caret position
     this.setState({
       selectionStart: ev.target.selectionStart,
@@ -421,6 +417,13 @@ module.exports = React.createClass({
     this.setState({
       suggestions: {}
     });
+
+    // If caret is inside of or directly behind of mention, do not query
+    var value = LinkedValueUtils.getValue(this);
+    if( utils.isInsideOfMention(value, this.props.markup, caretPosition) || 
+        utils.isInsideOfMention(value, this.props.markup, caretPosition-1) ) {
+      return;
+    }
     
     // Check if suggestions have to be shown:
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
@@ -476,7 +479,7 @@ module.exports = React.createClass({
     var value = LinkedValueUtils.getValue(this);
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart);
     var end = start + querySequenceEnd - querySequenceStart;
-    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, suggestion.type);
+    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newValue = utils.spliceString(value, start, end, insert);
 
     // Refocus input and set caret position to end of mention
@@ -490,6 +493,9 @@ module.exports = React.createClass({
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this);
     handleChange(null, newValue);
+
+    // Make sure the suggestions overlay is closed
+    this.clearSuggestions();
   },
 
   _queryId: 0
@@ -831,6 +837,11 @@ module.exports = {
     };
     this.iterateMentionsMarkup(value, markup, function(){}, markupIteratee);
     return result;
+  },
+
+  // Returns whether the given plain text index lies inside a mention
+  isInsideOfMention: function(value, markup, indexInPlainText) {
+    return this.findStartOfMentionInPlainText(value, markup, indexInPlainText) !== indexInPlainText;
   },
 
   // Applies a change from the plain text textarea to the underlying marked up value

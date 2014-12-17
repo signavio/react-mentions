@@ -43,7 +43,11 @@
         },
     
         render: function() {
-          var emailRegex = /([^\s@]+@[^\s@]+\.[^\s@]+)$/; // use capture group to extract search string from match
+
+          // use first/outer capture group to extract the full entered sequence to be replaced
+          // and second/inner capture group to extract search string from the match
+          var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/; 
+
           return (
             <div>
               <h1>React Mentions Input</h1>
@@ -57,11 +61,11 @@
                   renderSuggestion={this.renderSuggestion}
                   onAdd={this.handleAdd}
                   onRemove={this.handleRemove} />
-                {/*<Mention 
+                <Mention 
                   type="email"
                   trigger={emailRegex} 
-                  requestData={this.requestEmail} 
-                  onAdd={this.handleEmailAdd} />*/}
+                  data={this.requestEmail} 
+                  onAdd={this.handleEmailAdd} />
               </MentionsInput>
               
               

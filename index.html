@@ -3,7 +3,7 @@
   <head>
   	<meta charset="utf-8"/>
   	<title>React Mentions</title>
-  	<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+  	<link rel="stylesheet" type="text/css" href="lib/styles.css"/>
   	<style type="text/css">
   		body {
   			color: #222;
@@ -16,7 +16,7 @@
   <body>
     <script src="https://fb.me/react-with-addons-0.12.1.js"></script>
     <script src="https://fb.me/JSXTransformer-0.12.1.js"></script>
-    <script src="../dist/react-mentions.js"></script>
+    <script src="dist/react-mentions.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var MentionsInput = ReactMentions.MentionsInput;
@@ -42,12 +42,12 @@
             emailsCount: 0
           };
         },
-    
+
         render: function() {
 
           // use first/outer capture group to extract the full entered sequence to be replaced
           // and second/inner capture group to extract search string from the match
-          var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/; 
+          var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
 
           return (
             <div>
@@ -58,17 +58,17 @@
               <p>Mention people using '@' + username or type an email address</p>
 
               <MentionsInput value={this.state.value} onChange={this.handleChange} markup="@[__display__](__type__:__id__)">
-                <Mention 
+                <Mention
                   type="user"
-                  trigger="@" 
-                  data={users} 
+                  trigger="@"
+                  data={users}
                   renderSuggestion={this.renderSuggestion}
                   onAdd={this.handleAdd}
                   onRemove={this.handleRemove} />
-                <Mention 
+                <Mention
                   type="email"
-                  trigger={emailRegex} 
-                  data={this.requestEmail} 
+                  trigger={emailRegex}
+                  data={this.requestEmail}
                   onAdd={this.handleEmailAdd} />
               </MentionsInput>
 
@@ -77,7 +77,7 @@
               <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine}>
                 <Mention data={users} />
               </MentionsInput>
-              
+
             </div>
           );
         },
@@ -118,7 +118,7 @@
         //}
 
       });
-    
+
       React.render(<App/>, document.body);
     </script>
   </body>

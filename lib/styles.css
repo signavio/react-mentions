@@ -3,11 +3,17 @@
   overflow-y: visible;
 }
 
-.react-mentions .control {
+.react-mentions .control.textarea {
   background: #fff;
   font-family: monospace;
   font-size: 12px;
   border: 1px solid silver;
+  font-weight: normal;
+}
+
+.react-mentions .control.input {
+  background: #fff;
+  font-size: 12px;
   font-weight: normal;
 }
 
@@ -34,16 +40,32 @@
   box-sizing: border-box;
 }
 
-.react-mentions .highlighter {
-  padding: 9px;
 
+.react-mentions input {
+  padding: 1px;
+
+  margin: 0;
+  border: 2px inset;
+  background: transparent;
+  position: relative;
+  font: inherit;
+}
+
+.react-mentions .highlighter {
   position: absolute;
   color: transparent;
   font: inherit;
   overflow: hidden;
+  border: 2px inset transparent;
+}
+.react-mentions .textarea .highlighter {
+  padding: 9px;
 
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+.react-mentions .input .highlighter {
+  padding: 1px;
 }
 
 .react-mentions .highlighter strong {

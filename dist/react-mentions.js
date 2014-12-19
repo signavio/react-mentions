@@ -126,10 +126,10 @@ module.exports = React.createClass({
   propTypes: {
 
     /**
-     * If set to `false` a single line input will be rendered
-     *
+     * If set to `true` a regular text input element will be rendered
+     * instead of a textarea
      */
-    multiLine: React.PropTypes.bool,
+    singleLine: React.PropTypes.bool,
 
     markup: React.PropTypes.string
 
@@ -141,8 +141,8 @@ module.exports = React.createClass({
 
   getDefaultProps: function () {
     return {
-      multiLine: true,
-      markup: "@[__display__](__id__)"
+      markup: "@[__display__](__id__)",
+      singleLine: false
     };
   },
 
@@ -164,7 +164,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       React.createElement("div", {className: "react-mentions"}, 
-        React.createElement("div", {className: "control"}, 
+        React.createElement("div", {className: "control " + (this.props.singleLine ? "input" : "textarea")}, 
           React.createElement("div", {className: "highlighter"}, 
              this.renderHighlighter() 
           ), 
@@ -176,13 +176,24 @@ module.exports = React.createClass({
   },
 
   renderInput: function() {
-    return (
-      React.createElement("textarea", {ref: "input", 
-        value: this.getPlainText(), 
-        onChange: this.handleChange, 
-        onSelect: this.handleSelect, 
-        onKeyDown: this.handleKeyDown})
-    );
+    if(this.props.singleLine) {
+      return (
+        React.createElement("input", {ref: "input", 
+          type: "text", 
+          value: this.getPlainText(), 
+          onChange: this.handleChange, 
+          onSelect: this.handleSelect, 
+          onKeyDown: this.handleKeyDown})
+      );
+    } else {
+      return (
+        React.createElement("textarea", {ref: "input", 
+          value: this.getPlainText(), 
+          onChange: this.handleChange, 
+          onSelect: this.handleSelect, 
+          onKeyDown: this.handleKeyDown})
+      );
+    }
   },
 
   renderSuggestionsOverlay: function() {
@@ -195,7 +206,7 @@ module.exports = React.createClass({
   },
 
   renderHighlighter: function() {
-    var value = LinkedValueUtils.getValue(this);
+    var value = LinkedValueUtils.getValue(this) || "";
 
     var resultComponents = [];
     var components = resultComponents;
@@ -277,13 +288,13 @@ module.exports = React.createClass({
 
   // Returns the text to set as the value of the textarea with all markups removed
   getPlainText: function() {
-    var value = LinkedValueUtils.getValue(this);
+    var value = LinkedValueUtils.getValue(this) || "";
     return utils.getPlainText(value, this.props.markup);
   },
 
   // Handle input element's change event
   handleChange: function(ev) {
-    var value = LinkedValueUtils.getValue(this);
+    var value = LinkedValueUtils.getValue(this) || "";
     var newPlainTextValue = ev.target.value;
 
     // Derive the new value to set by applying the local change in the textarea's plain text
@@ -320,7 +331,7 @@ module.exports = React.createClass({
     //this.updateMentionsQueries(newPlainTextValue, selectionStart);
 
     // Propagate change
-    var handleChange = LinkedValueUtils.getOnChange(this);
+    var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     handleChange(ev, newValue);
   },
 
@@ -419,7 +430,7 @@ module.exports = React.createClass({
     });
 
     // If caret is inside of or directly behind of mention, do not query
-    var value = LinkedValueUtils.getValue(this);
+    var value = LinkedValueUtils.getValue(this) || "";
     if( utils.isInsideOfMention(value, this.props.markup, caretPosition) || 
         utils.isInsideOfMention(value, this.props.markup, caretPosition-1) ) {
       return;
@@ -476,7 +487,7 @@ module.exports = React.createClass({
 
   addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
     // Insert mention in the marked up value at the correct position 
-    var value = LinkedValueUtils.getValue(this);
+    var value = LinkedValueUtils.getValue(this) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart);
     var end = start + querySequenceEnd - querySequenceStart;
     var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
@@ -491,7 +502,7 @@ module.exports = React.createClass({
     });
 
     // Propagate change
-    var handleChange = LinkedValueUtils.getOnChange(this);
+    var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     handleChange(null, newValue);
 
     // Make sure the suggestions overlay is closed

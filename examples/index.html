@@ -38,6 +38,7 @@
         getInitialState: function() {
           return {
             value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... ",
+            valueSingleLine: "Hi @[John Doe](user:johndoe)!",
             emailsCount: 0
           };
         },
@@ -51,6 +52,9 @@
           return (
             <div>
               <h1>React Mentions Input</h1>
+
+
+              <h3>Multiple trigger patterns</h3>
               <p>Mention people using '@' + username or type an email address</p>
 
               <MentionsInput value={this.state.value} onChange={this.handleChange} markup="@[__display__](__type__:__id__)">
@@ -67,7 +71,12 @@
                   data={this.requestEmail} 
                   onAdd={this.handleEmailAdd} />
               </MentionsInput>
-              
+
+              <h3>Single line input</h3>
+
+              <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine}>
+                <Mention data={users} />
+              </MentionsInput>
               
             </div>
           );
@@ -75,6 +84,10 @@
 
         handleChange: function(ev, value) {
           this.setState({ value: value });
+        },
+
+        handleChangeSingleLine: function(ev, value) {
+          this.setState({ valueSingleLine: value });
         },
 
         requestEmail: function(search) {

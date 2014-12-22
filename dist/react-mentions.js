@@ -38,6 +38,8 @@ module.exports = React.createClass({
      */
     onAdd: React.PropTypes.func,
 
+    renderSuggestion: React.PropTypes.func,
+
   },
 
   contextTypes: {
@@ -48,7 +50,8 @@ module.exports = React.createClass({
     return {
       trigger: "@",
       onAdd: emptyFunction,
-      onRemove: emptyFunction
+      onRemove: emptyFunction,
+      renderSuggestion: null
     };
   },
 
@@ -596,9 +599,15 @@ module.exports = React.createClass({
     var isFocused = (index === this.state.focusIndex);
     var cls = isFocused ? "focus" : "";
     var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
+    
+    var highlightedDisplay = this.renderHighlightedDisplay(display, query);
+    var content = mentionDescriptor.props.renderSuggestion ? 
+      mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay) :
+      highlightedDisplay;
+
     return (
       React.createElement("li", {key: id, ref: isFocused && "focused", className: cls, onClick: handleClick, onMouseEnter: this.handleMouseEnter.bind(null, index)}, 
-         this.renderHighlightedDisplay(display, query) 
+        content 
       )
     );
   },

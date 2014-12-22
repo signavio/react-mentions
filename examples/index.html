@@ -96,11 +96,13 @@
           ];
         },
 
-        renderSuggestion: function(match, search) {
+        renderSuggestion: function(id, display, search, highlightedDisplay) {
           return (
             <div className="user">
-              <img src={"img/" + match.id + ".png"} />
-              { match.display }
+              <div className="initials">
+                { display.split(" ").map(function(c) { return c[0]; }) }
+              </div>
+              { highlightedDisplay }
             </div>
           );
         },

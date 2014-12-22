@@ -14,8 +14,8 @@
   	</style>
   </head>
   <body>
-    <script src="https://fb.me/react-with-addons-0.12.1.js"></script>
-    <script src="https://fb.me/JSXTransformer-0.12.1.js"></script>
+    <script src="https://fb.me/react-with-addons-0.12.2.js"></script>
+    <script src="https://fb.me/JSXTransformer-0.12.2.js"></script>
     <script src="../dist/react-mentions.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
@@ -99,9 +99,6 @@
         renderSuggestion: function(id, display, search, highlightedDisplay) {
           return (
             <div className="user">
-              <div className="initials">
-                { display.split(" ").map(function(c) { return c[0]; }) }
-              </div>
               { highlightedDisplay }
             </div>
           );

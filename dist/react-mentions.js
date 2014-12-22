@@ -115,6 +115,18 @@ var _getDataProvider = function(data) {
   }
 };
 
+function getSelection() {
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                return sel.getRangeAt(0);
+            }
+        } else if (document.selection && document.selection.createRange) {
+            return document.selection.createRange();
+        }
+        return null;
+    }
+
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 
@@ -186,7 +198,8 @@ module.exports = React.createClass({
           value: this.getPlainText(), 
           onChange: this.handleChange, 
           onSelect: this.handleSelect, 
-          onKeyDown: this.handleKeyDown})
+          onKeyDown: this.handleKeyDown, 
+          onBlur: this.handleBlur})
       );
     } else {
       return (
@@ -194,7 +207,8 @@ module.exports = React.createClass({
           value: this.getPlainText(), 
           onChange: this.handleChange, 
           onSelect: this.handleSelect, 
-          onKeyDown: this.handleKeyDown})
+          onKeyDown: this.handleKeyDown, 
+          onBlur: this.handleBlur})
       );
     }
   },
@@ -253,7 +267,7 @@ module.exports = React.createClass({
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret: function() {
     return (
-      React.createElement("span", {className: "caret", ref: "caret"}, 
+      React.createElement("span", {className: "caret", ref: "caret", key: "caret"}, 
          this.renderSuggestionsOverlay() 
       )
     );
@@ -380,6 +394,14 @@ module.exports = React.createClass({
     }
   },
 
+  handleBlur: function() {
+    // reset selection
+    this.setState({
+      selectionStart: null,
+      selectionEnd: null
+    });
+  },
+
   autogrowTextarea: function() {
     var el = this.refs.input.getDOMNode();
     el.style.height = "auto";
@@ -412,6 +434,8 @@ module.exports = React.createClass({
   },
 
   setSelection: function(selectionStart, selectionEnd) {
+    if(selectionStart === null || selectionEnd === null) return;
+    
     var el = this.refs.input.getDOMNode();
     if(el.setSelectionRange) {
       el.setSelectionRange(selectionStart, selectionEnd);
@@ -1386,7 +1410,7 @@ ReactElement.createElement = function(type, config, children) {
   }
 
   // Resolve default props
-  if (type.defaultProps) {
+  if (type && type.defaultProps) {
     var defaultProps = type.defaultProps;
     for (propName in defaultProps) {
       if (typeof props[propName] === 'undefined') {

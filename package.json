@@ -30,7 +30,7 @@
     "sinon": "~1.12.1",
     "sinon-chai": "~2.6.0",
     "envify": "1.2.0",
-    "jsx-loader": "0.11.2",
+    "jsx-loader": "0.12.2",
     "karma": "0.12.16",
     "karma-browserify": "^0.2.1",
     "karma-chrome-launcher": "0.1.4",

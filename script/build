@@ -4,3 +4,5 @@ NODE_ENV=production node_modules/.bin/browserify index.js -t reactify -t browser
 node_modules/.bin/uglifyjs dist/react-mentions.js --compress warnings=false > dist/react-mentions.min.js
 echo "gzipped, the global build is:"
 echo "`gzip -c dist/react-mentions.min.js | wc -c` bytes"
+
+NODE_ENV=production node_modules/jsx-loader/node_modules/.bin/jsx --harmony --no-cache-dir lib dist-modules

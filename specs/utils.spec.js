@@ -203,7 +203,7 @@ describe("utils", function() {
       expect(result).to.equal("S" + value);
 
       changed = plainText + "E";
-      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.length, plainText.length, changed.length, changed.length);
+      result = utils.applyChangeToValue(value, defaultMarkup, changed, plainText.length, plainText.length, changed.length);
       expect(result).to.equal(value + "E");
 
       changed = "Hi John Doe, \n\nlet's Madd joe@smoe.com to this conversation...";

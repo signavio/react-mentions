@@ -75,7 +75,7 @@
               <h3>Single line input</h3>
 
               <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine}>
-                <Mention data={users} />
+                <Mention data={users} getDisplay={this.getDisplay} />
               </MentionsInput>
               
             </div>
@@ -110,6 +110,10 @@
 
         handleRemove: function() {
           console.log("removed a mention", arguments);
+        },
+
+        getDisplay: function(id) {
+          return id;
         }
 
         //handleEmailAdd: function(email) {

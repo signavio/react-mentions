@@ -2,7 +2,6 @@
 exports.MentionsInput = _dereq_('./lib/MentionsInput');
 exports.Mention = _dereq_('./lib/Mention');
 },{"./lib/Mention":2,"./lib/MentionsInput":3}],2:[function(_dereq_,module,exports){
-/** @jsx React.DOM */
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var emptyFunction = _dereq_('react/lib/emptyFunction');
 var utils = _dereq_('./utils');
@@ -64,7 +63,6 @@ module.exports = React.createClass({
 });
 
 },{"./utils":5,"react/lib/emptyFunction":14}],3:[function(_dereq_,module,exports){
-/** @jsx React.DOM */
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var LinkedValueUtils = _dereq_('react/lib/LinkedValueUtils');
 var emptyFunction = _dereq_('react/lib/emptyFunction');
@@ -546,7 +544,6 @@ module.exports = React.createClass({
 });
 
 },{"./Mention":2,"./SuggestionsOverlay":4,"./utils":5,"react/lib/LinkedValueUtils":6,"react/lib/emptyFunction":14}],4:[function(_dereq_,module,exports){
-/** @jsx React.DOM */
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var emptyFunction = _dereq_('react/lib/emptyFunction');
 var utils = _dereq_('./utils');

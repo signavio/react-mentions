@@ -160,7 +160,11 @@ module.exports = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      displayTransform: null
+      displayTransform: null,
+
+      onKeyDown: emptyFunction,
+      onSelect: emptyFunction,
+      onBlur: emptyFunction
     };
   },
 
@@ -202,6 +206,7 @@ module.exports = React.createClass({
           onChange: this.handleChange, 
           onSelect: this.handleSelect, 
           onKeyDown: this.handleKeyDown, 
+          onFocus: this.props.onFocus, 
           onBlur: this.handleBlur})
       );
     } else {
@@ -211,6 +216,7 @@ module.exports = React.createClass({
           onChange: this.handleChange, 
           onSelect: this.handleSelect, 
           onKeyDown: this.handleKeyDown, 
+          onFocus: this.props.onFocus, 
           onBlur: this.handleBlur})
       );
     }
@@ -371,6 +377,8 @@ module.exports = React.createClass({
     } else {
       this.clearSuggestions();
     }
+
+    this.props.onSelect(ev);
   },
 
   handleKeyDown: function(ev) {
@@ -395,15 +403,20 @@ module.exports = React.createClass({
     if(keyHandlers[ev.keyCode]) {
       keyHandlers[ev.keyCode]();
       ev.preventDefault();
+    } else {
+      this.props.onKeyDown(ev);
     }
+    
   },
 
-  handleBlur: function() {
+  handleBlur: function(ev) {
     // reset selection
     this.setState({
       selectionStart: null,
       selectionEnd: null
     });
+
+    this.props.onBlur(ev);
   },
 
   autogrowTextarea: function() {

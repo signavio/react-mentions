@@ -39,8 +39,6 @@ module.exports = React.createClass({
 
     renderSuggestion: React.PropTypes.func,
 
-    children: React.PropTypes.arrayOf(React.PropTypes.element)
-
   },
 
   contextTypes: {
@@ -148,7 +146,9 @@ module.exports = React.createClass({
 
     markup: React.PropTypes.string,
 
-    displayTransform: React.PropTypes.func
+    displayTransform: React.PropTypes.func,
+
+    children: React.PropTypes.arrayOf(React.PropTypes.element)
 
   },
 

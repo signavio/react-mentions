@@ -113,18 +113,6 @@ var _getDataProvider = function(data) {
   }
 };
 
-function getSelection() {
-        if (window.getSelection) {
-            sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                return sel.getRangeAt(0);
-            }
-        } else if (document.selection && document.selection.createRange) {
-            return document.selection.createRange();
-        }
-        return null;
-    }
-
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 
@@ -306,7 +294,8 @@ module.exports = React.createClass({
       return React.addons.cloneWithProps(foundChild, props);
     } else if(childrenCount === 1) {
       // clone single Mention child
-      return React.addons.cloneWithProps( React.Children.only(this.props.children), props );
+      var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
+      return React.addons.cloneWithProps(child, props );
     } else {
       // no children, use default configuration
       return Mention(props);

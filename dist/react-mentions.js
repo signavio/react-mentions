@@ -262,7 +262,7 @@ module.exports = React.createClass({
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret: function() {
     return (
-      React.createElement("span", {className: "caret", ref: "caret", key: "caret"}, 
+      React.createElement("span", {className: "caret-marker", ref: "caret", key: "caret"}, 
          this.renderSuggestionsOverlay() 
       )
     );

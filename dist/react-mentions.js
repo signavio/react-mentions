@@ -90,7 +90,7 @@ var _getTriggerRegex = function(trigger) {
 
     // first capture group is the part to be replaced on completion
     // second capture group is for extracting the search query
-    return new RegExp("\\s(" + escapedTriggerChar + "([^\\s" + escapedTriggerChar + "]*))$");
+    return new RegExp("(?:^|\\s)(" + escapedTriggerChar + "([^\\s" + escapedTriggerChar + "]*))$");
   }
 };
 
@@ -285,6 +285,7 @@ module.exports = React.createClass({
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
   getMentionComponentForMatch: function(id, display, type, key) {
     var childrenCount = React.Children.count(this.props.children);
+    var props = { id: id, display: display, key: key };
 
     if(childrenCount > 1) {
       if(!type) {
@@ -302,13 +303,13 @@ module.exports = React.createClass({
       });
 
       // clone the Mention child that is applicable for the given type
-      return React.addons.cloneWithProps(foundChild, { id: id, display: display, key: key });
+      return React.addons.cloneWithProps(foundChild, props);
     } else if(childrenCount === 1) {
       // clone single Mention child
-      return React.addons.cloneWithProps(this.props.children, { id: id, display: display, key: key });
+      return React.addons.cloneWithProps( React.Children.only(this.props.children), props );
     } else {
       // no children, use default configuration
-      return Mention({ id: id, display: display, key: key });
+      return Mention(props);
     }
   },
 

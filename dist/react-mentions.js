@@ -134,9 +134,7 @@ module.exports = React.createClass({
 
     markup: React.PropTypes.string,
 
-    displayTransform: React.PropTypes.func,
-
-    children: React.PropTypes.arrayOf(React.PropTypes.element)
+    displayTransform: React.PropTypes.func
 
   },
 
@@ -349,6 +347,7 @@ module.exports = React.createClass({
 
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
+    var eventMock = { target: { value: newValue } }; 
     handleChange.call(this, ev, newValue);
   },
 
@@ -537,7 +536,8 @@ module.exports = React.createClass({
 
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
-    handleChange.call(this, null, newValue);
+    var eventMock = { target: { value: newValue }};
+    handleChange.call(this, eventMock, newValue);
 
     // Make sure the suggestions overlay is closed
     this.clearSuggestions();

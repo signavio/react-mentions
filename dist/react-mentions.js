@@ -348,7 +348,7 @@ module.exports = React.createClass({
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue } }; 
-    handleChange.call(this, ev, newValue);
+    handleChange.call(this, eventMock, newValue);
   },
 
   // Handle input element's select event

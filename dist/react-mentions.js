@@ -173,7 +173,7 @@ module.exports = React.createClass({
     return (
       React.createElement("div", {className: "react-mentions"}, 
         React.createElement("div", {className: "control " + (this.props.singleLine ? "input" : "textarea")}, 
-          React.createElement("div", {className: "highlighter"}, 
+          React.createElement("div", {className: "highlighter", ref: "highlighter"}, 
              this.renderHighlighter() 
           ), 
            this.renderInput() 
@@ -329,10 +329,6 @@ module.exports = React.createClass({
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;
 
-    //if(selectionStart !== selectionEnd) {
-    //  // used browser's undo/redo
-    //}
-
     // Adjust selection range in case a mention will be deleted by the characters outside of the 
     // selection range that are automatically deleted
     var startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart, this.props.displayTransform);
@@ -368,6 +364,9 @@ module.exports = React.createClass({
     } else {
       this.clearSuggestions();
     }
+
+    // sync highlighters scroll position
+    this.updateHighlighterScroll();
 
     this.props.onSelect(ev);
   },
@@ -411,6 +410,11 @@ module.exports = React.createClass({
     };
     this._suggestionsMouseDown = false;
 
+    var that = this;
+    window.setTimeout(function() {
+      that.updateHighlighterScroll();
+    }, 1);
+
     this.props.onBlur(ev);
   },
 
@@ -429,10 +433,17 @@ module.exports = React.createClass({
 
     var caretEl = this.refs.caret.getDOMNode();
     var suggestionsEl = this.refs.suggestions.getDOMNode();
+    var highligherEl = this.refs.highlighter.getDOMNode();
     if(!suggestionsEl) return;
 
-    suggestionsEl.style.left = caretEl.offsetLeft + "px";
-    suggestionsEl.style.top = caretEl.offsetTop + "px";
+    suggestionsEl.style.left = caretEl.offsetLeft - highligherEl.scrollLeft + "px";
+    suggestionsEl.style.top = caretEl.offsetTop - highligherEl.scrollTop + "px";
+  },
+
+  updateHighlighterScroll: function() {
+    var input = this.refs.input.getDOMNode();
+    var highlighter = this.refs.highlighter.getDOMNode();
+    highlighter.scrollLeft = input.scrollLeft;
   },
 
   componentDidMount: function() {

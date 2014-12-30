@@ -12,6 +12,8 @@
 }
 
 .react-mentions .control.input {
+  display: inline-block;
+  width: 130px;
   background: #fff;
   font-size: 12px;
   font-weight: normal;
@@ -46,12 +48,14 @@
 
   margin: 0;
   border: 2px inset;
+  width: inherit;
   background: transparent;
   position: relative;
   font: inherit;
 }
 
 .react-mentions .highlighter {
+  width: inherit;
   position: absolute;
   color: transparent;
   font: inherit;
@@ -66,6 +70,9 @@
 .react-mentions .input .highlighter {
   padding: 1px;
   border: 2px inset transparent;
+
+  white-space: pre;
+  overflow: hidden;
 }
 
 .react-mentions .highlighter strong {

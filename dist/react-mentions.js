@@ -209,11 +209,16 @@ module.exports = React.createClass({
   },
 
   renderSuggestionsOverlay: function() {
+    if(!utils.isNumber(this.state.selectionStart)) {
+      // do not show suggestions when the input does not have the focus
+      return null;
+    }
     return (
       React.createElement(SuggestionsOverlay, {
         ref: "suggestions", 
         suggestions: this.state.suggestions, 
-        onSelect: this.addMention})
+        onSelect: this.addMention, 
+        onMouseDown: this.handleSuggestionsMouseDown})
     );
   },
 
@@ -229,10 +234,10 @@ module.exports = React.createClass({
     if(this.state.selectionStart === this.state.selectionEnd) {
       caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart, false, this.props.displayTransform);
     }
-
+    
     var textIteratee = function(substr, index, indexInPlainText) {
       // check whether the caret element has to be inserted inside the current plain substring
-      if(caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
+      if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
         // if yes, split substr at the caret position and insert the caret component
         var splitIndex = caretPositionInMarkup - index;
         components.push(substr.substring(0, splitIndex));
@@ -342,9 +347,6 @@ module.exports = React.createClass({
       selectionEnd: selectionEnd
     });
 
-    // Show, hide, or update suggestions overlay
-    //this.updateMentionsQueries(newPlainTextValue, selectionStart);
-
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue } }; 
@@ -378,34 +380,39 @@ module.exports = React.createClass({
         suggestionsCount += this.state.suggestions[prop].results.length;
       }
     }
-    if(suggestionsCount === 0) return;
-
-    var suggestionsComp = this.refs.suggestions;
 
     var keyHandlers = {};
+    var suggestionsComp = this.refs.suggestions;
     keyHandlers[KEY.ESC] = this.clearSuggestions;
     keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
     keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);
     keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused;
     keyHandlers[KEY.TAB] = suggestionsComp.selectFocused;
 
-    if(keyHandlers[ev.keyCode]) {
+    if(suggestionsCount > 0 && keyHandlers[ev.keyCode]) {
       keyHandlers[ev.keyCode]();
       ev.preventDefault();
     } else {
       this.props.onKeyDown(ev);
     }
-    
   },
 
   handleBlur: function(ev) {
-    // reset selection
-    this.setState({
-      selectionStart: null,
-      selectionEnd: null
-    });
-
+    // only reset selection if the mousdown happened on an element
+    // other than the suggestions overlay
+    if(!this._suggestionsMouseDown) {
+      this.setState({
+        selectionStart: null,
+        selectionEnd: null
+      });
+    };
+    this._suggestionsMouseDown = false;
+    
     this.props.onBlur(ev);
+  },
+
+  handleSuggestionsMouseDown: function(ev) {
+    this._suggestionsMouseDown = true;
   },
 
   autogrowTextarea: function() {
@@ -521,7 +528,7 @@ module.exports = React.createClass({
   addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
     // Insert mention in the marked up value at the correct position 
     var value = LinkedValueUtils.getValue(this) || "";
-    var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, this.props.displayTransform);
+    var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
     var end = start + querySequenceEnd - querySequenceStart;
     var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newValue = utils.spliceString(value, start, end, insert);
@@ -583,12 +590,11 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    // for the moment being, do not show suggestions until there is some data
-    // later we might show a loading spinner / empty message
+    // do not show suggestions until there is some data
     if(this.countSuggestions() === 0) return null;
 
     return (
-      React.createElement("div", {className: "suggestions"}, 
+      React.createElement("div", {className: "suggestions", onMouseDown: this.props.onMouseDown}, 
         React.createElement("ul", null,  this.renderSuggestions() )
       )
     );
@@ -766,6 +772,10 @@ module.exports = {
     return obj;
   },
 
+  isNumber: function(obj) {
+    return toString.call(obj) === "[object Number]";
+  },
+
   /**
    * parameterName: "id", "display", or "type"
    */
@@ -850,6 +860,10 @@ module.exports = {
   // If the passed character index lies inside a mention, returns the index of the mention 
   // markup's first char, or respectively tho one after its last char, if the flag `toEndOfMarkup` is set.
   mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup, displayTransform) {
+    if(!this.isNumber(indexInPlainText)) {
+      return indexInPlainText;
+    }
+
     var result;
     var textIteratee = function(substr, index, substrPlainTextIndex) {
       if(result !== undefined) return;

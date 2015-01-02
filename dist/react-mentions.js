@@ -698,8 +698,11 @@ module.exports = React.createClass({
   },
 
   shiftFocus: function(delta) {
+    var suggestionsCount = this.countSuggestions();
+    var newIndex = this.state.focusIndex + delta;
+    if(newIndex < 0) newIndex = suggestionsCount - newIndex;
     this.setState({
-      focusIndex: (this.state.focusIndex + delta) % this.countSuggestions()
+      focusIndex: newIndex % suggestionsCount
     });
   },
 

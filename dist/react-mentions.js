@@ -384,8 +384,8 @@ module.exports = React.createClass({
       }
     }
 
-    if(suggestionsCount > 0) {
-      var suggestionsComp = this.refs.suggestions;
+    var suggestionsComp = this.refs.suggestions;
+    if(suggestionsCount > 0 && suggestionsComp) {
       keyHandlers[KEY.ESC] = this.clearSuggestions;
       keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
       keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);

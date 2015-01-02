@@ -443,6 +443,11 @@ module.exports = React.createClass({
   },
 
   updateHighlighterScroll: function() {
+    if(!this.refs.input || !this.refs.highlighter) {
+      // since the invocation of this function is deferred,
+      // the whole component may have been unmounted in the meanwhile
+      return;
+    }
     var input = this.refs.input.getDOMNode();
     var highlighter = this.refs.highlighter.getDOMNode();
     highlighter.scrollLeft = input.scrollLeft;

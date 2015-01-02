@@ -57,7 +57,7 @@
               <h3>Multiple trigger patterns</h3>
               <p>Mention people using '@' + username or type an email address</p>
 
-              <MentionsInput value={this.state.value} onChange={this.handleChange} markup="@[__display__](__type__:__id__)">
+              <MentionsInput value={this.state.value} onChange={this.handleChange} markup="@[__display__](__type__:__id__)" placeholder={"Mention people using '@'"}>
                 <Mention 
                   type="user"
                   trigger="@" 
@@ -74,7 +74,7 @@
 
               <h3>Single line input</h3>
 
-              <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine}>
+              <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine} placeholder={"Mention people using '@'"}>
                 <Mention data={users} getDisplay={this.getDisplay} />
               </MentionsInput>
               

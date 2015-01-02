@@ -193,7 +193,8 @@ module.exports = React.createClass({
           onSelect: this.handleSelect, 
           onKeyDown: this.handleKeyDown, 
           onFocus: this.props.onFocus, 
-          onBlur: this.handleBlur})
+          onBlur: this.handleBlur, 
+          placeholder: this.props.placeholder})
       );
     } else {
       return (
@@ -203,7 +204,8 @@ module.exports = React.createClass({
           onSelect: this.handleSelect, 
           onKeyDown: this.handleKeyDown, 
           onFocus: this.props.onFocus, 
-          onBlur: this.handleBlur})
+          onBlur: this.handleBlur, 
+          placeholder: this.props.placeholder})
       );
     }
   },

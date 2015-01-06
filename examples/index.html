@@ -14,7 +14,7 @@
   	</style>
   </head>
   <body>
-    <script src="https://fb.me/react-with-addons-0.12.2.js"></script>
+    <script src="https://rawgit.com/jfschwarz/react/bower/build/react-with-addons.js"></script>
     <script src="https://fb.me/JSXTransformer-0.12.2.js"></script>
     <script src="../dist/react-mentions.js"></script>
     <script type="text/jsx">
@@ -39,6 +39,7 @@
           return {
             value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... ",
             valueSingleLine: "Hi @[John Doe](user:johndoe)!",
+            valueAdvanced: "Hi {{johndoe}}!",
             emailsCount: 0
           };
         },
@@ -75,8 +76,16 @@
               <h3>Single line input</h3>
 
               <MentionsInput singleLine={true} value={this.state.valueSingleLine} onChange={this.handleChangeSingleLine} placeholder={"Mention people using '@'"}>
-                <Mention data={users} getDisplay={this.getDisplay} />
+                <Mention data={users}/>
               </MentionsInput>
+
+              <h3>Advanced options</h3>
+
+              <MentionsInput value={this.state.valueAdvanced} onChange={this.handleChangeAdvanced} markup="{{__id__}}" displayTransform={this.transformDisplay}>
+                <Mention data={users} />
+              </MentionsInput>
+
+              
               
             </div>
           );
@@ -88,6 +97,10 @@
 
         handleChangeSingleLine: function(ev, value) {
           this.setState({ valueSingleLine: value });
+        },
+
+        handleChangeAdvanced: function(ev, value) {
+          this.setState({ valueAdvanced: value });
         },
 
         requestEmail: function(search) {
@@ -112,8 +125,8 @@
           console.log("removed a mention", arguments);
         },
 
-        getDisplay: function(id) {
-          return id;
+        transformDisplay: function(id) {
+          return "<-- " + id + " -->";
         }
 
         //handleEmailAdd: function(email) {

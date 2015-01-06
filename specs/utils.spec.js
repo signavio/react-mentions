@@ -15,6 +15,11 @@ describe("utils", function() {
   var value = "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...";
   var plainText = "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation...";
 
+  var displayTransform = function(id) {
+    return "<--" + id + "-->"
+  }
+  var plainTextDisplayTransform = "Hi <--johndoe-->, \n\nlet's add <--joe@smoe.com--> to this conversation...";
+
 
   describe("#spliceString", function() {
 
@@ -104,6 +109,49 @@ describe("utils", function() {
       );
     });
 
+    it("should call the `markupIteratee` for every markup occurrence with display transform", function() {
+      var markupIteratee = sinon.spy();
+      utils.iterateMentionsMarkup(value, defaultMarkup, function(){}, markupIteratee, displayTransform);
+
+      expect(markupIteratee).to.have.been.calledTwice;
+      expect(markupIteratee).to.have.been.calledWith(
+        "@[John Doe](user:johndoe)",
+        value.indexOf("@[John Doe](user:johndoe)"),
+        plainTextDisplayTransform.indexOf("<--johndoe-->"),
+        "johndoe", "<--johndoe-->", "user",
+        0
+      );
+      expect(markupIteratee).to.have.been.calledWith(
+        "@[joe@smoe.com](email:joe@smoe.com)",
+        value.indexOf("@[joe@smoe.com](email:joe@smoe.com)"),
+        plainTextDisplayTransform.indexOf("<--joe@smoe.com-->"),
+        "joe@smoe.com", "<--joe@smoe.com-->", "email",
+        value.indexOf("@[John Doe](user:johndoe)") + "@[John Doe](user:johndoe)".length
+      );
+    });
+
+    it("should call the `textIteratee` for all plain text sub string between markups with display transform", function() {
+      var textIteratee = sinon.spy();
+      utils.iterateMentionsMarkup(value, defaultMarkup, textIteratee, function(){}, displayTransform);
+
+      expect(textIteratee).to.have.been.calledThrice;
+      expect(textIteratee).to.have.been.calledWith(
+        "Hi ", 
+        0,
+        0
+      );
+      expect(textIteratee).to.have.been.calledWith(
+        ", \n\nlet's add ",
+        value.indexOf(", \n\nlet's add "),
+        plainTextDisplayTransform.indexOf(", \n\nlet's add ")
+      );
+      expect(textIteratee).to.have.been.calledWith(
+        " to this conversation...",
+        value.indexOf(" to this conversation..."),
+        plainTextDisplayTransform.indexOf(" to this conversation...")
+      );
+    });
+
   });
 
   describe("#mapPlainTextIndex", function() {
@@ -111,6 +159,12 @@ describe("utils", function() {
     it("should correctly calculate the index of a character in the plain text between mentions", function() {
       var plainTextIndex = plainText.indexOf("let's add");
       var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
+      expect(result).to.equal(value.indexOf("let's add"));
+    });
+
+    it("should correctly calculate the index of a character in the plain text between mentions with display tranform", function() {
+      var plainTextIndex = plainTextDisplayTransform.indexOf("let's add");
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, false, displayTransform);
       expect(result).to.equal(value.indexOf("let's add"));
     });
 
@@ -170,6 +224,14 @@ describe("utils", function() {
       plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length - 1;
       result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
+    });
+
+    it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention with display transform", function() {
+      // index of char inside the markup
+      var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
+      plainTextIndex = plainTextDisplayTransform.indexOf("joe@smoe.com") + 3;
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
+      expect(result).to.equal(value.indexOf(joeMarkup));
     });
 
     it("should return the correctly mapped caret position at the end of the string after a mention", function() {
@@ -271,6 +333,12 @@ describe("utils", function() {
       var changed = plainText.replace("add", "dd");
 
       var result = utils.applyChangeToValue(value, defaultMarkup, changed, 21, 21, 21);
+      expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's dd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
+    it("should support deletion to the right using Del key when using the displayTransform option", function() {
+      var changed = plainTextDisplayTransform.replace("add", "dd");
+      var result = utils.applyChangeToValue(value, defaultMarkup, changed, 26, 26, 26, displayTransform);
       expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's dd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
     });
 

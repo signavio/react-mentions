@@ -41,10 +41,6 @@ module.exports = React.createClass({
 
   },
 
-  contextTypes: {
-    markup: React.PropTypes.string.isRequired
-  },
-
   getDefaultProps: function () {
     return {
       trigger: "@",
@@ -138,10 +134,6 @@ module.exports = React.createClass({
 
   },
 
-  childContextTypes: {
-    markup: React.PropTypes.string.isRequired
-  },
-
   getDefaultProps: function () {
     return {
       markup: "@[__display__](__id__)",
@@ -160,12 +152,6 @@ module.exports = React.createClass({
       selectionEnd: null,
 
       suggestions: {}
-    };
-  },
-
-  getChildContext: function() {
-    return {
-      markup: this.props.markup
     };
   },
 

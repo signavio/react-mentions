@@ -743,8 +743,6 @@ var numericComparator = function(a, b) {
   return a - b;
 };
 
-
-
 module.exports = {
 
   escapeHtml: createEscaper(escapeMap),
@@ -783,7 +781,7 @@ module.exports = {
   },
 
   isNumber: function(obj) {
-    return toString.call(obj) === "[object Number]";
+    return Object.prototype.toString.call(obj) === "[object Number]";
   },
 
   /**

@@ -11,6 +11,9 @@
     "react",
     "mentions"
   ],
+  "devDependencies": {
+    "react": "https://github.com/jfschwarz/react.git#2029ef140471c7ed393e13c5bf0171af4994bfe5"
+  },
   "license": "BSD",
   "ignore": [
     "**/.*",

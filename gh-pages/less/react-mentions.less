@@ -1,0 +1,113 @@
+@import "utils";
+
+.react-mentions {
+  position: relative;
+  overflow-y: visible;
+
+  .control {
+    &.textarea {
+      background: #fff;
+      font-family: monospace;
+      font-size: 12px;
+      border: 1px solid silver;
+      font-weight: normal;
+
+      .highlighter {
+        padding: 9px;
+
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    }
+
+    &.input {
+      display: inline-block;
+      width: 130px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: normal;
+
+      .highlighter {
+        padding: 1px;
+        border: 2px inset transparent;
+
+        white-space: pre;
+        overflow: hidden;
+      }
+    }
+
+    .highlighter {
+      width: inherit;
+      position: absolute;
+      color: transparent;
+      font: inherit;
+      overflow: hidden;
+
+      strong {
+        font-weight: normal;
+        background: #cee4e5;
+      }
+    }
+  }
+
+  textarea {
+    padding: 9px;
+    min-height: 63px;
+
+    width: 100%;
+    display: block;
+    margin: 0;
+    border: none;
+    background: transparent;
+    position: relative;
+    outline: 0;
+    font: inherit;
+    overflow: hidden;
+    resize: none;
+
+    .quirks(box-sizing, border-box);
+  }
+
+  input {
+    padding: 1px;
+
+    margin: 0;
+    border: 2px inset;
+    width: inherit;
+    background: transparent;
+    position: relative;
+    font: inherit;
+  }
+
+  .suggestions {
+    position: absolute;
+    z-index: 1;
+
+    border: 1px solid rgba(0,0,0,0.15);
+    background-color: white;
+    margin-top: 14px;
+    font-size: 10pt;
+
+    .quirks(box-shadow, 2px 2px 0 rgba(0,0,0,0.06));
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+
+      li {
+        padding: 5px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0,0,0,0.15);;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &.focus {
+          background-color: #cee4e5;
+        }
+      }
+    }
+  }
+}

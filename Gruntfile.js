@@ -6,7 +6,12 @@ module.exports = function(grunt) {
       options: {
           base: "gh-pages"
       },
-      src: "**/*"
+      src: [
+        "index.html",
+        "css/*",
+        "lib/react-mentions.js",
+        "lib/vendor/react/build/*"
+      ]
     },
 
     less: {

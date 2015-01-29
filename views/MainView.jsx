@@ -5,7 +5,7 @@ define([
 
   "jsx!views/HeaderView",
 
-  "jsx!views/examples/MultipTriggerView",
+  "jsx!views/examples/MultipleTriggerView",
   "jsx!views/examples/SingleLineView",
   "jsx!views/examples/AdvancedView"
 ], function(

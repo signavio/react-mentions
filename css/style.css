@@ -6664,6 +6664,15 @@ h5 {
 .header .navbar h1 {
   color: white;
 }
+.header .navbar h1 small {
+  display: block;
+  font-size: 14px;
+  color: white;
+}
+.header .navbar h1 small a {
+  color: white;
+  font-style: italic;
+}
 .react-mentions {
   position: relative;
   overflow-y: visible;

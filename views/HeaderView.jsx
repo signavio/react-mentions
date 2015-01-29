@@ -1,28 +1,33 @@
 define([
-    "react"
+  "react"
 ], function(
-    React
+  React
 ) {
 
-    return React.createClass({
+  return React.createClass({
 
-        displayName: "Header",
+    displayName: "Header",
 
-        render: function() {
-            return (
-                <div className="header">
-                    { this.renderNavigation() }
+    render: function() {
+      return (
+        <div className="header">
+          <div className="navbar-fixed-top">
+            <div className="container">
 
-                    <h3 className="text-muted">
-                        React Mentions
-                    </h3>
-                </div>
-            );
-        },
+              { this.renderNavigation() }
 
-        renderNavigation: function() {
+              <h3 className="text-muted">
+                React Mentions
+              </h3>
+            </div>
+          </div>
+        </div>
+      );
+    },
 
-        }
-    });
+    renderNavigation: function() {
+
+    }
+  });
 
 });

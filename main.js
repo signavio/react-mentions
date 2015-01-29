@@ -14,7 +14,7 @@ require([
     ], function(
       MainView
     ) {
-      React.render(MainView, document.body);
+      React.render(MainView(), document.body);
     });
   });
 });

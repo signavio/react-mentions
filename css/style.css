@@ -6654,6 +6654,9 @@ button.close {
 .header .navbar {
   background: #18aab1;
 }
+.header .navbar h3 {
+  color: white;
+}
 .react-mentions {
   position: relative;
   overflow-y: visible;

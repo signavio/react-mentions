@@ -16,7 +16,7 @@ define([
 
               { this.renderNavigation() }
 
-              <h3 className="text-muted">
+              <h3>
                 React Mentions
               </h3>
             </div>

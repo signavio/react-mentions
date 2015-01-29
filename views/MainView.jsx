@@ -46,10 +46,10 @@ define([
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-6">
                 <SingleLine data={ users } />
               </div>
-              <div className="col-md-12">
+              <div className="col-md-6">
                 <Advanced data={ users } />
               </div>
             </div>

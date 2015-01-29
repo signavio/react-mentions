@@ -6674,6 +6674,9 @@ h5 {
   color: white;
   font-style: italic;
 }
+body {
+  font-family: "Source Sans Pro";
+}
 .react-mentions {
   position: relative;
   overflow-y: visible;

@@ -11,6 +11,8 @@ require([
 
         MainView
     ) {
+        window.React = React;
+
         React.render(MainView, document.body);
     });
 });

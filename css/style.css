@@ -6648,6 +6648,12 @@ button.close {
     display: none !important;
   }
 }
+.header {
+  margin-bottom: 60px;
+}
+.header .navbar {
+  background: #18aab1;
+}
 .react-mentions {
   position: relative;
   overflow-y: visible;

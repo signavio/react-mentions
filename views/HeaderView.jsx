@@ -11,7 +11,7 @@ define([
     render: function() {
       return (
         <div className="header">
-          <div className="navbar-fixed-top">
+          <div className="navbar navbar-fixed-top">
             <div className="container">
 
               { this.renderNavigation() }

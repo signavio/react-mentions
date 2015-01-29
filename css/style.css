@@ -6648,6 +6648,13 @@ button.close {
     display: none !important;
   }
 }
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Roboto Slab";
+}
 .header {
   margin-bottom: 60px;
 }

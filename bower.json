@@ -31,6 +31,7 @@
     "CONTRIBUTING.md",
     "karma.conf.js",
     "package.json",
+    "Gruntfile.js",
     "webpack.config.js"
   ],
   "resolutions": {

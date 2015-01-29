@@ -18,6 +18,9 @@ define([
 
               <h1>
                 React Mentions
+                <small>
+                  Powered by <a href="http://www.effektif.com">Effektif</a>
+                </small>
               </h1>
             </div>
           </div>

@@ -16,9 +16,9 @@ define([
 
               { this.renderNavigation() }
 
-              <h3>
+              <h1>
                 React Mentions
-              </h3>
+              </h1>
             </div>
           </div>
         </div>

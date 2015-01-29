@@ -40,9 +40,19 @@ define([
           <Header />
 
           <div className="container">
-            <MultipleTrigger data={ users } />
-            <SingleLine data={ users } />
-            <Advanced data={ users } />
+            <div className="row">
+              <div className="col-lg-12">
+                <MultipleTrigger data={ users } />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <SingleLine data={ users } />
+              </div>
+              <div className="col-md-12">
+                <Advanced data={ users } />
+              </div>
+            </div>
           </div>
         </div>
       );

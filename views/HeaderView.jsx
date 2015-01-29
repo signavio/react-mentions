@@ -29,7 +29,10 @@ define([
     },
 
     renderNavigation: function() {
-
+      return (
+        <nav>
+        </nav>
+      );
     }
   });
 

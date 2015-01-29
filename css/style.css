@@ -6656,7 +6656,7 @@ h5 {
   font-family: "Roboto Slab";
 }
 .header {
-  margin-bottom: 60px;
+  margin-bottom: 100px;
 }
 .header .navbar {
   background: #18aab1;
@@ -6666,6 +6666,7 @@ h5 {
 }
 .header .navbar h1 small {
   display: block;
+  opacity: 0.5;
   font-size: 14px;
   color: white;
 }

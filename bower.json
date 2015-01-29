@@ -15,7 +15,8 @@
     "react": "https://github.com/jfschwarz/react.git#2029ef140471c7ed393e13c5bf0171af4994bfe5",
     "requirejs": "2.1.11",
     "requirejs-text": "2.0.13",
-    "requirejs-jsx-plugin": "https://github.com/jfschwarz/jsx-requirejs-plugin.git#1556c465eb9eb8425e451e5fa31b87bc97f4c5c0"
+    "requirejs-jsx-plugin": "https://github.com/jfschwarz/jsx-requirejs-plugin.git#1556c465eb9eb8425e451e5fa31b87bc97f4c5c0",
+    "bootstrap": "~3.3.2"
   },
   "license": "BSD",
   "ignore": [

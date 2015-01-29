@@ -8,9 +8,15 @@ module.exports = function(grunt) {
       },
       src: [
         "index.html",
+        "*.js",
+        "views/**/*",
         "css/*",
         "lib/react-mentions.js",
-        "lib/vendor/react/build/*"
+        "lib/vendor/requirejs/require.js",
+        "lib/vendor/react/build/react-with-addons.js",
+        "lib/vendor/requirejs-jsx-plugin/js/jsx.js",
+        "lib/vendor/requirejs-jsx-plugin/js/JSXTransformer.js",
+        "lib/vendor/requirejs-text/text.js"
       ]
     },
 

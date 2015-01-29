@@ -1,3 +1,4 @@
+@import "../lib/vendor/bootstrap/dist/css/bootstrap.css";
 .react-mentions {
   position: relative;
   overflow-y: visible;

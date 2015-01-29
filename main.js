@@ -2,17 +2,19 @@ require([
     "config"
 ], function() {
 
+  require([
+    "react"
+  ], function(
+    React
+  ) {
+    window.React = React;
+
     require([
-        "react",
-
-        "jsx!views/MainView"
+      "jsx!views/MainView"
     ], function(
-        React,
-
-        MainView
+      MainView
     ) {
-        window.React = React;
-
-        React.render(MainView, document.body);
+      React.render(MainView, document.body);
     });
+  });
 });

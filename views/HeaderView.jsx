@@ -35,9 +35,9 @@ define([
     renderNavigation: function() {
       return (
         <nav>
-          <ul className="nav nav-pills">
+          <ul className="nav nav-pills pull-right">
             <li>
-              <Link to="license" className="pull-right">License</Link>
+              <Link to="license">License</Link>
             </li>
           </ul>
         </nav>

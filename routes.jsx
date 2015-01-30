@@ -4,14 +4,16 @@ define([
     "react-router",
 
     "jsx!views/Application",
-    "jsx!views/ExamplesView"
+    "jsx!views/ExamplesView",
+    "jsx!views/LicenseView"
 ], function(
     React,
 
     Router,
 
     Application,
-    Examples
+    Examples,
+    License
 ) {
 
     var Route = Router.Route;
@@ -20,6 +22,7 @@ define([
     return (
         <Route handler={ Application } path="react-mentions/">
             <Route handler={ Examples } path="examples" />
+            <Route handler={ License } path="License" />
             <DefaultRoute handler={ Examples } />
         </Route>
     );

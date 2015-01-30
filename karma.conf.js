@@ -32,7 +32,7 @@ module.exports = function(config) {
       debug: true
     },
 
-    reporters: ["dots", "coverage", "junit"],
+    reporters: ["coverage", "junit", "dots"],
 
     port: 9876,
 

@@ -37,6 +37,9 @@ define([
         <nav>
           <ul className="nav nav-pills pull-right">
             <li>
+              <Link to="examples">Examples</Link>
+            </li>
+            <li>
               <Link to="license">License</Link>
             </li>
           </ul>

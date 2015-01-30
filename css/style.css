@@ -6684,7 +6684,9 @@ h5 {
   -o-border-radius: 0;
   border-radius: 0;
 }
-.header .nav a:hover {
+.header .nav a:hover,
+.header .nav a:focus,
+.header .nav a.active {
   background: rgba(255, 255, 255, 0.3);
 }
 body {

@@ -1,8 +1,12 @@
 define([
-  "react"
+  "react",
+  "react-router"
 ], function(
-  React
+  React,
+  Router
 ) {
+
+  var Link = Router.Link;
 
   return React.createClass({
 
@@ -31,6 +35,14 @@ define([
     renderNavigation: function() {
       return (
         <nav>
+          <ul className="nav nav-pills pull-right">
+            <li>
+              <Link to="examples">Examples</Link>
+            </li>
+            <li>
+              <Link to="license">License</Link>
+            </li>
+          </ul>
         </nav>
       );
     }

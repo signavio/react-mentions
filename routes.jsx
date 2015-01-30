@@ -22,7 +22,7 @@ define([
     return (
         <Route handler={ Application } path="react-mentions/">
             <Route handler={ Examples } name="examples" path="examples" />
-            <Route handler={ License } name="license" path="License" />
+            <Route handler={ License } name="license" path="license" />
             <DefaultRoute handler={ Examples } />
         </Route>
     );

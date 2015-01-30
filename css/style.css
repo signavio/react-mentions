@@ -6674,6 +6674,18 @@ h5 {
   color: white;
   font-style: italic;
 }
+.header .navbar .nav a {
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-border-radius: 0;
+  -khtml-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+}
+.header .navbar .nav a:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 body {
   font-family: "Source Sans Pro";
 }

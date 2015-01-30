@@ -10,6 +10,7 @@ define([
     render: function() {
       return (
         <div className="license">
+          <h3>License</h3>
           <p>BSD License</p>
 
           <p>

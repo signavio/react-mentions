@@ -8,14 +8,14 @@ define([
 ], function(
     React,
 
-    ReactRouter,
+    Router,
 
     Application,
     Examples
 ) {
 
-    var Route = ReactRouter.Rout;
-    var DefaultRoute = ReactRouter.DefaultRoute;
+    var Route = Router.Route;
+    var DefaultRoute = Router.DefaultRoute;
 
     return (
         <Route handler={ Application } path="react-mentions/">

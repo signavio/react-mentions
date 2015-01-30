@@ -19,8 +19,8 @@ define([
 
     return (
         <Route handler={ Application } path="react-mentions/">
-            <DefaultRoute handler={ Examples } />
             <Route handler={ Examples } path="examples" />
+            <DefaultRoute handler={ Examples } />
         </Route>
     );
 });

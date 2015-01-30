@@ -12,7 +12,18 @@ module.exports = function(config) {
     exclude: [],
 
     preprocessors: {
-      'tests.js': ['browserify']
+      'tests.js': ['browserify'],
+      '*.js': ['coverage']
+    },
+
+    coverageReporter: {
+      type : 'cobertura',
+      dir : 'coverage/'
+    },
+
+    junitReporter: {
+      outputFile: "results/test-results.xml",
+      suite: "Backbone Relations"
     },
 
     browserify: {
@@ -21,7 +32,7 @@ module.exports = function(config) {
       debug: true
     },
 
-    reporters: ['progress'],
+    reporters: ["dots", "coverage", "junit"],
 
     port: 9876,
 
@@ -31,10 +42,10 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
     captureTimeout: 60000,
 
-    singleRun: false
+    singleRun: true
   });
 };

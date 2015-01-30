@@ -4,7 +4,7 @@
   "description": "React mentions input",
   "main": "index.js",
   "scripts": {
-    "test": "script/test --browsers Chrome --single-run",
+    "test": "script/test",
     "start": "script/build"
   },
   "repository": {
@@ -39,6 +39,9 @@
     "karma": "0.12.16",
     "karma-browserify": "^0.2.1",
     "karma-chrome-launcher": "0.1.4",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-coverage": "~0.2.7",
+    "karma-junit-reporter": "~0.2.2",
     "karma-cli": "0.0.4",
     "karma-firefox-launcher": "0.1.3",
     "karma-mocha": "0.1.3",

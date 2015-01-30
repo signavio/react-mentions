@@ -2,5 +2,6 @@
 node_modules/
 gh-pages/lib
 gh-pages/css
-
 react-mentions.sublime-workspace
+coverage/
+results/

@@ -10,11 +10,17 @@ require([
     window.React = React;
 
     require([
-      "jsx!views/MainView"
+      "react-router",
+
+      "jsx!routes"
     ], function(
-      MainView
+      Router,
+
+      routes
     ) {
-      React.render(React.createElement(MainView, null), document.body);
+      Router.run(routes, function(Handler) {
+        React.render(React.createElement(Handler, null), document.body);
+      });
     });
   });
 });

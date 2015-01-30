@@ -1,12 +1,16 @@
 define([
   "react",
+  "react-router",
 
   "jsx!views/HeaderView"
 ], function(
   React,
+  Router,
 
   Header
 ) {
+
+  var RouteHandler = Router.RouteHandler;
 
   return React.createClass({
 
@@ -18,7 +22,7 @@ define([
           <Header />
 
           <div className="container">
-            { this.props.page }
+            <RouteHandler />
           </div>
         </div>
       );

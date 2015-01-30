@@ -6675,6 +6675,7 @@ h5 {
   font-style: italic;
 }
 .header .nav a {
+  color: white;
   background: rgba(255, 255, 255, 0.2);
   -webkit-border-radius: 0;
   -khtml-border-radius: 0;

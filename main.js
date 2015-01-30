@@ -18,7 +18,7 @@ require([
 
       routes
     ) {
-      Router.run(routes, function(Handler) {
+      Router.run(routes, Router.HistoryLocation, function(Handler) {
         React.render(React.createElement(Handler, null), document.body);
       });
     });

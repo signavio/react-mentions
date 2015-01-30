@@ -6674,7 +6674,7 @@ h5 {
   color: white;
   font-style: italic;
 }
-.header .navbar .nav a {
+.header .nav a {
   background: rgba(255, 255, 255, 0.2);
   -webkit-border-radius: 0;
   -khtml-border-radius: 0;
@@ -6683,7 +6683,7 @@ h5 {
   -o-border-radius: 0;
   border-radius: 0;
 }
-.header .navbar .nav a:hover {
+.header .nav a:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 body {

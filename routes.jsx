@@ -18,7 +18,7 @@ define([
     var DefaultRoute = Router.DefaultRoute;
 
     return (
-        <Route handler={ Application } path="/">
+        <Route handler={ Application } path="react-mentions/">
             <Route handler={ Examples } path="examples" />
             <DefaultRoute handler={ Examples } />
         </Route>

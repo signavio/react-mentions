@@ -23,7 +23,7 @@ define([
 
     getInitialState: function() {
       return {
-        value: "Hi @[John Doe](user:johndoe)!"
+        value: ""
       };
     },
 

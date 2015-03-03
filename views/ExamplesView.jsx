@@ -35,15 +35,15 @@ define([
         <div className="examples">
           <div className="row">
             <div className="col-lg-12">
-              <MultipleTrigger data={ users } />
+              <MultipleTrigger readOnly={ true } data={ users } />
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
-              <SingleLine data={ users } />
+              <SingleLine readOnly={ true } data={ users } />
             </div>
             <div className="col-md-6">
-              <Advanced data={ users } />
+              <Advanced readOnly={ true } data={ users } />
             </div>
           </div>
         </div>

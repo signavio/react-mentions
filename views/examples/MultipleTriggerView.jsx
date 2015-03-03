@@ -38,7 +38,6 @@ define([
           <p>Mention people using '@' + username or type an email address</p>
 
           <MentionsInput
-            readOnly={ true }
             value={this.state.value}
             onChange={this.handleChange}
             markup="@[__display__](__type__:__id__)"

@@ -33,6 +33,7 @@ define([
           <h3>Single line input</h3>
 
           <MentionsInput
+            readOnly={ true }
             singleLine={true}
             value={this.state.value}
             onChange={this.handleChange}

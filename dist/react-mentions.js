@@ -1011,7 +1011,7 @@ var hasReadOnlyValue = {
 };
 
 function _assertSingleLink(input) {
-  ("production" !== process.env.NODE_ENV ? invariant(
+  ("production" !== "production" ? invariant(
     input.props.checkedLink == null || input.props.valueLink == null,
     'Cannot provide a checkedLink and a valueLink. If you want to use ' +
     'checkedLink, you probably don\'t want to use valueLink and vice versa.'
@@ -1019,7 +1019,7 @@ function _assertSingleLink(input) {
 }
 function _assertValueLink(input) {
   _assertSingleLink(input);
-  ("production" !== process.env.NODE_ENV ? invariant(
+  ("production" !== "production" ? invariant(
     input.props.value == null && input.props.onChange == null,
     'Cannot provide a valueLink and a value or onChange event. If you want ' +
     'to use value or onChange, you probably don\'t want to use valueLink.'
@@ -1028,7 +1028,7 @@ function _assertValueLink(input) {
 
 function _assertCheckedLink(input) {
   _assertSingleLink(input);
-  ("production" !== process.env.NODE_ENV ? invariant(
+  ("production" !== "production" ? invariant(
     input.props.checked == null && input.props.onChange == null,
     'Cannot provide a checkedLink and a checked property or onChange event. ' +
     'If you want to use checked or onChange, you probably don\'t want to ' +
@@ -1323,7 +1323,7 @@ function defineWarningProperty(object, key) {
     },
 
     set: function(value) {
-      ("production" !== process.env.NODE_ENV ? warning(
+      ("production" !== "production" ? warning(
         false,
         'Don\'t set the ' + key + ' property of the component. ' +
         'Mutate the existing props object instead.'
@@ -1382,7 +1382,7 @@ var ReactElement = function(type, key, ref, owner, context, props) {
   // through the owner.
   this._context = context;
 
-  if ("production" !== process.env.NODE_ENV) {
+  if ("production" !== "production") {
     // The validation flag and props are currently mutative. We put them on
     // an external backing store so that we can freeze the whole object.
     // This can be replaced with a WeakMap once they are implemented in
@@ -1407,7 +1407,7 @@ ReactElement.prototype = {
   _isReactElement: true
 };
 
-if ("production" !== process.env.NODE_ENV) {
+if ("production" !== "production") {
   defineMutationMembrane(ReactElement.prototype);
 }
 
@@ -1422,8 +1422,8 @@ ReactElement.createElement = function(type, config, children) {
 
   if (config != null) {
     ref = config.ref === undefined ? null : config.ref;
-    if ("production" !== process.env.NODE_ENV) {
-      ("production" !== process.env.NODE_ENV ? warning(
+    if ("production" !== "production") {
+      ("production" !== "production" ? warning(
         config.key !== null,
         'createElement(...): Encountered component with a `key` of null. In ' +
         'a future version, this will be treated as equivalent to the string ' +
@@ -1494,7 +1494,7 @@ ReactElement.cloneAndReplaceProps = function(oldElement, newProps) {
     newProps
   );
 
-  if ("production" !== process.env.NODE_ENV) {
+  if ("production" !== "production") {
     // If the key on the original is valid, then the clone is valid
     newElement._store.validated = oldElement._store.validated;
   }
@@ -1538,7 +1538,7 @@ module.exports = ReactElement;
 
 var ReactPropTypeLocationNames = {};
 
-if ("production" !== process.env.NODE_ENV) {
+if ("production" !== "production") {
   ReactPropTypeLocationNames = {
     prop: 'prop',
     context: 'context',
@@ -1930,9 +1930,9 @@ var warning = _dereq_("./warning");
  */
 function deprecated(namespace, oldName, newName, ctx, fn) {
   var warned = false;
-  if ("production" !== process.env.NODE_ENV) {
+  if ("production" !== "production") {
     var newFn = function() {
-      ("production" !== process.env.NODE_ENV ? warning(
+      ("production" !== "production" ? warning(
         warned,
         (namespace + "." + oldName + " will be deprecated in a future version. ") +
         ("Use " + namespace + "." + newName + " instead.")
@@ -2011,7 +2011,7 @@ module.exports = emptyFunction;
  */
 
 var invariant = function(condition, format, a, b, c, d, e, f) {
-  if ("production" !== process.env.NODE_ENV) {
+  if ("production" !== "production") {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
     }
@@ -2065,7 +2065,7 @@ var emptyFunction = _dereq_("./emptyFunction");
 
 var warning = emptyFunction;
 
-if ("production" !== process.env.NODE_ENV) {
+if ("production" !== "production") {
   warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
     if (format === undefined) {
       throw new Error(

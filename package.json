@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "script/test",
-    "start": "script/build"
+    "build": "script/build"
   },
   "repository": {
     "type": "git",
@@ -51,7 +51,8 @@
     "rf-release": "0.3.2",
     "uglify-js": "2.4.15",
     "webpack": "1.4.5",
-    "webpack-dev-server": "1.6.5"
+    "webpack-dev-server": "1.6.5",
+    "react-tools": "~0.13.0"
   },
   "peerDependencies": {
     "react": "0.12.x"

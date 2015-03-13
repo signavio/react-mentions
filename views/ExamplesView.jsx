@@ -39,7 +39,7 @@ define([
         <div className="examples">
           <div className="row">
             <div className="col-lg-12">
-              <CodeExample code="views/examples/MultipleTrigger.jsx">
+              <CodeExample code="views/examples/MultipleTriggerView.jsx">
                 <MultipleTrigger data={ users } />
               </CodeExample>
             </div>

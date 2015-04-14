@@ -3,8 +3,6 @@ define([
 
   "react-mentions",
 
-  "jsx!views/components/CodeExample",
-
   "jsx!views/examples/MultipleTriggerView",
   "jsx!views/examples/SingleLineView",
   "jsx!views/examples/AdvancedView"
@@ -12,8 +10,6 @@ define([
   React,
 
   ReactMentions,
-
-  CodeExample,
 
   MultipleTrigger,
   SingleLine,
@@ -39,9 +35,7 @@ define([
         <div className="examples">
           <div className="row">
             <div className="col-lg-12">
-
-                <MultipleTrigger data={ users } />
-
+              <MultipleTrigger data={ users } />
             </div>
           </div>
           <div className="row">

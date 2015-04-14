@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 
-var EXAMPLES_DIR = path.resolve(__dirname, 'examples');
+/*var EXAMPLES_DIR = path.resolve(__dirname, 'examples');
 
 function isDirectory(dir) {
   return fs.lstatSync(dir).isDirectory();
@@ -49,4 +49,4 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin('shared.js')
   ]
 
-};
+};*/

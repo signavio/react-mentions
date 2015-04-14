@@ -12,7 +12,7 @@
     "mentions"
   ],
   "devDependencies": {
-    "react": "https://github.com/jfschwarz/react.git#2029ef140471c7ed393e13c5bf0171af4994bfe5",
+    "react": "https://github.com/jfschwarz/react.git#58b3738edd5454f1a7feccc75fa17f3c36d88de6",
     "react-router": "~0.11.6",
     "requirejs": "2.1.11",
     "requirejs-text": "2.0.13",
@@ -37,6 +37,6 @@
     "webpack.config.js"
   ],
   "resolutions": {
-    "react": "2029ef140471c7ed393e13c5bf0171af4994bfe5"
+    "react": "58b3738edd5454f1a7feccc75fa17f3c36d88de6"
   }
 }

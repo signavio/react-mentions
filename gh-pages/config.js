@@ -1,7 +1,7 @@
 require.config({
 
   paths: {
-    "react": "lib/vendor/react/build/react-with-addons",
+    "react": "lib/vendor/react/react-with-addons",
     "react-mentions": "lib/react-mentions",
     "react-router": "lib/vendor/react-router/dist/react-router",
 
@@ -9,6 +9,8 @@ require.config({
     "jsx": "lib/vendor/requirejs-jsx-plugin/js/jsx",
     "text": "lib/vendor/requirejs-text/text"
   },
+
+  waitSeconds: 20,
 
   jsx: {
     fileExtension: '.jsx'

@@ -553,7 +553,9 @@ module.exports = React.createClass({
 
     // Refocus input and set caret position to end of mention
     this.refs.input.getDOMNode().focus();
-    var newCaretPosition = querySequenceStart + suggestion.display.length;
+    
+    var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
+    var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({
       selectionStart: newCaretPosition,
       selectionEnd: newCaretPosition

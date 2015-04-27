@@ -51,3 +51,25 @@ Each data source is configured using a `Mention` component, which has the follow
 | type             | string           | `null`        | Identifier for the data source, when using multiple data sources (optional) |
 | data             | array            | `null`        | An array of the mentionable data entries                                    |
 | renderSuggestion | function         | `null`        | Allows customizing how mention suggestions are rendered (optional)          |
+
+
+
+## Contributing
+
+Only modify the JSX sources in the `/src` directory, the contents of the `/lib` directory will be overwritten during the build process. Spawn a development server with an example page and module hot loading all set up:
+
+```
+npm run start
+```
+
+To transpile the JSX sources, run the following command:
+
+```
+npm run transpile
+```
+
+To update the combined and minified browser build, use the "dist" script:
+
+```
+npm run dist
+```

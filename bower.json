@@ -13,10 +13,6 @@
   ],
   "devDependencies": {
     "react": "https://github.com/jfschwarz/react.git#58b3738edd5454f1a7feccc75fa17f3c36d88de6",
-    "react-router": "~0.11.6",
-    "requirejs": "2.1.11",
-    "requirejs-text": "2.0.13",
-    "requirejs-jsx-plugin": "https://github.com/jfschwarz/jsx-requirejs-plugin.git#1556c465eb9eb8425e451e5fa31b87bc97f4c5c0",
     "bootstrap": "~3.3.2",
     "font-awesome": "~4.3.0"
   },

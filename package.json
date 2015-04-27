@@ -60,7 +60,8 @@
     "react": ">=0.12.0"
   },
   "browserify-shim": {
-    "react": "global:React"
+    "react": "global:React",
+    "react/addons": "global:React"
   },
   "dependencies": {
     "less-loader": "^2.2.0",

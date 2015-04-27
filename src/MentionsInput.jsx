@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require('react/addons');
 var LinkedValueUtils = require('react/lib/LinkedValueUtils');
 var emptyFunction = require('react/lib/emptyFunction');
 

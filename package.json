@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "script/test",
-    "build": "script/build"
+    "transpile": "./node_modules/jsx-loader/node_modules/.bin/jsx --harmony --no-cache-dir -x jsx src lib",
+    "dist": "script/dist",
+    "start": "cd gh-pages && webpack-dev-server --port 9090 --d --hot --inline --progress --colors"
   },
   "repository": {
     "type": "git",
@@ -35,7 +37,7 @@
     "sinon": "~1.12.1",
     "sinon-chai": "~2.6.0",
     "envify": "1.2.0",
-    "jsx-loader": "0.12.2",
+    "jsx-loader": ">=0.12.0",
     "karma": "0.12.16",
     "karma-browserify": "^0.2.1",
     "karma-chrome-launcher": "0.1.4",
@@ -59,5 +61,10 @@
   },
   "browserify-shim": {
     "react": "global:React"
+  },
+  "dependencies": {
+    "less-loader": "^2.2.0",
+    "react-hot-loader": "^1.2.5",
+    "react-router": "^0.13.2"
   }
 }

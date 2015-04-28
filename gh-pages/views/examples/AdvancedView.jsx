@@ -8,6 +8,8 @@ var MentionsInput = ReactMentions.MentionsInput;
 var Mention = ReactMentions.Mention;
 
 
+var regex = /@(\w+)/g;
+
 module.exports = React.createClass({
 
   displayName: "Advanced",
@@ -16,7 +18,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      value: "Hi {{johndoe}}!"
+      value: "Hi @johndoe!"
     };
   },
 
@@ -28,7 +30,8 @@ module.exports = React.createClass({
         <MentionsInput
           value={this.state.value}
           onChange={this.handleChange}
-          markup="{{__id__}}"
+          markup="@__id__"
+          //regexp={regex}
           displayTransform={this.transformDisplay}>
 
           <Mention data={ this.props.data } />
@@ -38,7 +41,7 @@ module.exports = React.createClass({
   },
 
   transformDisplay: function(id) {
-    return "<-- " + id + " -->";
+    return "@" + id;
   }
 
 });

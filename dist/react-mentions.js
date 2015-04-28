@@ -106,8 +106,11 @@ var _getDataProvider = function(data) {
   }
 };
 
-var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
+var displayIdentity = function (id, display, type) {
+  return display;
+};
 
+var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 module.exports = React.createClass({
 
@@ -135,7 +138,7 @@ module.exports = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      displayTransform: null,
+      displayTransform: displayIdentity,
 
       onKeyDown: emptyFunction,
       onSelect: emptyFunction,
@@ -770,15 +773,15 @@ module.exports = {
       return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   },
 
-  markupToRegex: function(markup, matchAtEnd) {
+  countCapturingGroups: function (regex) {
+    return (new RegExp(regex.toString() + '|')).exec('').length - 1;
+  },
+
+  markupToRegex: function(markup) {
     var markupPattern = this.escapeRegex(markup);
     markupPattern = markupPattern.replace(PLACEHOLDERS.display, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.id, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.type, "(.+?)");
-    if(matchAtEnd) { 
-      // append a $ to match at the end of the string
-      markupPattern = markupPattern + "$";
-    }
     return new RegExp(markupPattern, "g");
   },
 
@@ -806,7 +809,7 @@ module.exports = {
   /**
    * parameterName: "id", "display", or "type"
    */
-  getPositionOfCapturingGroup: function(markup, parameterName) {
+  getPositionOfCapturingGroup: function(markup, parameterName, regex) {
     if(parameterName !== "id" && parameterName !== "display" && parameterName !== "type") {
       throw new Error("parameterName must be 'id', 'display', or 'type'");
     }
@@ -839,9 +842,15 @@ module.exports = {
     if(indexDisplay === null) indexDisplay = indexId;
     if(indexId === null) indexId = indexDisplay;
 
-    if(parameterName === "id") return sortedIndices.indexOf(indexId);
-    if(parameterName === "display") return sortedIndices.indexOf(indexDisplay);
-    if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
+    if(regex && this.countCapturingGroups(regex) === 0) {
+      // custom regex does not use any capturing groups, so use the full match for ID and display
+      return parameterName === "type" ? null : 0;
+    }
+
+    var argOffset = 1; // first argument always is the full match
+    if(parameterName === "id") return sortedIndices.indexOf(indexId) + argOffset;
+    if(parameterName === "display") return sortedIndices.indexOf(indexDisplay) + argOffset;
+    if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType) + argOffset;
 
   },
 
@@ -851,9 +860,9 @@ module.exports = {
   iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee, displayTransform, regex) {
     regex = regex || this.markupToRegex(markup);
 
-    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
-    var idPos = this.getPositionOfCapturingGroup(markup, "id");
-    var typePos = this.getPositionOfCapturingGroup(markup, "type");
+    var displayPos = this.getPositionOfCapturingGroup(markup, "display", regex);
+    var idPos = this.getPositionOfCapturingGroup(markup, "id", regex);
+    var typePos = this.getPositionOfCapturingGroup(markup, "type", regex);
 
     var match;
     var start = 0;
@@ -861,9 +870,10 @@ module.exports = {
 
     // detect all mention markup occurences in the value and iterate the matches
     while((match = regex.exec(value)) !== null) {
-      var id = match[idPos+1];
-      var display = match[displayPos+1];
-      var type = typePos ? match[typePos+1] : null;
+
+      var id = match[idPos];
+      var display = match[displayPos];
+      var type = typePos ? match[typePos] : null;
 
       if(displayTransform) display = displayTransform(id, display, type);
 
@@ -966,14 +976,14 @@ module.exports = {
   getPlainText: function(value, markup, displayTransform, regex) {
     regex = regex || this.markupToRegex(markup);
 
-    var idPos = this.getPositionOfCapturingGroup(markup, "id");
-    var displayPos = this.getPositionOfCapturingGroup(markup, "display");
-    var typePos = this.getPositionOfCapturingGroup(markup, "type");
+    var idPos = this.getPositionOfCapturingGroup(markup, "id", regex);
+    var displayPos = this.getPositionOfCapturingGroup(markup, "display", regex);
+    var typePos = this.getPositionOfCapturingGroup(markup, "type", regex);
     return value.replace(regex, function() {
       // first argument is the whole match, capturing groups are following
-      var id = arguments[idPos+1];
-      var display = arguments[displayPos+1];
-      var type = arguments[typePos+1];
+      var id = arguments[idPos];
+      var display = arguments[displayPos];
+      var type = arguments[typePos];
       if(displayTransform) display = displayTransform(id, display, type);
       return display;
     });

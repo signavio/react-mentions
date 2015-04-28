@@ -32,11 +32,11 @@ describe("utils", function() {
   describe("#getPositionOfCapturingGroup", function() {
 
     var testData = {
-      "@[__display__](__id__)" : { display: 0, id: 1, type: null },
-      "@[__display__](__type__:__id__)" : { display: 0, id: 2, type: 1 },
-      "{{__id__#__display__}}" : { display: 1, id: 0, type: null },
-      "{{__id__}}" : { display: 0, id: 0, type: null },
-      "{{__display__}}" : { display: 0, id: 0, type: null }
+      "@[__display__](__id__)" : { display: 1, id: 2, type: null },
+      "@[__display__](__type__:__id__)" : { display: 1, id: 3, type: 2 },
+      "{{__id__#__display__}}" : { display: 2, id: 1, type: null },
+      "{{__id__}}" : { display: 1, id: 1, type: null },
+      "{{__display__}}" : { display: 1, id: 1, type: null }
     };
 
     for(var key in testData) {
@@ -154,26 +154,26 @@ describe("utils", function() {
 
     it('should work when using a custom regexp', function () {
       var markupIteratee = sinon.spy();
-      var customRegexp = /(?:^|\s)@(\w+)(?:$|\s)/g;
-      var value = "@mentionAtStart nota@mention @mention foo bar @mentionAtEnd";
+      var customRegexp = /@(\w+)/g;
+      var value = "@mentionAtStart alsoa@mention foo bar @mentionAtEnd";
       utils.iterateMentionsMarkup(value, "@__id__", function(){}, markupIteratee, null, customRegexp);
 
       expect(markupIteratee).to.have.been.calledThrice;
       expect(markupIteratee).to.have.been.calledWith(
-        "@mentionAtStart ",
+        "@mentionAtStart",
         0,
         0,
         "mentionAtStart", "mentionAtStart", null,
         sinon.match.number
       );
       expect(markupIteratee).to.have.been.calledWith(
-        " @mention ",
+        "@mention",
         sinon.match.number, sinon.match.number,
         "mention", "mention", null,
         sinon.match.number
       );
       expect(markupIteratee).to.have.been.calledWith(
-        " @mentionAtEnd",
+        "@mentionAtEnd",
         sinon.match.number, sinon.match.number,
         "mentionAtEnd", "mentionAtEnd", null,
         sinon.match.number

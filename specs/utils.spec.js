@@ -152,6 +152,34 @@ describe("utils", function() {
       );
     });
 
+    it('should work when using a custom regexp', function () {
+      var markupIteratee = sinon.spy();
+      var customRegexp = /(?:^|\s)@(\w+)(?:$|\s)/g;
+      var value = "@mentionAtStart nota@mention @mention foo bar @mentionAtEnd";
+      utils.iterateMentionsMarkup(value, "@__id__", function(){}, markupIteratee, null, customRegexp);
+
+      expect(markupIteratee).to.have.been.calledThrice;
+      expect(markupIteratee).to.have.been.calledWith(
+        "@mentionAtStart ",
+        0,
+        0,
+        "mentionAtStart", "mentionAtStart", null,
+        sinon.match.number
+      );
+      expect(markupIteratee).to.have.been.calledWith(
+        " @mention ",
+        sinon.match.number, sinon.match.number,
+        "mention", "mention", null,
+        sinon.match.number
+      );
+      expect(markupIteratee).to.have.been.calledWith(
+        " @mentionAtEnd",
+        sinon.match.number, sinon.match.number,
+        "mentionAtEnd", "mentionAtEnd", null,
+        sinon.match.number
+      );
+    });
+
   });
 
   describe("#mapPlainTextIndex", function() {

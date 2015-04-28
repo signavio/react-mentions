@@ -252,7 +252,7 @@ module.exports = React.createClass({
         this.getMentionComponentForMatch(id, display, type, key)
       );
     }.bind(this);
-    utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
+    utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform, this.props.regexp);
 
     return resultComponents;
   },
@@ -301,7 +301,7 @@ module.exports = React.createClass({
   // Returns the text to set as the value of the textarea with all markups removed
   getPlainText: function() {
     var value = LinkedValueUtils.getValue(this) || "";
-    return utils.getPlainText(value, this.props.markup, this.props.displayTransform);
+    return utils.getPlainText(value, this.props.markup, this.props.displayTransform, this.props.regexp);
   },
 
   // Handle input element's change event
@@ -848,8 +848,9 @@ module.exports = {
   // Finds all occurences of the markup in the value and iterates the plain text sub strings
   // in between those markups using `textIteratee` and the markup occurrences using the
   // `markupIteratee`.
-  iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee, displayTransform) {
-    var regex = this.markupToRegex(markup);
+  iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee, displayTransform, regex) {
+    regex = regex || this.markupToRegex(markup);
+
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
     var idPos = this.getPositionOfCapturingGroup(markup, "id");
     var typePos = this.getPositionOfCapturingGroup(markup, "type");
@@ -860,7 +861,6 @@ module.exports = {
 
     // detect all mention markup occurences in the value and iterate the matches
     while((match = regex.exec(value)) !== null) {
-
       var id = match[idPos+1];
       var display = match[displayPos+1];
       var type = typePos ? match[typePos+1] : null;
@@ -963,8 +963,9 @@ module.exports = {
     );
   },
 
-  getPlainText: function(value, markup, displayTransform) {
-    var regex = this.markupToRegex(markup);
+  getPlainText: function(value, markup, displayTransform, regex) {
+    regex = regex || this.markupToRegex(markup);
+
     var idPos = this.getPositionOfCapturingGroup(markup, "id");
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
     var typePos = this.getPositionOfCapturingGroup(markup, "type");

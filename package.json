@@ -2,7 +2,7 @@
   "name": "react-mentions",
   "version": "0.1.4",
   "description": "React mentions input",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "script/test",
     "transpile": "./node_modules/jsx-loader/node_modules/.bin/jsx --harmony --no-cache-dir -x jsx src lib",

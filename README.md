@@ -1,7 +1,7 @@
-#[React Mentions](http://effektif.github.io/react-mentions) 
+#[React Mentions](http://effektif.github.io/react-mentions)
 
-[![Build Status](https://travis-ci.org/effektif/react-mentions.svg?branch=master)](https://travis-ci.org/effektif/react-mentions) 
-[![Dependency Status](https://david-dm.org/effektif/react-mentions.svg)](https://david-dm.org/effektif/react-mentions) 
+[![Build Status](https://travis-ci.org/effektif/react-mentions.svg?branch=master)](https://travis-ci.org/effektif/react-mentions)
+[![Dependency Status](https://david-dm.org/effektif/react-mentions.svg)](https://david-dm.org/effektif/react-mentions)
 [![npm version](https://badge.fury.io/js/react-mentions.svg)](http://badge.fury.io/js/react-mentions)
 [![Bower version](https://badge.fury.io/bo/react-mentions.svg)](http://badge.fury.io/bo/react-mentions)
 
@@ -40,7 +40,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 |------------------|----------|--------------------------|------------------------------------------------------------------------------------------|
 | markup           | string   | `'@[__display__](__id__)'` | A template string for the markup to use for mentions when saving to the backend          |
 | singleLine       | boolean  | `false`                  | Renders a single line text input instead of a textarea, if set to `true`                 |
-| displayTransform | function | `null`                   | Accepts a function for customizing the string that is displayed for a mention (optional) |
+| displayTransform | function(id, display, type) | returns `display`        | Accepts a function for customizing the string that is displayed for a mention (optional) |
 
 
 Each data source is configured using a `Mention` component, which has the following props:

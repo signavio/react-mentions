@@ -77,8 +77,9 @@ module.exports = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      displayTransform: null,
-
+      displayTransform: function(id, display, type) {
+        return display;
+      },
       onKeyDown: emptyFunction,
       onSelect: emptyFunction,
       onBlur: emptyFunction
@@ -495,7 +496,7 @@ module.exports = React.createClass({
 
     // Refocus input and set caret position to end of mention
     this.refs.input.getDOMNode().focus();
-    
+
     var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({

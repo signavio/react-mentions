@@ -10,25 +10,15 @@ module.exports = React.createClass({
   displayName: 'Mention',
 
   propTypes: {
-
-    
-
     /**
      * Called when a new mention is added in the input
      *
      * Example:
      *
      * ```js
-     *  function (event, ui) {}
-     * ```
-     *
-     * `event` is the Event that was triggered.
-     * `ui` is an object:
-     *
-     * ```js
-     *  {
-     *      position: {top: 0, left: 0}
-     *  }
+     * function(suggestion) {
+     *   console.log("user " + suggestion.display + " was mentioned!");
+     * }
      * ```
      */
     onAdd: React.PropTypes.func,

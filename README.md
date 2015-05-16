@@ -51,6 +51,7 @@ Each data source is configured using a `Mention` component, which has the follow
 | type             | string           | `null`        | Identifier for the data source, when using multiple data sources (optional) |
 | data             | array            | `null`        | An array of the mentionable data entries                                    |
 | renderSuggestion | function         | `null`        | Allows customizing how mention suggestions are rendered (optional)          |
+| onAdd            | function         | `empty func`  | Callback invoked when a suggestion has been added (optional)                |
 
 
 

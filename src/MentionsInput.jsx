@@ -509,6 +509,11 @@ module.exports = React.createClass({
     var eventMock = { target: { value: newValue }};
     handleChange.call(this, eventMock, newValue);
 
+    var onAdd = mentionDescriptor.props.onAdd;
+    if(onAdd) {
+      onAdd(suggestion);
+    }
+
     // Make sure the suggestions overlay is closed
     this.clearSuggestions();
   },

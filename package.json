@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "script/test",
-    "transpile": "./node_modules/jsx-loader/node_modules/.bin/jsx --harmony --no-cache-dir -x jsx src lib",
+    "transpile": "./node_modules/.bin/jsx --harmony --no-cache-dir -x jsx src lib",
     "dist": "script/dist",
     "start": "cd gh-pages && webpack-dev-server --port 9090 --d --hot --inline --progress --colors"
   },

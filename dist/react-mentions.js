@@ -11,25 +11,15 @@ module.exports = React.createClass({
   displayName: 'Mention',
 
   propTypes: {
-
-    
-
     /**
      * Called when a new mention is added in the input
      *
      * Example:
      *
      * ```js
-     *  function (event, ui) {}
-     * ```
-     *
-     * `event` is the Event that was triggered.
-     * `ui` is an object:
-     *
-     * ```js
-     *  {
-     *      position: {top: 0, left: 0}
-     *  }
+     * function(suggestion) {
+     *   console.log("user " + suggestion.display + " was mentioned!");
+     * }
      * ```
      */
     onAdd: React.PropTypes.func,
@@ -135,8 +125,9 @@ module.exports = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      displayTransform: null,
-
+      displayTransform: function(id, display, type) {
+        return display;
+      },
       onKeyDown: emptyFunction,
       onSelect: emptyFunction,
       onBlur: emptyFunction
@@ -553,7 +544,7 @@ module.exports = React.createClass({
 
     // Refocus input and set caret position to end of mention
     this.refs.input.getDOMNode().focus();
-    
+
     var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({
@@ -565,6 +556,11 @@ module.exports = React.createClass({
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue }};
     handleChange.call(this, eventMock, newValue);
+
+    var onAdd = mentionDescriptor.props.onAdd;
+    if(onAdd) {
+      onAdd(suggestion);
+    }
 
     // Make sure the suggestions overlay is closed
     this.clearSuggestions();
@@ -663,14 +659,14 @@ module.exports = React.createClass({
 
     return (
       React.createElement("li", {key: id, ref: isFocused && "focused", className: cls, onClick: handleClick, onMouseEnter: this.handleMouseEnter.bind(null, index)}, 
-        content 
+         content 
       )
     );
   },
 
   renderHighlightedDisplay: function(display, query) {
     var i = display.toLowerCase().indexOf(query.toLowerCase());
-    if(i === -1) return React.createElement("span", null, display );
+    if(i === -1) return React.createElement("span", null,  display );
 
     return (
       React.createElement("span", null, 

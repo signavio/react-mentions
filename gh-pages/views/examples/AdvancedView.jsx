@@ -31,7 +31,7 @@ module.exports = React.createClass({
           markup="{{__id__}}"
           displayTransform={this.transformDisplay}>
 
-          <Mention data={ this.props.data } />
+          <Mention data={ this.props.data } onAdd={this.handleAddMention} />
         </MentionsInput>
       </div>
     );
@@ -39,6 +39,10 @@ module.exports = React.createClass({
 
   transformDisplay: function(id) {
     return "<-- " + id + " -->";
+  },
+
+  handleAddMention: function (id, display) {
+    console.log("Added mention of " + id);
   }
 
 });

@@ -1,11 +1,7 @@
-define([], function() {
-
-    return {
-        handleChange: function(ev, value) {
-            this.setState({
-                value: value
-            });
-        }
+module.exports = {
+    handleChange: function(ev, value) {
+        this.setState({
+            value: value
+        });
     }
-
-});
+};

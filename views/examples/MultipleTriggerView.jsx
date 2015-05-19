@@ -1,85 +1,77 @@
-define([
-  "react",
+var React = require("react");
+var ReactMentions = require("react-mentions");
 
-  "react-mentions",
+var MentionsMixin = require("../mixins/MentionsMixin");
 
-  "views/mixins/MentionsMixin"
-], function(
-  React,
 
-  ReactMentions,
+var MentionsInput = ReactMentions.MentionsInput;
+var Mention = ReactMentions.Mention;
 
-  MentionsMixin
-) {
+// use first/outer capture group to extract the full entered sequence to be replaced
+// and second/inner capture group to extract search string from the match
+var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
 
-  var MentionsInput = ReactMentions.MentionsInput;
-  var Mention = ReactMentions.Mention;
+module.exports = React.createClass({
 
-  // use first/outer capture group to extract the full entered sequence to be replaced
-  // and second/inner capture group to extract search string from the match
-  var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
+  displayName: "MultipleTriggers",
 
-  return React.createClass({
+  mixins: [ MentionsMixin ],
 
-    displayName: "MultipleTriggers",
+  getInitialState: function() {
+    return {
+      value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
+    };
+  },
 
-    mixins: [ MentionsMixin ],
+  render: function() {
+    return (
+      <div className="multiple-triggers">
+        <h3>Multiple trigger patterns</h3>
+        <p>Mention people using '@' + username or type an email address</p>
 
-    getInitialState: function() {
-      return {
-        value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
-      };
-    },
+        <MentionsInput
+          value={this.state.value}
+          onChange={this.handleChange}
+          markup="@[__display__](__type__:__id__)"
+          placeholder={"Mention people using '@'"}>
 
-    render: function() {
-      return (
-        <div className="multiple-triggers">
-          <h3>Multiple trigger patterns</h3>
-          <p>Mention people using '@' + username or type an email address</p>
+          <Mention
+            type="user"
+            trigger="@"
+            data={ this.props.data }
+            renderSuggestion={this.renderSuggestion}
+            onAdd={this.handleAdd}
+            onRemove={this.handleRemove} />
+          <Mention
+            type="email"
+            trigger={emailRegex}
+            data={this.requestEmail}
+            onAdd={this.handleEmailAdd} />
+        </MentionsInput>
+      </div>
+    );
+  },
 
-          <MentionsInput
-            value={this.state.value}
-            onChange={this.handleChange}
-            markup="@[__display__](__type__:__id__)"
-            placeholder={"Mention people using '@'"}>
+  handleRemove: function() {
+    console.log("removed a mention", arguments);
+  },
 
-            <Mention
-              type="user"
-              trigger="@"
-              data={ this.props.data }
-              renderSuggestion={this.renderSuggestion}
-              onAdd={this.handleAdd}
-              onRemove={this.handleRemove} />
-            <Mention
-              type="email"
-              trigger={emailRegex}
-              data={this.requestEmail}
-              onAdd={this.handleEmailAdd} />
-          </MentionsInput>
-        </div>
-      );
-    },
+  handleAdd: function() {
+    console.log("added a new mention", arguments);
+  },
 
-    handleRemove: function() {
-      console.log("removed a mention", arguments);
-    },
+  renderSuggestion: function(id, display, search, highlightedDisplay) {
+    return (
+      <div className="user">
+        { highlightedDisplay }
+      </div>
+    );
+  },
 
-    handleAdd: function() {
-      console.log("added a new mention", arguments);
-    },
+  requestEmail: function(search) {
+    return [
+      { id: search, display: search }
+    ];
+  }
 
-    renderSuggestion: function(id, display, search, highlightedDisplay) {
-      return (
-        <div className="user">
-          { highlightedDisplay }
-        </div>
-      );
-    },
-
-    requestEmail: function(search) {
-      return [
-        { id: search, display: search }
-      ];
-    }
-  });
 });

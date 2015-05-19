@@ -1,29 +1,18 @@
-define([
-    "react",
+var React = require("react");
 
-    "react-router",
+var Router = require("react-router");
 
-    "jsx!views/Application",
-    "jsx!views/ExamplesView",
-    "jsx!views/LicenseView"
-], function(
-    React,
+var Application = require("./views/Application");
+var Examples = require("./views/ExamplesView");
+var License = require("./views/LicenseView");
 
-    Router,
+var Route = Router.Route;
+var DefaultRoute = Router.DefaultRoute;
 
-    Application,
-    Examples,
-    License
-) {
-
-    var Route = Router.Route;
-    var DefaultRoute = Router.DefaultRoute;
-
-    return (
-        <Route handler={ Application } path="react-mentions/">
-            <Route handler={ Examples } name="examples" path="examples" />
-            <Route handler={ License } name="license" path="license" />
-            <DefaultRoute handler={ Examples } />
-        </Route>
-    );
-});
+module.exports = (
+    <Route handler={ Application } path="/">
+        <Route handler={ Examples } name="examples" path="examples" />
+        <Route handler={ License } name="license" path="license" />
+        <DefaultRoute handler={ Examples } />
+    </Route>
+);

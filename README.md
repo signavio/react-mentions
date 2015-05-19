@@ -45,13 +45,13 @@ The `MentionsInput` supports the following props for configuring the widget:
 
 Each data source is configured using a `Mention` component, which has the following props:
 
-| Prop name        | Type              | Default value   | Description                                                                 |
-|------------------|-------------------|-----------------|-----------------------------------------------------------------------------|
-| trigger          | regexp or string  | `'@'`           | Defines the char sequence upon which to trigger querying the data source    |
-| type             | string            | `null`          | Identifier for the data source, when using multiple data sources (optional) |
-| data             | array or function | `null`          | An array of the mentionable data entries, or a filtering function that returns an array based on a query parameter |
-| renderSuggestion | function          | `null`          | Allows customizing how mention suggestions are rendered (optional)          |
-| onAdd            | function          | empty function  | Callback invoked when a suggestion has been added (optional)                |
+| Prop name        | Type                   | Default value   | Description                                                                 |
+|------------------|------------------------|-----------------|-----------------------------------------------------------------------------|
+| trigger          | regexp or string  	    | `'@'`           | Defines the char sequence upon which to trigger querying the data source    |
+| type             | string            	    | `null`          | Identifier for the data source, when using multiple data sources (optional) |
+| data             | array or function 	    | `null`          | An array of the mentionable data entries, or a filtering function that returns an array based on a query parameter |
+| renderSuggestion | function          	    | `null`          | Allows customizing how mention suggestions are rendered (optional)          |
+| onAdd            | function (id, display) | empty function  | Callback invoked when a suggestion has been added (optional)                |
 
 
 ## Contributing

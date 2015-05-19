@@ -16,8 +16,8 @@ module.exports = React.createClass({
      * Example:
      *
      * ```js
-     * function(suggestion) {
-     *   console.log("user " + suggestion.display + " was mentioned!");
+     * function(id, display) {
+     *   console.log("user " + display + " was mentioned!");
      * }
      * ```
      */

@@ -511,7 +511,7 @@ module.exports = React.createClass({
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {
-      onAdd(suggestion);
+      onAdd(suggestion.id, suggestion.display);
     }
 
     // Make sure the suggestions overlay is closed

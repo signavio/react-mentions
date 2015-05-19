@@ -17,8 +17,8 @@ module.exports = React.createClass({
      * Example:
      *
      * ```js
-     * function(suggestion) {
-     *   console.log("user " + suggestion.display + " was mentioned!");
+     * function(id, display) {
+     *   console.log("user " + display + " was mentioned!");
      * }
      * ```
      */
@@ -559,7 +559,7 @@ module.exports = React.createClass({
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {
-      onAdd(suggestion);
+      onAdd(suggestion.id, suggestion.display);
     }
 
     // Make sure the suggestions overlay is closed

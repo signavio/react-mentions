@@ -1,48 +1,52 @@
-var React = require("react");
-var ReactMentions = require("react-mentions");
+define([
+  "react",
 
-var MentionsMixin = require("../mixins/MentionsMixin");
+  "react-mentions",
 
+  "views/mixins/MentionsMixin"
+], function(
+  React,
 
-var MentionsInput = ReactMentions.MentionsInput;
-var Mention = ReactMentions.Mention;
+  ReactMentions,
 
+  MentionsMixin
+) {
 
-module.exports = React.createClass({
+  var MentionsInput = ReactMentions.MentionsInput;
+  var Mention = ReactMentions.Mention;
 
-  displayName: "Advanced",
+  return React.createClass({
 
-  mixins: [ MentionsMixin ],
+    displayName: "Advanced",
 
-  getInitialState: function() {
-    return {
-      value: "Hi {{johndoe}}!"
-    };
-  },
+    mixins: [ MentionsMixin ],
 
-  render: function() {
-    return (
-      <div className="advanced">
-        <h3>Advanced options</h3>
+    getInitialState: function() {
+      return {
+        value: "Hi {{johndoe}}!"
+      };
+    },
 
-        <MentionsInput
-          value={this.state.value}
-          onChange={this.handleChange}
-          markup="{{__id__}}"
-          displayTransform={this.transformDisplay}>
+    render: function() {
+      return (
+        <div className="advanced">
+          <h3>Advanced options</h3>
 
-          <Mention data={ this.props.data } onAdd={this.handleAddMention} />
-        </MentionsInput>
-      </div>
-    );
-  },
+          <MentionsInput
+            value={this.state.value}
+            onChange={this.handleChange}
+            markup="{{__id__}}"
+            displayTransform={this.transformDisplay}>
 
-  transformDisplay: function(id) {
-    return "<-- " + id + " -->";
-  },
+            <Mention data={ this.props.data } />
+          </MentionsInput>
+        </div>
+      );
+    },
 
-  handleAddMention: function (id, display) {
-    console.log("Added mention of " + id);
-  }
+    transformDisplay: function(id) {
+      return "<-- " + id + " -->";
+    }
+  });
 
 });

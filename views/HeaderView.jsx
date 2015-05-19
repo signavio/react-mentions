@@ -1,45 +1,51 @@
-var React = require("react");
-var Router = require("react-router");
- 
-var Link = Router.Link;
+define([
+  "react",
+  "react-router"
+], function(
+  React,
+  Router
+) {
 
-module.exports = React.createClass({
+  var Link = Router.Link;
 
-  displayName: "Header",
+  return React.createClass({
 
-  render: function() {
-    return (
-      <div className="header">
-        <div className="navbar navbar-fixed-top">
-          <div className="container">
+    displayName: "Header",
 
-            { this.renderNavigation() }
+    render: function() {
+      return (
+        <div className="header">
+          <div className="navbar navbar-fixed-top">
+            <div className="container">
 
-            <h1>
-              React Mentions
-              <small>
-                Brought to you by <a href="http://www.effektif.com">Effektif</a>
-              </small>
-            </h1>
+              { this.renderNavigation() }
+
+              <h1>
+                React Mentions
+                <small>
+                  Brought to you by <a href="http://www.effektif.com">Effektif</a>
+                </small>
+              </h1>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  },
+      );
+    },
 
-  renderNavigation: function() {
-    return (
-      <nav>
-        <ul className="nav nav-pills pull-right">
-          <li>
-            <Link to="examples">Examples</Link>
-          </li>
-          <li>
-            <Link to="license">License</Link>
-          </li>
-        </ul>
-      </nav>
-    );
-  }
-  
+    renderNavigation: function() {
+      return (
+        <nav>
+          <ul className="nav nav-pills pull-right">
+            <li>
+              <Link to="examples">Examples</Link>
+            </li>
+            <li>
+              <Link to="license">License</Link>
+            </li>
+          </ul>
+        </nav>
+      );
+    }
+  });
+
 });

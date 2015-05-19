@@ -1,5 +1,5 @@
 /*!
- * Bootstrap v3.3.4 (http://getbootstrap.com)
+ * Bootstrap v3.3.2 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
@@ -954,22 +954,10 @@ th {
 .glyphicon-bitcoin:before {
   content: "\e227";
 }
-.glyphicon-btc:before {
-  content: "\e227";
-}
-.glyphicon-xbt:before {
-  content: "\e227";
-}
 .glyphicon-yen:before {
   content: "\00a5";
 }
-.glyphicon-jpy:before {
-  content: "\00a5";
-}
 .glyphicon-ruble:before {
-  content: "\20bd";
-}
-.glyphicon-rub:before {
   content: "\20bd";
 }
 .glyphicon-scale:before {
@@ -1167,9 +1155,6 @@ hr {
   margin: 0;
   overflow: visible;
   clip: auto;
-}
-[role=button] {
-  cursor: pointer;
 }
 .h1,
 .h2,
@@ -2665,12 +2650,9 @@ output {
 .form-control[disabled],
 .form-control[readonly],
 fieldset[disabled] .form-control {
+  cursor: not-allowed;
   background-color: #eee;
   opacity: 1;
-}
-.form-control[disabled],
-fieldset[disabled] .form-control {
-  cursor: not-allowed;
 }
 textarea.form-control {
   height: auto;
@@ -2738,7 +2720,6 @@ input[type=search] {
 }
 .checkbox-inline,
 .radio-inline {
-  position: relative;
   display: inline-block;
   padding-left: 20px;
   margin-bottom: 0;
@@ -2772,7 +2753,6 @@ fieldset[disabled] .radio label {
   cursor: not-allowed;
 }
 .form-control-static {
-  min-height: 34px;
   padding-top: 7px;
   padding-bottom: 7px;
   margin-bottom: 0;
@@ -2814,7 +2794,6 @@ textarea.form-group-sm .form-control {
 }
 .form-group-sm .form-control-static {
   height: 30px;
-  min-height: 32px;
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
@@ -2851,7 +2830,6 @@ textarea.form-group-lg .form-control {
 }
 .form-group-lg .form-control-static {
   height: 46px;
-  min-height: 38px;
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.3333333;
@@ -3473,9 +3451,11 @@ input[type=submit].btn-block {
 }
 .collapse {
   display: none;
+  visibility: hidden;
 }
 .collapse.in {
   display: block;
+  visibility: visible;
 }
 tr.collapse.in {
   display: table-row;
@@ -3503,7 +3483,7 @@ tbody.collapse.in {
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top: 4px dashed;
+  border-top: 4px solid;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
 }
@@ -4143,9 +4123,11 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 .tab-content > .tab-pane {
   display: none;
+  visibility: hidden;
 }
 .tab-content > .active {
   display: block;
+  visibility: visible;
 }
 .nav-tabs .dropdown-menu {
   margin-top: -1px;
@@ -4191,7 +4173,8 @@ textarea.input-group-sm > .input-group-btn > .btn {
     display: block!important;
     height: auto!important;
     padding-bottom: 0;
-    overflow: visible !important;
+    overflow: visible!important;
+    visibility: visible !important;
   }
   .navbar-collapse.in {
     overflow-y: visible;
@@ -4916,7 +4899,6 @@ a.label:hover {
   position: relative;
   top: -1px;
 }
-.btn-group-xs > .btn .badge,
 .btn-xs .badge {
   top: 0;
   padding: 1px 5px;
@@ -5749,10 +5731,10 @@ a.list-group-item-danger.active:hover {
   height: 100%;
   border: 0;
 }
-.embed-responsive-16by9 {
+.embed-responsive.embed-responsive-16by9 {
   padding-bottom: 56.25%;
 }
-.embed-responsive-4by3 {
+.embed-responsive.embed-responsive-4by3 {
   padding-bottom: 75%;
 }
 .well {
@@ -5811,7 +5793,7 @@ button.close {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1050;
+  z-index: 1040;
   display: none;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
@@ -5854,12 +5836,10 @@ button.close {
   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
 }
 .modal-backdrop {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
   left: 0;
-  z-index: 1040;
   background-color: #000000;
 }
 .modal-backdrop.fade {
@@ -5934,6 +5914,7 @@ button.close {
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
+  visibility: visible;
   filter: alpha(opacity=0);
   opacity: 0;
 }
@@ -6451,7 +6432,8 @@ button.close {
   border: 0;
 }
 .hidden {
-  display: none !important;
+  display: none!important;
+  visibility: hidden !important;
 }
 .affix {
   position: fixed;

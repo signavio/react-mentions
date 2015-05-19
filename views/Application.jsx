@@ -1,24 +1,32 @@
-var React = require("react");
-var Router = require("react-router");
+define([
+  "react",
+  "react-router",
 
-var Header = require("./HeaderView");
+  "jsx!views/HeaderView"
+], function(
+  React,
+  Router,
 
-var RouteHandler = Router.RouteHandler;
+  Header
+) {
 
+  var RouteHandler = Router.RouteHandler;
 
-module.exports = React.createClass({
+  return React.createClass({
 
-  displayName: "ReactMentions",
+    displayName: "ReactMentions",
 
-  render: function() {
-    return (
-      <div className="react-mentions">
-        <Header />
+    render: function() {
+      return (
+        <div className="react-mentions">
+          <Header />
 
-        <div className="container">
-          <RouteHandler />
+          <div className="container">
+            <RouteHandler />
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
+  });
+
 });

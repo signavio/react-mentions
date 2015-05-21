@@ -443,6 +443,10 @@ module.exports = React.createClass({
 
     var that = this;
     React.Children.forEach(this.props.children, function(child) {
+      if(!child) {
+        return;
+      }
+
       var regex = _getTriggerRegex(child.props.trigger);
       var match = substring.match(regex);
       if(match) {

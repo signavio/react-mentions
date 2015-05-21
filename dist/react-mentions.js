@@ -272,6 +272,10 @@ module.exports = React.createClass({
       // detect the Mention child to be cloned
       var foundChild = null;
       React.Children.forEach(this.props.children, function(child) {
+        if(!child) {
+          return;
+        }
+
         if(child.props.type === type) {
           foundChild = child;
         }

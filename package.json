@@ -8,9 +8,13 @@
     "transpile": "jsx --harmony --no-cache-dir -x jsx src lib",
     "dist": "script/dist",
     "start": "cd gh-pages && webpack-dev-server --port 9090 --d --hot --inline --progress --colors",
+
     "bump-patch": "mversion patch -m",
     "bump-minor": "mversion minor -m",
-    "bump-major": "mversion major -m"
+    "bump-major": "mversion major -m",
+
+    "predist": "npm run transpile",
+    "pretranspile": "npm run test"
   },
   "repository": {
     "type": "git",

@@ -576,11 +576,6 @@ var React = (typeof window !== "undefined" ? window.React : typeof global !== "u
 var emptyFunction = _dereq_('react/lib/emptyFunction');
 var utils = _dereq_('./utils');
 
-
-
-
-
-
 module.exports = React.createClass({
 
   displayName: 'SuggestionsOverlay',
@@ -625,8 +620,8 @@ module.exports = React.createClass({
       for(var i=0, l=suggestions.results.length; i < l; ++i) {
         listItems.push(
           this.renderSuggestion(
-            suggestions.results[i], suggestions.query, 
-            suggestions.querySequenceStart, suggestions.querySequenceEnd, 
+            suggestions.results[i], suggestions.query,
+            suggestions.querySequenceStart, suggestions.querySequenceEnd,
             suggestions.mentionDescriptor, listItems.length
           )
         );
@@ -651,9 +646,9 @@ module.exports = React.createClass({
     var isFocused = (index === this.state.focusIndex);
     var cls = isFocused ? "focus" : "";
     var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
-    
+
     var highlightedDisplay = this.renderHighlightedDisplay(display, query);
-    var content = mentionDescriptor.props.renderSuggestion ? 
+    var content = mentionDescriptor.props.renderSuggestion ?
       mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay) :
       highlightedDisplay;
 
@@ -694,10 +689,9 @@ module.exports = React.createClass({
 
   shiftFocus: function(delta) {
     var suggestionsCount = this.countSuggestions();
-    var newIndex = this.state.focusIndex + delta;
-    if(newIndex < 0) newIndex = suggestionsCount - newIndex;
+
     this.setState({
-      focusIndex: newIndex % suggestionsCount
+      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
     });
   },
 
@@ -711,7 +705,7 @@ module.exports = React.createClass({
     }
     return result;
   }
-    
+
 });
 
 },{"./utils":5,"react/lib/emptyFunction":14}],4:[function(_dereq_,module,exports){

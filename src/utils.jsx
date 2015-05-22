@@ -251,6 +251,20 @@ module.exports = {
     });
   },
 
+  getMentions: function (value, markup) {
+    var mentions = [];
+    this.iterateMentionsMarkup(value, markup, function (){}, function (match, index, plainTextIndex, id, display, type, start) {
+      mentions.push({
+        id: id,
+        display: display,
+        type: type,
+        index: index,
+        plainTextIndex: plainTextIndex
+      });
+    });
+    return mentions;
+  },
+
   makeMentionsMarkup: function(markup, id, display, type) {
     var result = markup.replace(PLACEHOLDERS.id, id);
     result = result.replace(PLACEHOLDERS.display, display);

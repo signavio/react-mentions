@@ -337,10 +337,12 @@ module.exports = React.createClass({
       selectionEnd: selectionEnd
     });
 
+    var mentions = utils.getMentions(newValue, this.props.markup);
+
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue } };
-    handleChange.call(this, eventMock, newValue);
+    handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
   },
 
   // Handle input element's select event
@@ -974,6 +976,20 @@ module.exports = {
       if(displayTransform) display = displayTransform(id, display, type);
       return display;
     });
+  },
+
+  getMentions: function (value, markup) {
+    var mentions = [];
+    this.iterateMentionsMarkup(value, markup, function (){}, function (match, index, plainTextIndex, id, display, type, start) {
+      mentions.push({
+        id: id,
+        display: display,
+        type: type,
+        index: index,
+        plainTextIndex: plainTextIndex
+      });
+    });
+    return mentions;
   },
 
   makeMentionsMarkup: function(markup, id, display, type) {

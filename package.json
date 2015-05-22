@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/effektif/react-mentions",
   "devDependencies": {
+    "babelify": "^6.1.1",
     "browserify": "4.2.3",
     "browserify-shim": "3.6.0",
     "bundle-loader": "0.5.1",

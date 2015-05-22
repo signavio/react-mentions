@@ -4,7 +4,7 @@ var sinonChai = require("sinon-chai");
 var expect = chai.expect;
 chai.use(sinonChai);
 
-var utils = require('../lib/utils');
+var utils = require('../src/utils.jsx');
 
 
 describe("utils", function() {
@@ -341,6 +341,18 @@ describe("utils", function() {
       var result = utils.applyChangeToValue(value, defaultMarkup, changed, 26, 26, 26, displayTransform);
       expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's dd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
     });
+
+  });
+
+  describe('#getMentions', function () {
+    
+    it('should return an array of all mentions in the provided value', function () {
+      var mentions = utils.getMentions(value, defaultMarkup);
+      expect(mentions).to.deep.equal([
+        { id: "johndoe", display: "John Doe", type: "user", index: 3, plainTextIndex: 3 },
+        { id: "joe@smoe.com", display: "joe@smoe.com", type: "email", index: 42, plainTextIndex: 25 }
+      ]);
+    })
 
   });
 

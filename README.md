@@ -36,21 +36,23 @@ var Mention = ReactMentions.Mention;
 
 The `MentionsInput` supports the following props for configuring the widget:
 
-| Prop name        | Type                         | Default value              | Description                                                                              |
-|------------------|------------------------------|----------------------------|------------------------------------------------------------------------------------------|
-| markup           | string                       | `'@[__display__](__id__)'` | A template string for the markup to use for mentions when saving to the backend          |
-| singleLine       | boolean                      | `false`                    | Renders a single line text input instead of a textarea, if set to `true`                 |
-| displayTransform | function (id, display, type) | returns `display`          | Accepts a function for customizing the string that is displayed for a mention (optional) |
+| Prop name        | Type                                                    | Default value              | Description                                                                              |
+|------------------|---------------------------------------------------------|----------------------------|------------------------------------------------------------------------------------------|
+| value            | string                                                  | `''`                       | The value containing markup for mentions                                                 |
+| onChange         | function (event, newValue, newPlainTextValue, mentions) | empty function             | A callback that is invoked when the user changes the value in the mentions input         |
+| markup           | string                                                  | `'@[__display__](__id__)'` | A template string for the markup to use for mentions                                     |
+| singleLine       | boolean                                                 | `false`                    | Renders a single line text input instead of a textarea, if set to `true`                 |
+| displayTransform | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention (optional) |
 
 
 Each data source is configured using a `Mention` component, which has the following props:
 
 | Prop name        | Type                   | Default value   | Description                                                                 |
 |------------------|------------------------|-----------------|-----------------------------------------------------------------------------|
-| trigger          | regexp or string  	    | `'@'`           | Defines the char sequence upon which to trigger querying the data source    |
-| type             | string            	    | `null`          | Identifier for the data source, when using multiple data sources (optional) |
-| data             | array or function 	    | `null`          | An array of the mentionable data entries, or a filtering function that returns an array based on a query parameter |
-| renderSuggestion | function          	    | `null`          | Allows customizing how mention suggestions are rendered (optional)          |
+| trigger          | regexp or string       | `'@'`           | Defines the char sequence upon which to trigger querying the data source    |
+| type             | string                 | `null`          | Identifier for the data source, when using multiple data sources (optional) |
+| data             | array or function      | `null`          | An array of the mentionable data entries, or a filtering function that returns an array based on a query parameter |
+| renderSuggestion | function               | `null`          | Allows customizing how mention suggestions are rendered (optional)          |
 | onAdd            | function (id, display) | empty function  | Callback invoked when a suggestion has been added (optional)                |
 
 

@@ -187,6 +187,7 @@ module.exports = React.createClass({
       props.onBlur = this.handleBlur;
 
       props.onFocus = this.props.onFocus;
+      props.onPaste = this.props.onPaste;
     }
 
     return props;

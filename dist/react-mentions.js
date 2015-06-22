@@ -240,15 +240,18 @@ module.exports = React.createClass({
   renderHighlighter: function() {
     var value = LinkedValueUtils.getValue(this) || "";
 
-    var resultComponents = [];
-    var components = resultComponents;
-    var componentKeys = {};
 
-    // If there's a caret (i.e. no range selection), get the position of the
+    // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
     if(this.state.selectionStart === this.state.selectionEnd) {
       caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart, false, this.props.displayTransform);
     }
+
+    var resultComponents = [];
+    var componentKeys = {};
+
+    // start by appending directly to the resultComponents
+    var components = resultComponents;
 
     var textIteratee = function(substr, index, indexInPlainText) {
       // check whether the caret element has to be inserted inside the current plain substring
@@ -256,11 +259,9 @@ module.exports = React.createClass({
         // if yes, split substr at the caret position and insert the caret component
         var splitIndex = caretPositionInMarkup - index;
         components.push(substr.substring(0, splitIndex));
-        var caretComponent = this.renderHighlighterCaret();
-        resultComponents.push(caretComponent);
 
         // add all following substrings and mention components as children of the caret component
-        components = caretComponent.props.children = [ substr.substring(splitIndex) ];
+        components = [ substr.substring(splitIndex) ];
       } else {
         // otherwise just push the plain text substring
         components.push(substr);
@@ -277,16 +278,23 @@ module.exports = React.createClass({
     utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
 
     // append a span containing a space, to ensure the last text line has the correct height
-    resultComponents.push(" ");
+    components.push(" ");
+
+    if(components !== resultComponents) {
+      // if a caret component is to be rendered, add all components that followed as its children 
+      resultComponents.push(
+        this.renderHighlighterCaret(components)
+      );
+    }
 
     return resultComponents;
   },
 
   // Renders an component to be inserted in the highlighter at the current caret position
-  renderHighlighterCaret: function() {
+  renderHighlighterCaret: function(children) {
     return (
       React.createElement("span", {className: "caret-marker", ref: "caret", key: "caret"}, 
-         this.renderSuggestionsOverlay() 
+         children 
       )
     );
   },

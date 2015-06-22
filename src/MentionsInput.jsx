@@ -77,6 +77,7 @@ module.exports = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
+      className: "react-mentions",
       displayTransform: function(id, display, type) {
         return display;
       },
@@ -96,34 +97,52 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    var {
+      singleLine,
+      className,
+
+      markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
+      children,
+
+      ...inputProps
+    } = this.props;
+
     return (
-      <div className="react-mentions" style={{ position: "relative", overflowY: "visible" }}>
-        <div className={"control " + (this.props.singleLine ? "input" : "textarea")}>
+      <div className={className} style={{ position: "relative", overflowY: "visible" }}>
+        <div className={"control " + (singleLine ? "input" : "textarea")}>
           <div className="highlighter" ref="highlighter" style={this.getHighlighterStyle()}>
             { this.renderHighlighter() }
           </div>
-          { this.renderInput() }
+          { this.renderInput(inputProps) }
         </div>
         { this.renderSuggestionsOverlay() }
       </div>
     );
   },
 
-  renderInput: function() {
-    var props = this.getInputProps();
+  renderInput: function(props) {
+    props.value = this.getPlainText();
+
+    if(!this.props.readOnly && !this.props.disabled) {
+      props.onChange = this.handleChange;
+      props.onSelect = this.handleSelect;
+      props.onKeyDown = this.handleKeyDown;
+      props.onBlur = this.handleBlur;
+    }
+
     var style = {
       display: "block",
       position: "absolute",
       top: 0,
       boxSizing: "border-box",
       background: "transparent",
-      font: "inherit",
-    }
+      font: "inherit"
+    };
 
-    if(this.props.singleLine) {
+    if(props.singleLine) {
       style.width = "inherit";
       return (
-        <input type="text" { ...props } style={style}/>
+        <input type="text" { ...props } ref="input" style={style}/>
       );
     }
 
@@ -133,30 +152,8 @@ module.exports = React.createClass({
     style.resize = "none";
 
     return (
-      <textarea { ...props } style={style} />
+      <textarea { ...props } ref="input" style={style} />
     );
-  },
-
-  getInputProps: function() {
-    var props = {
-      ref: "input",
-      readOnly: this.props.readOnly,
-      disabled: this.props.disabled,
-      value: this.getPlainText(),
-      placeholder: this.props.placeholder
-    };
-
-    if(!this.props.readOnly && !this.props.disabled) {
-      props.onChange = this.handleChange;
-      props.onSelect = this.handleSelect;
-      props.onKeyDown = this.handleKeyDown;
-      props.onBlur = this.handleBlur;
-
-      props.onFocus = this.props.onFocus;
-      props.onPaste = this.props.onPaste;
-    }
-
-    return props;
   },
 
   getHighlighterStyle: function () {

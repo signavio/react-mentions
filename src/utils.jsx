@@ -71,7 +71,7 @@ module.exports = {
     }
     return obj;
   },
-
+  
   isNumber: function(obj) {
     return Object.prototype.toString.call(obj) === "[object Number]";
   },

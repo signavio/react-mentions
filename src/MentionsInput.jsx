@@ -97,9 +97,9 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      <div className="react-mentions">
+      <div className="react-mentions" style={{ position: "relative", overflowY: "visible" }}>
         <div className={"control " + (this.props.singleLine ? "input" : "textarea")}>
-          <div className="highlighter" ref="highlighter">
+          <div className="highlighter" ref="highlighter" style={this.getHighlighterStyle()}>
             { this.renderHighlighter() }
           </div>
           { this.renderInput() }
@@ -111,15 +111,29 @@ module.exports = React.createClass({
 
   renderInput: function() {
     var props = this.getInputProps();
+    var style = {
+      display: "block",
+      position: "absolute",
+      top: 0,
+      boxSizing: "border-box",
+      background: "transparent",
+      font: "inherit",
+    }
 
     if(this.props.singleLine) {
+      style.width = "inherit";
       return (
-        <input type="text" { ...props } />
+        <input type="text" { ...props } style={style}/>
       );
     }
 
+    style.width = "100%";
+    style.bottom = 0;
+    style.overflow = "hidden";
+    style.resize = "none";
+
     return (
-      <textarea { ...props } />
+      <textarea { ...props } style={style} />
     );
   },
 
@@ -143,6 +157,22 @@ module.exports = React.createClass({
     }
 
     return props;
+  },
+
+  getHighlighterStyle: function () {
+    var style = {
+      width: "inherit",
+      color: "transparent",
+      font: "inherit",
+      overflow: "hidden"
+    };
+    if(this.props.singleLine) {
+      style.whiteSpace = "pre";
+    } else {
+      style.whiteSpace = "pre-wrap";
+      style.wordWrap = "break-word";
+    }
+    return style;
   },
 
   renderSuggestionsOverlay: function() {
@@ -197,6 +227,9 @@ module.exports = React.createClass({
       );
     }.bind(this);
     utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
+
+    // append a span containing a space, to ensure the last text line has the correct height
+    resultComponents.push(" ");
 
     return resultComponents;
   },
@@ -371,12 +404,6 @@ module.exports = React.createClass({
     this._suggestionsMouseDown = true;
   },
 
-  autogrowTextarea: function() {
-    var el = this.refs.input.getDOMNode();
-    el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
-  },
-
   updateSuggestionsPosition: function() {
     if(!this.refs.caret || !this.refs.suggestions) return;
 
@@ -401,12 +428,10 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.autogrowTextarea();
     this.updateSuggestionsPosition();
   },
 
   componentDidUpdate: function() {
-    this.autogrowTextarea();
     this.updateSuggestionsPosition();
 
     // maintain selection in case a mention is added/removed causing

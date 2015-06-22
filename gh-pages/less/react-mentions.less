@@ -10,8 +10,6 @@ body {
 }
 
 .react-mentions {
-  position: relative;
-  overflow-y: visible;
 
   .control {
     &.textarea {
@@ -23,9 +21,6 @@ body {
 
       .highlighter {
         padding: 9px;
-
-        white-space: pre-wrap;
-        word-wrap: break-word;
       }
     }
 
@@ -39,19 +34,10 @@ body {
       .highlighter {
         padding: 1px;
         border: 2px inset transparent;
-
-        white-space: pre;
-        overflow: hidden;
       }
     }
 
     .highlighter {
-      width: inherit;
-      position: absolute;
-      color: transparent;
-      font: inherit;
-      overflow: hidden;
-
       strong {
         font-weight: normal;
         background: #cee4e5;
@@ -62,30 +48,17 @@ body {
   textarea {
     padding: 9px;
     min-height: 63px;
-
-    width: 100%;
-    display: block;
-    margin: 0;
-    border: none;
-    background: transparent;
-    position: relative;
     outline: 0;
-    font: inherit;
-    overflow: hidden;
-    resize: none;
+    border: 0;
+    margin: 0;
 
     .quirks(box-sizing, border-box);
   }
 
   input {
     padding: 1px;
-
     margin: 0;
     border: 2px inset;
-    width: inherit;
-    background: transparent;
-    position: relative;
-    font: inherit;
   }
 
   .suggestions {

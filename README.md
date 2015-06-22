@@ -24,8 +24,8 @@ npm install react-mentions
 ```
 var mentions = require("react-mentions");
 
-var MentionsInput = ReactMentions.MentionsInput;
-var Mention = ReactMentions.Mention;
+var MentionsInput = mentions.MentionsInput;
+var Mention = mentions.Mention;
 ```
 
 `MentionsInput` is the main component rendering the textarea control. It takes one or multiple `Mention` components as its children. Each `Mention` component is a data source for a specific class of mentionable objects, such as users, template variables, issues, etc.

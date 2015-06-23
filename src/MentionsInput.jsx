@@ -102,7 +102,7 @@ module.exports = React.createClass({
       className,
 
       markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
-      children, valueLink,
+      children, value, valueLink,
 
       ...inputProps
     } = this.props;
@@ -139,7 +139,7 @@ module.exports = React.createClass({
       font: "inherit"
     };
 
-    if(props.singleLine) {
+    if(this.props.singleLine) {
       style.width = "inherit";
       return (
         <input type="text" { ...props } ref="input" style={style}/>

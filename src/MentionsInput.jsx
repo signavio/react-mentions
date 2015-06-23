@@ -102,7 +102,7 @@ module.exports = React.createClass({
       className,
 
       markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
-      children,
+      children, valueLink,
 
       ...inputProps
     } = this.props;

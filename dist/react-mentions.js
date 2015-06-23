@@ -150,10 +150,10 @@ module.exports = React.createClass({
       
 
            
-      
+       
 
       
-      this.props,singleLine=$__0.singleLine,className=$__0.className,markup=$__0.markup,displayTransform=$__0.displayTransform,onKeyDown=$__0.onKeyDown,onSelect=$__0.onSelect,onBlur=$__0.onBlur,onChange=$__0.onChange,children=$__0.children,inputProps=(function(source, exclusion) {var rest = {};var hasOwn = Object.prototype.hasOwnProperty;if (source == null) {throw new TypeError();}for (var key in source) {if (hasOwn.call(source, key) && !hasOwn.call(exclusion, key)) {rest[key] = source[key];}}return rest;})($__0,{singleLine:1,className:1,markup:1,displayTransform:1,onKeyDown:1,onSelect:1,onBlur:1,onChange:1,children:1});
+      this.props,singleLine=$__0.singleLine,className=$__0.className,markup=$__0.markup,displayTransform=$__0.displayTransform,onKeyDown=$__0.onKeyDown,onSelect=$__0.onSelect,onBlur=$__0.onBlur,onChange=$__0.onChange,children=$__0.children,valueLink=$__0.valueLink,inputProps=(function(source, exclusion) {var rest = {};var hasOwn = Object.prototype.hasOwnProperty;if (source == null) {throw new TypeError();}for (var key in source) {if (hasOwn.call(source, key) && !hasOwn.call(exclusion, key)) {rest[key] = source[key];}}return rest;})($__0,{singleLine:1,className:1,markup:1,displayTransform:1,onKeyDown:1,onSelect:1,onBlur:1,onChange:1,children:1,valueLink:1});
 
     return (
       React.createElement("div", {className: className, style: { position: "relative", overflowY: "visible"}}, 

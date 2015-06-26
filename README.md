@@ -28,8 +28,23 @@ var MentionsInput = mentions.MentionsInput;
 var Mention = mentions.Mention;
 ```
 
-`MentionsInput` is the main component rendering the textarea control. It takes one or multiple `Mention` components as its children. Each `Mention` component is a data source for a specific class of mentionable objects, such as users, template variables, issues, etc.
+`MentionsInput` is the main component rendering the textarea control. It takes one or multiple `Mention` components as its children. Each `Mention` component represents a data source for a specific class of mentionable objects, such as users, template variables, issues, etc.
 
+
+Example:
+
+```
+<MentionsInput value={this.state.value} onChange={this.handleChange}>
+    <Mention trigger="@"
+        data={this.props.user}
+        renderSuggestion={this.renderUserSuggestion} />
+    <Mention trigger="#"
+        data={this.requestTag}
+        renderSuggestion={this.renderTagSuggestion} />
+</MentionsInput>
+```
+
+You can find more examples here: [gh-pages/views/examples](https://github.com/effektif/react-mentions/tree/master/gh-pages/views/examples)
 
 
 ## Configuration

@@ -548,7 +548,9 @@ module.exports = React.createClass({
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue }};
-    handleChange.call(this, eventMock, newValue);
+    var mentions = utils.getMentions(newValue, this.props.markup);
+    var plainTextValue = event.target.value
+    handleChange.call(this, eventMock, newValue, plainTextValue, mentions);
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {

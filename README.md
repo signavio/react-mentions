@@ -12,14 +12,14 @@ A React component that let's you mention people in a textarea like you are used 
 
 ## Getting started
 
-1. Install the react-mentions package via NPM:
+Install the react-mentions package via NPM:
 
 ```
 npm install react-mentions
 ```
 
 
-2. Require the react-mentions package, which exports the two relevant React components for rendering the mentions textarea:
+Require the react-mentions package, which exports the two relevant React components for rendering the mentions textarea:
 
 ```
 var mentions = require("react-mentions");
@@ -36,7 +36,7 @@ Example:
 ```
 <MentionsInput value={this.state.value} onChange={this.handleChange}>
     <Mention trigger="@"
-        data={this.props.user}
+        data={this.props.users}
         renderSuggestion={this.renderUserSuggestion} />
     <Mention trigger="#"
         data={this.requestTag}

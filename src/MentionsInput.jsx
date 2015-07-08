@@ -310,6 +310,9 @@ module.exports = React.createClass({
       this.props.displayTransform
     );
 
+    // In case a mention is deleted, also adjust the new plain text value
+    newPlainTextValue = utils.getPlainText(newValue, this.props.markup, this.props.displayTransform);
+
     // Save current selection after change to be able to restore caret position after rerendering
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;

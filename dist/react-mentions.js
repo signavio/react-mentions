@@ -358,6 +358,9 @@ module.exports = React.createClass({
       this.props.displayTransform
     );
 
+    // In case a mention is deleted, also adjust the new plain text value
+    newPlainTextValue = utils.getPlainText(newValue, this.props.markup, this.props.displayTransform);
+
     // Save current selection after change to be able to restore caret position after rerendering
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;
@@ -536,7 +539,7 @@ module.exports = React.createClass({
       var match = substring.match(regex);
       if(match) {
         var querySequenceStart = substring.indexOf(match[1], match.index);
-        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length);
+        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue);
       }
     });
   },
@@ -549,15 +552,15 @@ module.exports = React.createClass({
     });
   },
 
-  queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd) {
+  queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     var provideData = _getDataProvider(mentionDescriptor.props.data);
-    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd));
+    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue));
     if(snycResult instanceof Array) {
-      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, snycResult);
+      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, snycResult);
     }
   },
 
-  updateSuggestions: function(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, suggestions) {
+  updateSuggestions: function(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, suggestions) {
     // neglect async results from previous queries
     if(queryId !== this._queryId) return;
 
@@ -567,7 +570,8 @@ module.exports = React.createClass({
       mentionDescriptor: mentionDescriptor,
       querySequenceStart: querySequenceStart,
       querySequenceEnd: querySequenceEnd,
-      results: suggestions
+      results: suggestions,
+      plainTextValue: plainTextValue
     };
 
     this.setState({
@@ -575,7 +579,7 @@ module.exports = React.createClass({
     });
   },
 
-  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
+  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
@@ -596,7 +600,9 @@ module.exports = React.createClass({
     // Propagate change
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue }};
-    handleChange.call(this, eventMock, newValue);
+    var mentions = utils.getMentions(newValue, this.props.markup);
+    var newPlainTextValue = utils.spliceString(plainTextValue, querySequenceStart, querySequenceEnd, displayValue);
+    handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {
@@ -663,7 +669,8 @@ module.exports = React.createClass({
           this.renderSuggestion(
             suggestions.results[i], suggestions.query,
             suggestions.querySequenceStart, suggestions.querySequenceEnd,
-            suggestions.mentionDescriptor, listItems.length
+            suggestions.mentionDescriptor, listItems.length,
+            suggestions.plainTextValue
           )
         );
       }
@@ -671,7 +678,7 @@ module.exports = React.createClass({
     return listItems;
   },
 
-  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor, index) {
+  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor, index, plainTextValue) {
     var id, display;
     var type = mentionDescriptor.props.type;
 
@@ -686,7 +693,7 @@ module.exports = React.createClass({
 
     var isFocused = (index === this.state.focusIndex);
     var cls = isFocused ? "focus" : "";
-    var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
+    var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
 
     var highlightedDisplay = this.renderHighlightedDisplay(display, query);
     var content = mentionDescriptor.props.renderSuggestion ?
@@ -719,8 +726,8 @@ module.exports = React.createClass({
     });
   },
 
-  select: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
-    this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd);
+  select: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+    this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
   },
 
   selectFocused: function() {

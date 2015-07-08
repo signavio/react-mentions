@@ -488,7 +488,7 @@ module.exports = React.createClass({
       var match = substring.match(regex);
       if(match) {
         var querySequenceStart = substring.indexOf(match[1], match.index);
-        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length);
+        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue);
       }
     });
   },
@@ -501,15 +501,15 @@ module.exports = React.createClass({
     });
   },
 
-  queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd) {
+  queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     var provideData = _getDataProvider(mentionDescriptor.props.data);
-    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd));
+    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue));
     if(snycResult instanceof Array) {
-      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, snycResult);
+      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, snycResult);
     }
   },
 
-  updateSuggestions: function(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, suggestions) {
+  updateSuggestions: function(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, suggestions) {
     // neglect async results from previous queries
     if(queryId !== this._queryId) return;
 
@@ -519,7 +519,8 @@ module.exports = React.createClass({
       mentionDescriptor: mentionDescriptor,
       querySequenceStart: querySequenceStart,
       querySequenceEnd: querySequenceEnd,
-      results: suggestions
+      results: suggestions,
+      plainTextValue: plainTextValue
     };
 
     this.setState({
@@ -527,7 +528,7 @@ module.exports = React.createClass({
     });
   },
 
-  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd) {
+  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
@@ -549,8 +550,8 @@ module.exports = React.createClass({
     var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue }};
     var mentions = utils.getMentions(newValue, this.props.markup);
-    var plainTextValue = event.target.value
-    handleChange.call(this, eventMock, newValue, plainTextValue, mentions);
+    var newPlainTextValue = utils.spliceString(plainTextValue, querySequenceStart, querySequenceEnd, displayValue);
+    handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {

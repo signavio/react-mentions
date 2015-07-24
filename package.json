@@ -7,12 +7,14 @@
     "test": "script/test",
     "transpile": "jsx --harmony --no-cache-dir -x jsx src lib",
     "dist": "script/dist",
-    "start": "cd gh-pages && webpack-dev-server --port 9090 --d --hot --inline --progress --colors",
+    "start": "cd gh-pages && webpack-dev-server --config webpack.hot.config.js --port 9090 --d --hot --inline --progress --colors",
     "bump-patch": "mversion patch -m",
     "bump-minor": "mversion minor -m",
     "bump-major": "mversion major -m",
     "predist": "npm run transpile",
-    "pretranspile": "npm run test"
+    "pretranspile": "npm run test",
+    "prepublish": "cd gh-pages && webpack",
+    "publish": "grunt publish"
   },
   "repository": {
     "type": "git",

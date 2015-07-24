@@ -9,6 +9,7 @@ module.exports = function(grunt) {
       src: [
         "index.html",
         "*.js",
+        "*.js.map",
         "*.jsx",
         "views/**/*",
         "css/*"

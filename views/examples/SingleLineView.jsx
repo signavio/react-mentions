@@ -1,48 +1,39 @@
-define([
-  "react",
+var React = require("react");
+var ReactMentions = require("react-mentions");
 
-  "react-mentions",
+var MentionsMixin = require("../mixins/MentionsMixin");
 
-  "views/mixins/MentionsMixin"
-], function(
-  React,
 
-  ReactMentions,
+var MentionsInput = ReactMentions.MentionsInput;
+var Mention = ReactMentions.Mention;
 
-  MentionsMixin
-) {
+module.exports = React.createClass({
 
-  var MentionsInput = ReactMentions.MentionsInput;
-  var Mention = ReactMentions.Mention;
+  displayName: "SingleLine",
 
-  return React.createClass({
+  mixins: [ MentionsMixin ],
 
-    displayName: "SingleLine",
+  getInitialState: function() {
+    return {
+      value: ""
+    };
+  },
 
-    mixins: [ MentionsMixin ],
+  render: function() {
+    return (
+      <div className="single-line">
+        <h3>Single line input</h3>
 
-    getInitialState: function() {
-      return {
-        value: ""
-      };
-    },
+        <MentionsInput
+          singleLine={true}
+          value={this.state.value}
+          onChange={this.handleChange}
+          placeholder={"Mention people using '@'"}>
 
-    render: function() {
-      return (
-        <div className="single-line">
-          <h3>Single line input</h3>
-
-          <MentionsInput
-            singleLine={true}
-            value={this.state.value}
-            onChange={this.handleChange}
-            placeholder={"Mention people using '@'"}>
-
-            <Mention data={ this.props.data }/>
-          </MentionsInput>
-        </div>
-      );
-    }
-  });
+          <Mention data={ this.props.data }/>
+        </MentionsInput>
+      </div>
+    );
+  }
 
 });

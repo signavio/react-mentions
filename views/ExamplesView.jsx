@@ -1,54 +1,43 @@
-define([
-  "react",
+var React = require("react");
 
-  "react-mentions",
+var MultipleTrigger = require("./examples/MultipleTriggerView");
+var SingleLine = require("./examples/SingleLineView");
+var Advanced = require("./examples/AdvancedView");
 
-  "jsx!views/examples/MultipleTriggerView",
-  "jsx!views/examples/SingleLineView",
-  "jsx!views/examples/AdvancedView"
-], function(
-  React,
 
-  ReactMentions,
+var users = [
+  {
+    id: "johndoe",
+    display: "John Doe"
+  },
+  {
+    id: "joesmoe",
+    display: "Joe Smoe"
+  }
+];
 
-  MultipleTrigger,
-  SingleLine,
-  Advanced
-) {
-  var users = [
-    {
-      id: "johndoe",
-      display: "John Doe"
-    },
-    {
-      id: "joesmoe",
-      display: "Joe Smoe"
-    }
-  ];
+module.exports = React.createClass({
 
-  return React.createClass({
+  displayName: "Examples",
 
-    displayName: "Examples",
-
-    render: function() {
-      return (
-        <div className="examples">
-          <div className="row">
-            <div className="col-lg-12">
-              <MultipleTrigger data={ users } />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <SingleLine data={ users } />
-            </div>
-            <div className="col-md-6">
-              <Advanced data={ users } />
-            </div>
+  render: function() {
+    return (
+      <div className="examples">
+        <div className="row">
+          <div className="col-lg-12">
+            <MultipleTrigger data={ users } />
           </div>
         </div>
-      );
-    }
+        <div className="row">
+          <div className="col-md-6">
+            <SingleLine data={ users } />
+          </div>
+          <div className="col-md-6">
+            <Advanced data={ users } />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  });
 });

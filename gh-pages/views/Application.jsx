@@ -1,9 +1,8 @@
 var React = require("react");
-var Router = require("react-router");
 
 var Header = require("./HeaderView");
-
-var RouteHandler = Router.RouteHandler;
+var Examples = require("./ExamplesView");
+var License = require("./LicenseView");
 
 
 module.exports = React.createClass({
@@ -16,7 +15,11 @@ module.exports = React.createClass({
         <Header />
 
         <div className="container">
-          <RouteHandler />
+          <h2 id="examples">Examples</h2>
+          <Examples />
+
+          <h2 id="license">License</h2>
+          <License />
         </div>
       </div>
     );

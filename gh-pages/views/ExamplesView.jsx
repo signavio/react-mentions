@@ -1,5 +1,4 @@
 var React = require("react");
-var Router = require("react-router");
 
 var MultipleTrigger = require("./examples/MultipleTriggerView");
 var SingleLine = require("./examples/SingleLineView");

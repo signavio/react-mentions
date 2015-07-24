@@ -1,7 +1,4 @@
 var React = require("react");
-var Router = require("react-router");
- 
-var Link = Router.Link;
 
 module.exports = React.createClass({
 
@@ -32,10 +29,10 @@ module.exports = React.createClass({
       <nav>
         <ul className="nav nav-pills pull-right">
           <li>
-            <Link to="examples">Examples</Link>
+            <a href="#examples">Examples</a>
           </li>
           <li>
-            <Link to="license">License</Link>
+            <a href="#license">License</a>
           </li>
         </ul>
       </nav>

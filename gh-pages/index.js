@@ -1,7 +1,4 @@
 var React = require("react");
-var Router = require("react-router");
-var routes = require("./routes");
+var Application = require("./views/Application");
 
-Router.run(routes, Router.HashLocation, function(Handler) {
-    React.render(React.createElement(Handler, null), document.body);
-});
+React.render(React.createElement(Application, null), document.body);

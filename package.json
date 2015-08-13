@@ -13,8 +13,8 @@
     "bump-major": "mversion major -m",
     "predist": "npm run transpile",
     "pretranspile": "npm run test",
-    "prepublish": "cd gh-pages && webpack",
-    "publish": "grunt publish"
+    "prepages-ppublish": "cd gh-pages && webpack",
+    "pages-publish": "grunt publish"
   },
   "repository": {
     "type": "git",

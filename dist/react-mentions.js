@@ -33,7 +33,8 @@ module.exports = React.createClass({
       trigger: "@",
       onAdd: emptyFunction,
       onRemove: emptyFunction,
-      renderSuggestion: null
+      renderSuggestion: null,
+      isLoading: false
     };
   },
 
@@ -230,7 +231,8 @@ module.exports = React.createClass({
         ref: "suggestions", 
         suggestions: this.state.suggestions, 
         onSelect: this.addMention, 
-        onMouseDown: this.handleSuggestionsMouseDown})
+        onMouseDown: this.handleSuggestionsMouseDown, 
+        isLoading: this.isLoading()})
     );
   },
 
@@ -613,6 +615,14 @@ module.exports = React.createClass({
     this.clearSuggestions();
   },
 
+  isLoading: function() {
+    var isLoading = false;
+    React.Children.forEach(this.props.children, function(child) {
+      isLoading = isLoading || child.props.isLoading;
+    });
+    return isLoading;
+  },
+
   _queryId: 0
 
 
@@ -653,7 +663,8 @@ module.exports = React.createClass({
 
     return (
       React.createElement("div", {className: "suggestions", onMouseDown: this.props.onMouseDown}, 
-        React.createElement("ul", null,  this.renderSuggestions() )
+        React.createElement("ul", null,  this.renderSuggestions() ), 
+         this.renderLoadingIndicator() 
       )
     );
   },
@@ -716,6 +727,24 @@ module.exports = React.createClass({
          display.substring(0, i), 
         React.createElement("b", null,  display.substring(i, i+query.length) ), 
          display.substring(i+query.length) 
+      )
+    );
+  },
+
+  renderLoadingIndicator: function () {
+    if(!this.props.isLoading) {
+      return;
+    }
+
+    return (
+      React.createElement("div", {className: "loading-indicator"}, 
+        React.createElement("div", {className: "spinner"}, 
+          React.createElement("div", {className: "element1"}), 
+          React.createElement("div", {className: "element2"}), 
+          React.createElement("div", {className: "element3"}), 
+          React.createElement("div", {className: "element4"}), 
+          React.createElement("div", {className: "element5"})
+        )
       )
     );
   },

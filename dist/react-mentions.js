@@ -618,7 +618,7 @@ module.exports = React.createClass({
   isLoading: function() {
     var isLoading = false;
     React.Children.forEach(this.props.children, function(child) {
-      isLoading = isLoading || child.props.isLoading;
+      isLoading = isLoading || child && child.props.isLoading;
     });
     return isLoading;
   },

@@ -33,6 +33,7 @@ module.exports = React.createClass({
     return (
       <div className="suggestions" onMouseDown={this.props.onMouseDown}>
         <ul>{ this.renderSuggestions() }</ul>
+        { this.renderLoadingIndicator() }
       </div>
     );
   },
@@ -96,6 +97,24 @@ module.exports = React.createClass({
         <b>{ display.substring(i, i+query.length) }</b>
         { display.substring(i+query.length) }
       </span>
+    );
+  },
+
+  renderLoadingIndicator: function () {
+    if(!this.props.isLoading) {
+      return;
+    }
+
+    return (
+      <div className="loading-indicator">
+        <div className="spinner">
+          <div className="element1"></div>
+          <div className="element2"></div>
+          <div className="element3"></div>
+          <div className="element4"></div>
+          <div className="element5"></div>
+        </div>
+      </div>
     );
   },
 

@@ -32,7 +32,8 @@ module.exports = React.createClass({
       trigger: "@",
       onAdd: emptyFunction,
       onRemove: emptyFunction,
-      renderSuggestion: null
+      renderSuggestion: null,
+      isLoading: false
     };
   },
 

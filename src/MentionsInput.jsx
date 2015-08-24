@@ -130,6 +130,7 @@ module.exports = React.createClass({
       props.onBlur = this.handleBlur;
     }
 
+    // shared styles for input and textarea
     var style = {
       display: "block",
       position: "absolute",
@@ -140,16 +141,26 @@ module.exports = React.createClass({
     };
 
     if(this.props.singleLine) {
+
+      // styles for input only
       style.width = "inherit";
+
       return (
         <input type="text" { ...props } ref="input" style={style}/>
       );
     }
 
+    // styles for textarea only
     style.width = "100%";
     style.bottom = 0;
     style.overflow = "hidden";
     style.resize = "none";
+
+    if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+      style.marginTop = 1;
+      style.marginLeft = -3;
+    }
 
     return (
       <textarea { ...props } ref="input" style={style} />
@@ -208,13 +219,17 @@ module.exports = React.createClass({
       if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
         // if yes, split substr at the caret position and insert the caret component
         var splitIndex = caretPositionInMarkup - index;
-        components.push(substr.substring(0, splitIndex));
+        components.push(
+          this.renderSubstring(substr.substring(0, splitIndex))
+        );
 
         // add all following substrings and mention components as children of the caret component
-        components = [ substr.substring(splitIndex) ];
+        components = [ this.renderSubstring(substr.substring(splitIndex)) ];
       } else {
         // otherwise just push the plain text substring
-        components.push(substr);
+        components.push(
+          this.renderSubstring(substr)
+        );
       }
     }.bind(this);
 
@@ -238,6 +253,15 @@ module.exports = React.createClass({
     }
 
     return resultComponents;
+  },
+
+  renderSubstring: function (string) {
+    // set substring spand to hidden, so that Emojis are not shown double in Mobile Safari
+    return (
+      <span style={{visibility: 'hidden'}}>
+        { string }
+      </span>
+    );
   },
 
   // Renders an component to be inserted in the highlighter at the current caret position

@@ -133,7 +133,7 @@ module.exports = React.createClass({
     // shared styles for input and textarea
     var style = {
       display: "block",
-      position: "absolute",
+      position: "relative",
       top: 0,
       boxSizing: "border-box",
       background: "transparent",
@@ -179,6 +179,11 @@ module.exports = React.createClass({
     } else {
       style.whiteSpace = "pre-wrap";
       style.wordWrap = "break-word";
+      var input = this.refs.input;
+      if (input) {
+        var inputDOM = input.getDOMNode();
+        style.top = (inputDOM.scrollTop > 0 ? inputDOM.scrollTop * -1 : 0) + "px";
+      }
     }
     return style;
   },

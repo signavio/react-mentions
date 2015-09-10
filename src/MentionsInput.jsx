@@ -152,6 +152,7 @@ module.exports = React.createClass({
 
     // styles for textarea only
     style.width = "100%";
+    style.height = "100%";
     style.bottom = 0;
     style.overflow = "hidden";
     style.resize = "none";

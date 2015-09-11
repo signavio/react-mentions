@@ -92,6 +92,7 @@ body {
   background-color: white;
   margin-top: 14px;
   font-size: 10pt;
+  min-width: 100px;
   -webkit-box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06);
   -khtml-box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06);
   -moz-box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06);

@@ -108,7 +108,7 @@ module.exports = React.createClass({
     } = this.props;
 
     return (
-      <div className={className} style={{ position: "relative", overflowY: "visible" }}>
+      <div ref="container" className={className} style={{ position: "relative", overflowY: "visible" }}>
         <div className={"control " + (singleLine ? "input" : "textarea")}>
           <div className="highlighter" ref="highlighter" style={this.getHighlighterStyle()}>
             { this.renderHighlighter() }
@@ -441,6 +441,7 @@ module.exports = React.createClass({
   updateSuggestionsPosition: function() {
     if(!this.refs.caret || !this.refs.suggestions) return;
 
+    var containerEl = this.refs.container.getDOMNode();
     var caretEl = this.refs.caret.getDOMNode();
     var suggestionsEl = this.refs.suggestions.getDOMNode();
     var highligherEl = this.refs.highlighter.getDOMNode();
@@ -448,7 +449,7 @@ module.exports = React.createClass({
 
     var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
     // guard for mentions suggestions list clipped by right edge of window
-    if (leftPos + suggestionsEl.offsetWidth > window.innerWidth) {
+    if (leftPos + suggestionsEl.offsetWidth > containerEl.offsetWidth) {
       suggestionsEl.style.right = "0px"
     } else {
       suggestionsEl.style.left = leftPos + "px"

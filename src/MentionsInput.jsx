@@ -446,7 +446,13 @@ module.exports = React.createClass({
     var highligherEl = this.refs.highlighter.getDOMNode();
     if(!suggestionsEl) return;
 
-    suggestionsEl.style.left = caretEl.offsetLeft - highligherEl.scrollLeft + "px";
+    var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
+    // guard for mentions suggestions list clipped by right edge of window
+    if (leftPos + suggestionsEl.offsetWidth > window.innerWidth) {
+      suggestionsEl.style.right = "0px"
+    } else {
+      suggestionsEl.style.left = leftPos + "px"
+    }
     suggestionsEl.style.top = caretEl.offsetTop - highligherEl.scrollTop + "px";
   },
 

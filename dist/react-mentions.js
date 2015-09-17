@@ -296,7 +296,7 @@ module.exports = React.createClass({
     components.push(" ");
 
     if(components !== resultComponents) {
-      // if a caret component is to be rendered, add all components that followed as its children 
+      // if a caret component is to be rendered, add all components that followed as its children
       resultComponents.push(
         this.renderHighlighterCaret(components)
       );
@@ -391,19 +391,23 @@ module.exports = React.createClass({
     // Save current selection after change to be able to restore caret position after rerendering
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;
+    var setSelectionAfterMentionChange = false;
 
     // Adjust selection range in case a mention will be deleted by the characters outside of the
     // selection range that are automatically deleted
     var startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart, this.props.displayTransform);
-    if(this.state.selectionEnd > startOfMention) {
+
+    if(startOfMention !== undefined && this.state.selectionEnd > startOfMention) {
       // only if a deletion has taken place
       selectionStart = startOfMention;
       selectionEnd = selectionStart;
+      setSelectionAfterMentionChange = true;
     }
 
     this.setState({
       selectionStart: selectionStart,
-      selectionEnd: selectionEnd
+      selectionEnd: selectionEnd,
+      setSelectionAfterMentionChange: setSelectionAfterMentionChange
     });
 
     var mentions = utils.getMentions(newValue, this.props.markup);
@@ -526,7 +530,10 @@ module.exports = React.createClass({
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
-    this.setSelection(this.state.selectionStart, this.state.selectionEnd);
+    if (this.state.setSelectionAfterMentionChange) {
+      this.setState({setSelectionAfterMentionChange: false});
+      this.setSelection(this.state.selectionStart, this.state.selectionEnd);
+    }
   },
 
   setSelection: function(selectionStart, selectionEnd) {
@@ -628,7 +635,8 @@ module.exports = React.createClass({
     var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({
       selectionStart: newCaretPosition,
-      selectionEnd: newCaretPosition
+      selectionEnd: newCaretPosition,
+      setSelectionAfterMentionChange: true
     });
 
     // Propagate change
@@ -874,7 +882,7 @@ module.exports = {
     markupPattern = markupPattern.replace(PLACEHOLDERS.display, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.id, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.type, "(.+?)");
-    if(matchAtEnd) { 
+    if(matchAtEnd) {
       // append a $ to match at the end of the string
       markupPattern = markupPattern + "$";
     }
@@ -897,7 +905,7 @@ module.exports = {
     }
     return obj;
   },
-  
+
   isNumber: function(obj) {
     return Object.prototype.toString.call(obj) === "[object Number]";
   },
@@ -927,13 +935,13 @@ module.exports = {
 
     if(indexType === null && parameterName === "type") {
       // markup does not contain optional __type__ placeholder
-      return null; 
+      return null;
     }
 
     // sort indices in ascending order (null values will always be at the end)
     var sortedIndices = [indexDisplay, indexId, indexType].sort(numericComparator);
 
-    // If only one the placeholders __id__ and __display__ is present, 
+    // If only one the placeholders __id__ and __display__ is present,
     // use the captured string for both parameters, id and display
     if(indexDisplay === null) indexDisplay = indexId;
     if(indexId === null) indexId = indexDisplay;
@@ -983,7 +991,7 @@ module.exports = {
 
   // For the passed character index in the plain text string, returns the corresponding index
   // in the marked up value string.
-  // If the passed character index lies inside a mention, returns the index of the mention 
+  // If the passed character index lies inside a mention, returns the index of the mention
   // markup's first char, or respectively tho one after its last char, if the flag `toEndOfMarkup` is set.
   mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup, displayTransform) {
     if(!this.isNumber(indexInPlainText)) {
@@ -1022,23 +1030,40 @@ module.exports = {
   // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
   findStartOfMentionInPlainText: function(value, markup, indexInPlainText, displayTransform) {
     var result = indexInPlainText;
+    var foundMention = false;
+
     var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
       if(mentionPlainTextIndex < indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
         result = mentionPlainTextIndex;
+        foundMention = true;
       }
     };
     this.iterateMentionsMarkup(value, markup, function(){}, markupIteratee, displayTransform);
-    return result;
+
+    if (foundMention) {
+      return result;
+    }
   },
 
   // Returns whether the given plain text index lies inside a mention
   isInsideOfMention: function(value, markup, indexInPlainText, displayTransform) {
-    return this.findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform) !== indexInPlainText;
+    var mentionStart = this.findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform);
+    return mentionStart !== undefined && mentionStart !== indexInPlainText
   },
 
   // Applies a change from the plain text textarea to the underlying marked up value
-  // guided by the textarea text selection ranges before and after the change 
+  // guided by the textarea text selection ranges before and after the change
   applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
+    var oldPlainTextValue = this.getPlainText(value, markup, displayTransform);
+
+    // Fixes an issue with replacing combined characters for complex input. Eg like acented letters on OSX
+    if (selectionStartBeforeChange === selectionEndBeforeChange &&
+      selectionEndBeforeChange === selectionEndAfterChange &&
+      oldPlainTextValue.length === plainTextValue.length
+    ) {
+      selectionStartBeforeChange = selectionStartBeforeChange - 1;
+    }
+
     // extract the insertion from the new plain text value
     var insert = plainTextValue.slice(selectionStartBeforeChange, selectionEndAfterChange);
 
@@ -1047,12 +1072,11 @@ module.exports = {
 
     var spliceEnd = selectionEndBeforeChange;
     if(selectionStartBeforeChange === selectionEndAfterChange) {
-      var oldPlainTextValue = this.getPlainText(value, markup, displayTransform);
       var lengthDelta = oldPlainTextValue.length - plainTextValue.length;
       // handling for Delete key with no range selection
       spliceEnd = Math.max(selectionEndBeforeChange, selectionStartBeforeChange + lengthDelta);
     }
-    
+
     // splice the current marked up value and insert new chars
     return this.spliceString(
       value,
@@ -1099,6 +1123,7 @@ module.exports = {
   }
 
 }
+
 },{}],6:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.

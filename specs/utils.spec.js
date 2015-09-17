@@ -45,23 +45,23 @@ describe("utils", function() {
       (function() {
         var markup = key;
         var positions = testData[key];
-  
+
         it("should return " + positions.display + " for the `display` position in markup `" + markup + "`", function() {
           expect(utils.getPositionOfCapturingGroup(markup, "display")).to.equal(positions.display);
         });
-  
+
         it("should return " + positions.id + " for the `id` position in markup `" + markup + "`", function() {
           expect(utils.getPositionOfCapturingGroup(markup, "id")).to.equal(positions.id);
         });
-  
+
         it("should return " + positions.type + " for the `type` position in markup `" + markup + "`", function() {
           expect(utils.getPositionOfCapturingGroup(markup, "type")).to.equal(positions.type);
         });
-      
+
 
       })();
     }
-      
+
   });
 
   describe("#iterateMentionsMarkup", function() {
@@ -93,7 +93,7 @@ describe("utils", function() {
 
       expect(textIteratee).to.have.been.calledThrice;
       expect(textIteratee).to.have.been.calledWith(
-        "Hi ", 
+        "Hi ",
         0,
         0
       );
@@ -136,7 +136,7 @@ describe("utils", function() {
 
       expect(textIteratee).to.have.been.calledThrice;
       expect(textIteratee).to.have.been.calledWith(
-        "Hi ", 
+        "Hi ",
         0,
         0
       );
@@ -252,7 +252,7 @@ describe("utils", function() {
 
     it("should return the passed index, if it does not lie inside a mention", function() {
       var result = utils.findStartOfMentionInPlainText(value, defaultMarkup, plainText.indexOf("add"));
-      expect(result).to.equal(plainText.indexOf("add"));
+      expect(result).to.equal(undefined);
     });
 
   });
@@ -302,7 +302,7 @@ describe("utils", function() {
       var changed = "Hi John Do, \n\nlet's add joe@smoe.com to this conversation...";
       var result = utils.applyChangeToValue(value, defaultMarkup, changed, 11, 11, 10);
       expect(result).to.equal("Hi , \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
-    
+
       // delete mention inside the range
       changed = "Hi let's add joe@smoe.com to this conversation...";
       result = utils.applyChangeToValue(value, defaultMarkup, changed, 3, 15, 3);
@@ -345,7 +345,7 @@ describe("utils", function() {
   });
 
   describe('#getMentions', function () {
-    
+
     it('should return an array of all mentions in the provided value', function () {
       var mentions = utils.getMentions(value, defaultMarkup);
       expect(mentions).to.deep.equal([

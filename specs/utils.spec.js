@@ -250,7 +250,7 @@ describe("utils", function() {
       expect(result).to.equal(plainText.indexOf("John Doe"));
     });
 
-    it("should return the passed index, if it does not lie inside a mention", function() {
+    it("should return `undefined`, if it does not lie inside a mention", function() {
       var result = utils.findStartOfMentionInPlainText(value, defaultMarkup, plainText.indexOf("add"));
       expect(result).to.equal(undefined);
     });

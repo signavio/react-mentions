@@ -1056,6 +1056,14 @@ module.exports = {
   applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
     var oldPlainTextValue = this.getPlainText(value, markup, displayTransform);
 
+    if (!selectionStartBeforeChange) {
+      selectionStartBeforeChange = selectionEndAfterChange - 1;
+    }
+
+    if (!selectionEndBeforeChange) {
+      selectionEndBeforeChange = selectionStartBeforeChange;
+    }
+
     // Fixes an issue with replacing combined characters for complex input. Eg like acented letters on OSX
     if (selectionStartBeforeChange === selectionEndBeforeChange &&
       selectionEndBeforeChange === selectionEndAfterChange &&

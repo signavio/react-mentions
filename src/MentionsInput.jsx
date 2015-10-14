@@ -1,7 +1,5 @@
-var React = require('react/addons');
+var React = require('react');
 var LinkedValueUtils = require('react/lib/LinkedValueUtils');
-var emptyFunction = require('react/lib/emptyFunction');
-
 
 var utils = require('./utils');
 var Mention = require('./Mention');
@@ -81,9 +79,9 @@ module.exports = React.createClass({
       displayTransform: function(id, display, type) {
         return display;
       },
-      onKeyDown: emptyFunction,
-      onSelect: emptyFunction,
-      onBlur: emptyFunction
+      onKeyDown: utils.emptyFunction,
+      onSelect: utils.emptyFunction,
+      onBlur: utils.emptyFunction
     };
   },
 
@@ -299,11 +297,11 @@ module.exports = React.createClass({
       });
 
       // clone the Mention child that is applicable for the given type
-      return React.addons.cloneWithProps(foundChild, props);
+      return React.cloneElement(foundChild, props);
     } else if(childrenCount === 1) {
       // clone single Mention child
       var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
-      return React.addons.cloneWithProps(child, props );
+      return React.cloneElement(child, props );
     } else {
       // no children, use default configuration
       return Mention(props);
@@ -364,7 +362,7 @@ module.exports = React.createClass({
     var mentions = utils.getMentions(newValue, this.props.markup);
 
     // Propagate change
-    var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
+    var handleChange = LinkedValueUtils.getOnChange(this) || utils.emptyFunction;
     var eventMock = { target: { value: newValue } };
     handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
   },
@@ -378,7 +376,7 @@ module.exports = React.createClass({
     });
 
     // refresh suggestions queries
-    var el = this.refs.input.getDOMNode();
+    var el = this.refs.input;
     if(ev.target.selectionStart === ev.target.selectionEnd) {
       this.updateMentionsQueries(el.value, ev.target.selectionStart);
     } else {
@@ -445,10 +443,10 @@ module.exports = React.createClass({
   updateSuggestionsPosition: function() {
     if(!this.refs.caret || !this.refs.suggestions) return;
 
-    var containerEl = this.refs.container.getDOMNode();
-    var caretEl = this.refs.caret.getDOMNode();
-    var suggestionsEl = this.refs.suggestions.getDOMNode();
-    var highligherEl = this.refs.highlighter.getDOMNode();
+    var containerEl = this.refs.container;
+    var caretEl = this.refs.caret;
+    var suggestionsEl = this.refs.suggestions;
+    var highligherEl = this.refs.highlighter;
     if(!suggestionsEl) return;
 
     var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
@@ -467,8 +465,8 @@ module.exports = React.createClass({
       // the whole component may have been unmounted in the meanwhile
       return;
     }
-    var input = this.refs.input.getDOMNode();
-    var highlighter = this.refs.highlighter.getDOMNode();
+    var input = this.refs.input;
+    var highlighter = this.refs.highlighter;
     highlighter.scrollLeft = input.scrollLeft;
   },
 
@@ -490,7 +488,7 @@ module.exports = React.createClass({
   setSelection: function(selectionStart, selectionEnd) {
     if(selectionStart === null || selectionEnd === null) return;
 
-    var el = this.refs.input.getDOMNode();
+    var el = this.refs.input;
     if(el.setSelectionRange) {
       el.setSelectionRange(selectionStart, selectionEnd);
     }
@@ -580,7 +578,7 @@ module.exports = React.createClass({
     var newValue = utils.spliceString(value, start, end, insert);
 
     // Refocus input and set caret position to end of mention
-    this.refs.input.getDOMNode().focus();
+    this.refs.input.focus();
 
     var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newCaretPosition = querySequenceStart + displayValue.length;
@@ -591,7 +589,7 @@ module.exports = React.createClass({
     });
 
     // Propagate change
-    var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
+    var handleChange = LinkedValueUtils.getOnChange(this) || utils.emptyFunction;
     var eventMock = { target: { value: newValue }};
     var mentions = utils.getMentions(newValue, this.props.markup);
     var newPlainTextValue = utils.spliceString(plainTextValue, querySequenceStart, querySequenceEnd, displayValue);

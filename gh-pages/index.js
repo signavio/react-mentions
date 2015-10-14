@@ -1,4 +1,5 @@
 var React = require("react");
+var ReactDOM = require("react-dom");
 var Application = require("./views/Application");
 
-React.render(React.createElement(Application, null), document.body);
+ReactDOM.render(React.createElement(Application, null), document.getElementById('root'));

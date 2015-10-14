@@ -294,6 +294,8 @@ module.exports = {
     result = result.replace(PLACEHOLDERS.display, display);
     result = result.replace(PLACEHOLDERS.type, type);
     return result;
-  }
+  },
+
+  emptyFunction: function(){}
 
 }

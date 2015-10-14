@@ -3,7 +3,7 @@ var React = require("react");
 var Header = require("./HeaderView");
 var Examples = require("./ExamplesView");
 var License = require("./LicenseView");
-
+require("../less/react-mentions.less");
 
 module.exports = React.createClass({
 

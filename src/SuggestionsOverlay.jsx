@@ -1,5 +1,4 @@
 var React = require('react');
-var emptyFunction = require('react/lib/emptyFunction');
 var utils = require('./utils');
 
 module.exports = React.createClass({
@@ -9,7 +8,7 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       suggestions: {},
-      onSelect: emptyFunction
+      onSelect: utils.emptyFunction
     };
   },
 

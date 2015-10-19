@@ -1,5 +1,5 @@
 var React = require('react');
-var emptyFunction = require('react/lib/emptyFunction');
+var emptyFunction = require('fbjs/lib/emptyFunction.js');
 var utils = require('./utils');
 
 module.exports = React.createClass({
@@ -31,7 +31,9 @@ module.exports = React.createClass({
     if(this.countSuggestions() === 0 && !this.props.isLoading) return null;
 
     return (
-      <div className="suggestions" onMouseDown={this.props.onMouseDown}>
+      <div
+        className="suggestions"
+        onMouseDown={this.props.onMouseDown}>
         <ul>{ this.renderSuggestions() }</ul>
         { this.renderLoadingIndicator() }
       </div>

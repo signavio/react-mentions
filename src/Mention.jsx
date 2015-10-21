@@ -1,5 +1,5 @@
 var React = require('react');
-var emptyFunction = require('react/lib/emptyFunction');
+var emptyFunction = require('fbjs/lib/emptyFunction.js');
 var utils = require('./utils');
 
 

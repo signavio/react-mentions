@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var LinkedValueUtils = require('react/lib/LinkedValueUtils');
-var emptyFunction = require('fbjs/lib/emptyFunction.js');
+var emptyFunction = require('fbjs/lib/emptyFunction');
 
 
 var utils = require('./utils');

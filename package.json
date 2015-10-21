@@ -44,8 +44,8 @@
     "grunt-contrib-less": "~1.0.0",
     "grunt-gh-pages": "~0.9.1",
     "jsx-loader": ">=0.12.0",
-    "karma": "0.12.16",
-    "karma-browserify": "^0.2.1",
+    "karma": "^0.13.11",
+    "karma-browserify": "^4.4.0",
     "karma-chrome-launcher": "0.1.4",
     "karma-cli": "0.0.4",
     "karma-coverage": "~0.2.7",
@@ -77,5 +77,8 @@
   "browserify-shim": {
     "react": "global:React",
     "react/addons": "global:React"
+  },
+  "dependencies": {
+    "fbjs": "^0.4.0"
   }
 }

@@ -40,53 +40,101 @@ module.exports = React.createClass({
     );
   },
 
-  renderSuggestions: function() {
-    var listItems = [];
-    for(var mentionType in this.props.suggestions) {
-      if(!this.props.suggestions.hasOwnProperty(mentionType)) return;
-      var suggestions = this.props.suggestions[mentionType];
+  getSuggestions: function() {
+    var suggestions = [];
 
-      for(var i=0, l=suggestions.results.length; i < l; ++i) {
-        listItems.push(
-          this.renderSuggestion(
-            suggestions.results[i], suggestions.query,
-            suggestions.querySequenceStart, suggestions.querySequenceEnd,
-            suggestions.mentionDescriptor, listItems.length,
-            suggestions.plainTextValue
-          )
-        );
+    for(var mentionType in this.props.suggestions) {
+      if(!this.props.suggestions.hasOwnProperty(mentionType)) {
+        return;
       }
+
+      suggestions = suggestions.concat({
+        suggestions: this.props.suggestions[mentionType].results,
+        descriptor: this.props.suggestions[mentionType]
+      });
     }
-    return listItems;
+
+    return suggestions;
   },
 
-  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor, index, plainTextValue) {
-    var id, display;
-    var type = mentionDescriptor.props.type;
+  getSuggestion: function(index) {
+    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => {
+      var partial = suggestions.map((suggestion) => {
+        return {
+          suggestion: suggestion,
+          descriptor: descriptor
+        };
+      });
 
-    if(suggestion instanceof String) {
-      id = display = suggestion;
-    } else if(!suggestion.id || !suggestion.display) {
-      id = display = suggestion.id || suggestion.id;
-    } else {
-      id = suggestion.id;
-      display = suggestion.display;
-    }
+      return [...result, ...partial];
+    }, [])[index];
+  },
+
+  renderSuggestions: function() {
+    var transformSuggestions = (result, { suggestions, descriptor }) => {
+      var { query, querySequenceStart, querySequenceEnd, mentionDescriptor, plainTextValue } = descriptor;
+
+      var partial = suggestions.map((suggestion, index) => this.renderSuggestion(
+        suggestion,
+        descriptor,
+        result.length + index
+      ));
+
+      return [...result, ...partial];
+    };
+
+    return this.getSuggestions().reduce(transformSuggestions, []);
+  },
+
+  renderSuggestion: function(suggestion, descriptor, index) {
+    var id = this.getID(suggestion);
 
     var isFocused = (index === this.state.focusIndex);
     var cls = isFocused ? "focus" : "";
-    var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
-
-    var highlightedDisplay = this.renderHighlightedDisplay(display, query);
-    var content = mentionDescriptor.props.renderSuggestion ?
-      mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay) :
-      highlightedDisplay;
+    var handleClick = this.select.bind(null, suggestion, descriptor);
 
     return (
-      <li key={id} ref={isFocused && "focused"} className={cls} onClick={handleClick} onMouseEnter={this.handleMouseEnter.bind(null, index)}>
-        { content }
+      <li
+        key={id}
+        ref={isFocused && "focused"}
+        className={cls}
+        onClick={handleClick}
+        onMouseEnter={this.handleMouseEnter.bind(null, index)}>
+
+        { this.renderContent(id, suggestion, descriptor) }
       </li>
     );
+  },
+
+  renderContent: function(id, suggestion, { mentionDescriptor, query }) {
+    var display = this.getDisplay(suggestion);
+    var highlightedDisplay = this.renderHighlightedDisplay(display, query);
+
+    if(mentionDescriptor.props.renderSuggestion) {
+      return mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay);
+    }
+
+    return highlightedDisplay;
+  },
+
+  getDisplay: function(suggestion) {
+    if(suggestion instanceof String) {
+      return suggestion;
+    }
+
+    if(!suggestion.id || !suggestion.display) {
+      return suggestion.id;
+    }
+
+    return suggestion.display;
+  },
+
+  getID: function(suggestion) {
+    if(suggestion instanceof String) {
+      return suggestion;
+    }
+
+    return suggestion.id;
   },
 
   renderHighlightedDisplay: function(display, query) {
@@ -126,13 +174,14 @@ module.exports = React.createClass({
     });
   },
 
-  select: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  select: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
   },
 
   selectFocused: function() {
-    // call click handler of the focused element
-    this.refs.focused.props.onClick();
+    var { suggestion, descriptor } = this.getSuggestion(this.state.focusIndex);
+
+    this.select(suggestion, descriptor);
   },
 
   shiftFocus: function(delta) {

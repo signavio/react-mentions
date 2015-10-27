@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/effektif/react-mentions.svg?branch=master)](https://travis-ci.org/effektif/react-mentions)
 [![Dependency Status](https://david-dm.org/effektif/react-mentions.svg)](https://david-dm.org/effektif/react-mentions)
 [![npm version](https://badge.fury.io/js/react-mentions.svg)](http://badge.fury.io/js/react-mentions)
-[![Bower version](https://badge.fury.io/bo/react-mentions.svg)](http://badge.fury.io/bo/react-mentions)
 
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.

@@ -171,6 +171,7 @@ module.exports = React.createClass({
 
   getHighlighterStyle: function () {
     var style = {
+      position: "relative",
       width: "inherit",
       color: "transparent",
       font: "inherit",

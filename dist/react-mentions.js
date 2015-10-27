@@ -1,10 +1,9 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n;"undefined"!=typeof window?n=window:"undefined"!=typeof global?n=global:"undefined"!=typeof self&&(n=self),n.ReactMentions=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+'use strict';
+
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var emptyFunction = _dereq_('fbjs/lib/emptyFunction');
 var utils = _dereq_('./utils');
-
-
-
 
 module.exports = React.createClass({
 
@@ -24,11 +23,11 @@ module.exports = React.createClass({
      */
     onAdd: React.PropTypes.func,
 
-    renderSuggestion: React.PropTypes.func,
+    renderSuggestion: React.PropTypes.func
 
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       trigger: "@",
       onAdd: emptyFunction,
@@ -38,28 +37,33 @@ module.exports = React.createClass({
     };
   },
 
-  render: function() {
-    return (
-      React.createElement("strong", null,  this.props.display)
+  render: function render() {
+    return React.createElement(
+      'strong',
+      null,
+      this.props.display
     );
   }
 
 });
-
 },{"./utils":5,"fbjs/lib/emptyFunction":6}],2:[function(_dereq_,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var ReactDOM = _dereq_('react-dom');
 var LinkedValueUtils = _dereq_('react/lib/LinkedValueUtils');
 var emptyFunction = _dereq_('fbjs/lib/emptyFunction');
 
-
 var utils = _dereq_('./utils');
 var Mention = _dereq_('./Mention');
 var SuggestionsOverlay = _dereq_('./SuggestionsOverlay');
 
-
-var _generateComponentKey = function(usedKeys, id) {
-  if(!usedKeys.hasOwnProperty(id)) {
+var _generateComponentKey = function _generateComponentKey(usedKeys, id) {
+  if (!usedKeys.hasOwnProperty(id)) {
     usedKeys[id] = 0;
   } else {
     usedKeys[id]++;
@@ -67,8 +71,8 @@ var _generateComponentKey = function(usedKeys, id) {
   return id + "_" + usedKeys[id];
 };
 
-var _getTriggerRegex = function(trigger) {
-  if(trigger instanceof RegExp) {
+var _getTriggerRegex = function _getTriggerRegex(trigger) {
+  if (trigger instanceof RegExp) {
     return trigger;
   } else {
     var escapedTriggerChar = utils.escapeRegex(trigger);
@@ -79,14 +83,14 @@ var _getTriggerRegex = function(trigger) {
   }
 };
 
-var _getDataProvider = function(data) {
-  if(data instanceof Array) {
+var _getDataProvider = function _getDataProvider(data) {
+  if (data instanceof Array) {
     // if data is an array, create a function to query that
-    return function(query, callback) {
+    return function (query, callback) {
       var results = [];
-      for(var i=0, l=data.length; i < l; ++i) {
-        var display = data[i].display || data[i].id;
-        if(display.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+      for (var i = 0, l = data.length; i < l; ++i) {
+        var display = data[i].display || data[i].id;
+        if (display.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
           results.push(data[i]);
         }
       }
@@ -98,16 +102,13 @@ var _getDataProvider = function(data) {
   }
 };
 
-var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
-
+var KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40 };
 
 module.exports = React.createClass({
 
   displayName: 'MentionsInput',
 
-  mixins: [
-    LinkedValueUtils.Mixin
-  ],
+  mixins: [LinkedValueUtils.Mixin],
 
   propTypes: {
 
@@ -123,12 +124,12 @@ module.exports = React.createClass({
 
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
       className: "react-mentions",
-      displayTransform: function(id, display, type) {
+      displayTransform: function displayTransform(id, display, type) {
         return display;
       },
       onKeyDown: emptyFunction,
@@ -137,7 +138,7 @@ module.exports = React.createClass({
     };
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       selectionStart: null,
       selectionEnd: null,
@@ -146,34 +147,43 @@ module.exports = React.createClass({
     };
   },
 
-  render: function() {
-    var $__0=
-      
-      
+  render: function render() {
+    var _props = this.props;
+    var singleLine = _props.singleLine;
+    var className = _props.className;
+    var markup = _props.markup;
+    var displayTransform = _props.displayTransform;
+    var onKeyDown = _props.onKeyDown;
+    var onSelect = _props.onSelect;
+    var onBlur = _props.onBlur;
+    var onChange = _props.onChange;
+    var children = _props.children;
+    var value = _props.value;
+    var valueLink = _props.valueLink;
 
-           
-        
+    var inputProps = _objectWithoutProperties(_props, ['singleLine', 'className', 'markup', 'displayTransform', 'onKeyDown', 'onSelect', 'onBlur', 'onChange', 'children', 'value', 'valueLink']);
 
-      
-      this.props,singleLine=$__0.singleLine,className=$__0.className,markup=$__0.markup,displayTransform=$__0.displayTransform,onKeyDown=$__0.onKeyDown,onSelect=$__0.onSelect,onBlur=$__0.onBlur,onChange=$__0.onChange,children=$__0.children,value=$__0.value,valueLink=$__0.valueLink,inputProps=(function(source, exclusion) {var rest = {};var hasOwn = Object.prototype.hasOwnProperty;if (source == null) {throw new TypeError();}for (var key in source) {if (hasOwn.call(source, key) && !hasOwn.call(exclusion, key)) {rest[key] = source[key];}}return rest;})($__0,{singleLine:1,className:1,markup:1,displayTransform:1,onKeyDown:1,onSelect:1,onBlur:1,onChange:1,children:1,value:1,valueLink:1});
-
-    return (
-      React.createElement("div", {ref: "container", className: className, style: { position: "relative", overflowY: "visible"}}, 
-        React.createElement("div", {className: "control " + (singleLine ? "input" : "textarea")}, 
-          React.createElement("div", {className: "highlighter", ref: "highlighter", style: this.getHighlighterStyle()}, 
-             this.renderHighlighter() 
-          ), 
-           this.renderInput(inputProps)
-        ), 
-         this.renderSuggestionsOverlay() 
-      )
+    return React.createElement(
+      'div',
+      { ref: 'container', className: className, style: { position: "relative", overflowY: "visible" } },
+      React.createElement(
+        'div',
+        { className: "control " + (singleLine ? "input" : "textarea") },
+        React.createElement(
+          'div',
+          { className: 'highlighter', ref: 'highlighter', style: this.getHighlighterStyle() },
+          this.renderHighlighter()
+        ),
+        this.renderInput(inputProps)
+      ),
+      this.renderSuggestionsOverlay()
     );
   },
 
-  renderInput: function(props) {
+  renderInput: function renderInput(props) {
     props.value = this.getPlainText();
 
-    if(!this.props.readOnly && !this.props.disabled) {
+    if (!this.props.readOnly && !this.props.disabled) {
       props.onChange = this.handleChange;
       props.onSelect = this.handleSelect;
       props.onKeyDown = this.handleKeyDown;
@@ -190,14 +200,12 @@ module.exports = React.createClass({
       font: "inherit"
     };
 
-    if(this.props.singleLine) {
+    if (this.props.singleLine) {
 
       // styles for input only
       style.width = "inherit";
 
-      return (
-        React.createElement("input", React.__spread({type: "text"},   props , {ref: "input", style: style}))
-      );
+      return React.createElement('input', _extends({ type: 'text' }, props, { ref: 'input', style: style }));
     }
 
     // styles for textarea only
@@ -207,25 +215,24 @@ module.exports = React.createClass({
     style.overflow = "hidden";
     style.resize = "none";
 
-    if(typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    if (typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
       style.marginTop = 1;
       style.marginLeft = -3;
     }
 
-    return (
-      React.createElement("textarea", React.__spread({},   props , {ref: "input", style: style}))
-    );
+    return React.createElement('textarea', _extends({}, props, { ref: 'input', style: style }));
   },
 
-  getHighlighterStyle: function () {
+  getHighlighterStyle: function getHighlighterStyle() {
     var style = {
+      position: "relative",
       width: "inherit",
       color: "transparent",
       font: "inherit",
       overflow: "hidden"
     };
-    if(this.props.singleLine) {
+    if (this.props.singleLine) {
       style.whiteSpace = "pre";
     } else {
       style.whiteSpace = "pre-wrap";
@@ -234,27 +241,25 @@ module.exports = React.createClass({
     return style;
   },
 
-  renderSuggestionsOverlay: function() {
-    if(!utils.isNumber(this.state.selectionStart)) {
+  renderSuggestionsOverlay: function renderSuggestionsOverlay() {
+    if (!utils.isNumber(this.state.selectionStart)) {
       // do not show suggestions when the input does not have the focus
       return null;
     }
-    return (
-      React.createElement(SuggestionsOverlay, {
-        ref: "suggestions", 
-        suggestions: this.state.suggestions, 
-        onSelect: this.addMention, 
-        onMouseDown: this.handleSuggestionsMouseDown, 
-        isLoading: this.isLoading()})
-    );
+    return React.createElement(SuggestionsOverlay, {
+      ref: 'suggestions',
+      suggestions: this.state.suggestions,
+      onSelect: this.addMention,
+      onMouseDown: this.handleSuggestionsMouseDown,
+      isLoading: this.isLoading() });
   },
 
-  renderHighlighter: function() {
+  renderHighlighter: function renderHighlighter() {
     var value = LinkedValueUtils.getValue(this.props) || "";
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
-    if(this.state.selectionStart === this.state.selectionEnd) {
+    if (this.state.selectionStart === this.state.selectionEnd) {
       caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart, false, this.props.displayTransform);
     }
 
@@ -266,97 +271,87 @@ module.exports = React.createClass({
 
     var substringComponentKey = 0;
 
-    var textIteratee = function(substr, index, indexInPlainText) {
+    var textIteratee = (function (substr, index, indexInPlainText) {
       // check whether the caret element has to be inserted inside the current plain substring
-      if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
+      if (utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
         // if yes, split substr at the caret position and insert the caret component
         var splitIndex = caretPositionInMarkup - index;
-        components.push(
-          this.renderSubstring(substr.substring(0, splitIndex), substringComponentKey)
-        );
+        components.push(this.renderSubstring(substr.substring(0, splitIndex), substringComponentKey));
 
         // add all following substrings and mention components as children of the caret component
-        components = [ this.renderSubstring(substr.substring(splitIndex), substringComponentKey) ];
+        components = [this.renderSubstring(substr.substring(splitIndex), substringComponentKey)];
       } else {
         // otherwise just push the plain text substring
-        components.push(
-          this.renderSubstring(substr, substringComponentKey)
-        );
+        components.push(this.renderSubstring(substr, substringComponentKey));
       }
 
       substringComponentKey++;
-    }.bind(this);
+    }).bind(this);
 
-    var mentionIteratee = function(markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
+    var mentionIteratee = (function (markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
       // generate a component key based on the id
       var key = _generateComponentKey(componentKeys, id);
-      components.push(
-        this.getMentionComponentForMatch(id, display, type, key)
-      );
-    }.bind(this);
+      components.push(this.getMentionComponentForMatch(id, display, type, key));
+    }).bind(this);
     utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
 
     // append a span containing a space, to ensure the last text line has the correct height
     components.push(" ");
 
-    if(components !== resultComponents) {
+    if (components !== resultComponents) {
       // if a caret component is to be rendered, add all components that followed as its children
-      resultComponents.push(
-        this.renderHighlighterCaret(components)
-      );
+      resultComponents.push(this.renderHighlighterCaret(components));
     }
 
     return resultComponents;
   },
 
-  renderSubstring: function (string, key) {
+  renderSubstring: function renderSubstring(string, key) {
     // set substring spand to hidden, so that Emojis are not shown double in Mobile Safari
-    return (
-      React.createElement("span", {style: {visibility: 'hidden'}, key: key}, 
-         string 
-      )
+    return React.createElement(
+      'span',
+      { style: { visibility: 'hidden' }, key: key },
+      string
     );
   },
 
   // Renders an component to be inserted in the highlighter at the current caret position
-  renderHighlighterCaret: function(children) {
-    return (
-      React.createElement("span", {className: "caret-marker", ref: "caret", key: "caret"}, 
-         children 
-      )
+  renderHighlighterCaret: function renderHighlighterCaret(children) {
+    return React.createElement(
+      'span',
+      { className: 'caret-marker', ref: 'caret', key: 'caret' },
+      children
     );
   },
 
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
-  getMentionComponentForMatch: function(id, display, type, key) {
+  getMentionComponentForMatch: function getMentionComponentForMatch(id, display, type, key) {
     var childrenCount = React.Children.count(this.props.children);
     var props = { id: id, display: display, key: key };
 
-    if(childrenCount > 1) {
-      if(!type) {
-        throw new Error(
-          "Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder"
-        );
+    if (childrenCount > 1) {
+      if (!type) {
+        throw new Error("Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder");
       }
 
       // detect the Mention child to be cloned
       var foundChild = null;
-      React.Children.forEach(this.props.children, function(child) {
-        if(!child) {
+      React.Children.forEach(this.props.children, function (child) {
+        if (!child) {
           return;
         }
 
-        if(child.props.type === type) {
+        if (child.props.type === type) {
           foundChild = child;
         }
       });
 
       // clone the Mention child that is applicable for the given type
       return React.cloneElement(foundChild, props);
-    } else if(childrenCount === 1) {
+    } else if (childrenCount === 1) {
       // clone single Mention child
       var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
-      return React.cloneElement(child, props );
+      return React.cloneElement(child, props);
     } else {
       // no children, use default configuration
       return Mention(props);
@@ -364,30 +359,24 @@ module.exports = React.createClass({
   },
 
   // Returns the text to set as the value of the textarea with all markups removed
-  getPlainText: function() {
-    var value = LinkedValueUtils.getValue(this.props) || "";
+  getPlainText: function getPlainText() {
+    var value = LinkedValueUtils.getValue(this.props) || "";
     return utils.getPlainText(value, this.props.markup, this.props.displayTransform);
   },
 
   // Handle input element's change event
-  handleChange: function(ev) {
+  handleChange: function handleChange(ev) {
 
-    if(document.activeElement !== ev.target) {
+    if (document.activeElement !== ev.target) {
       // fix an IE bug (blur from empty input element with placeholder attribute trigger "input" event)
       return;
     }
 
-    var value = LinkedValueUtils.getValue(this.props) || "";
+    var value = LinkedValueUtils.getValue(this.props) || "";
     var newPlainTextValue = ev.target.value;
 
     // Derive the new value to set by applying the local change in the textarea's plain text
-    var newValue = utils.applyChangeToValue(
-      value, this.props.markup,
-      newPlainTextValue,
-      this.state.selectionStart, this.state.selectionEnd,
-      ev.target.selectionEnd,
-      this.props.displayTransform
-    );
+    var newValue = utils.applyChangeToValue(value, this.props.markup, newPlainTextValue, this.state.selectionStart, this.state.selectionEnd, ev.target.selectionEnd, this.props.displayTransform);
 
     // In case a mention is deleted, also adjust the new plain text value
     newPlainTextValue = utils.getPlainText(newValue, this.props.markup, this.props.displayTransform);
@@ -401,7 +390,7 @@ module.exports = React.createClass({
     // selection range that are automatically deleted
     var startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart, this.props.displayTransform);
 
-    if(startOfMention !== undefined && this.state.selectionEnd > startOfMention) {
+    if (startOfMention !== undefined && this.state.selectionEnd > startOfMention) {
       // only if a deletion has taken place
       selectionStart = startOfMention;
       selectionEnd = selectionStart;
@@ -411,7 +400,7 @@ module.exports = React.createClass({
     this.setState({
       selectionStart: selectionStart,
       selectionEnd: selectionEnd,
-      setSelectionAfterMentionChange: setSelectionAfterMentionChange,
+      setSelectionAfterMentionChange: setSelectionAfterMentionChange
     });
 
     var mentions = utils.getMentions(newValue, this.props.markup);
@@ -424,7 +413,7 @@ module.exports = React.createClass({
   },
 
   // Handle input element's select event
-  handleSelect: function(ev) {
+  handleSelect: function handleSelect(ev) {
     // keep track of selection range / caret position
     this.setState({
       selectionStart: ev.target.selectionStart,
@@ -433,7 +422,7 @@ module.exports = React.createClass({
 
     // refresh suggestions queries
     var el = this.refs.input;
-    if(ev.target.selectionStart === ev.target.selectionEnd) {
+    if (ev.target.selectionStart === ev.target.selectionEnd) {
       this.updateMentionsQueries(el.value, ev.target.selectionStart);
     } else {
       this.clearSuggestions();
@@ -445,19 +434,19 @@ module.exports = React.createClass({
     this.props.onSelect(ev);
   },
 
-  handleKeyDown: function(ev) {
+  handleKeyDown: function handleKeyDown(ev) {
     var keyHandlers = {};
 
     // do not intercept key events if the suggestions overlay is not shown
     var suggestionsCount = 0;
-    for(var prop in this.state.suggestions) {
-      if(this.state.suggestions.hasOwnProperty(prop)) {
+    for (var prop in this.state.suggestions) {
+      if (this.state.suggestions.hasOwnProperty(prop)) {
         suggestionsCount += this.state.suggestions[prop].results.length;
       }
     }
 
     var suggestionsComp = this.refs.suggestions;
-    if(suggestionsCount > 0 && suggestionsComp) {
+    if (suggestionsCount > 0 && suggestionsComp) {
       keyHandlers[KEY.ESC] = this.clearSuggestions;
       keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
       keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);
@@ -465,7 +454,7 @@ module.exports = React.createClass({
       keyHandlers[KEY.TAB] = suggestionsComp.selectFocused;
     }
 
-    if(keyHandlers[ev.keyCode]) {
+    if (keyHandlers[ev.keyCode]) {
       keyHandlers[ev.keyCode]();
       ev.preventDefault();
     } else {
@@ -473,10 +462,10 @@ module.exports = React.createClass({
     }
   },
 
-  handleBlur: function(ev) {
+  handleBlur: function handleBlur(ev) {
     // only reset selection if the mousdown happened on an element
     // other than the suggestions overlay
-    if(!this._suggestionsMouseDown) {
+    if (!this._suggestionsMouseDown) {
       this.setState({
         selectionStart: null,
         selectionEnd: null
@@ -485,38 +474,38 @@ module.exports = React.createClass({
     this._suggestionsMouseDown = false;
 
     var that = this;
-    window.setTimeout(function() {
+    window.setTimeout(function () {
       that.updateHighlighterScroll();
     }, 1);
 
     this.props.onBlur(ev);
   },
 
-  handleSuggestionsMouseDown: function(ev) {
+  handleSuggestionsMouseDown: function handleSuggestionsMouseDown(ev) {
     this._suggestionsMouseDown = true;
   },
 
-  updateSuggestionsPosition: function() {
-    if(!this.refs.caret || !this.refs.suggestions) return;
+  updateSuggestionsPosition: function updateSuggestionsPosition() {
+    if (!this.refs.caret || !this.refs.suggestions) return;
 
     var containerEl = this.refs.container;
     var caretEl = this.refs.caret;
     var suggestionsEl = ReactDOM.findDOMNode(this.refs.suggestions);
     var highligherEl = this.refs.highlighter;
-    if(!suggestionsEl) return;
+    if (!suggestionsEl) return;
 
     var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
     // guard for mentions suggestions list clipped by right edge of window
     if (leftPos + suggestionsEl.offsetWidth > containerEl.offsetWidth) {
-      suggestionsEl.style.right = "0px"
+      suggestionsEl.style.right = "0px";
     } else {
-      suggestionsEl.style.left = leftPos + "px"
+      suggestionsEl.style.left = leftPos + "px";
     }
     suggestionsEl.style.top = caretEl.offsetTop - highligherEl.scrollTop + "px";
   },
 
-  updateHighlighterScroll: function() {
-    if(!this.refs.input || !this.refs.highlighter) {
+  updateHighlighterScroll: function updateHighlighterScroll() {
+    if (!this.refs.input || !this.refs.highlighter) {
       // since the invocation of this function is deferred,
       // the whole component may have been unmounted in the meanwhile
       return;
@@ -526,29 +515,28 @@ module.exports = React.createClass({
     highlighter.scrollLeft = input.scrollLeft;
   },
 
-  componentDidMount: function() {
+  componentDidMount: function componentDidMount() {
     this.updateSuggestionsPosition();
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate: function componentDidUpdate() {
     this.updateSuggestionsPosition();
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
     if (this.state.setSelectionAfterMentionChange) {
-      this.setState({setSelectionAfterMentionChange: false});
+      this.setState({ setSelectionAfterMentionChange: false });
       this.setSelection(this.state.selectionStart, this.state.selectionEnd);
     }
   },
 
-  setSelection: function(selectionStart, selectionEnd) {
-    if(selectionStart === null || selectionEnd === null) return;
+  setSelection: function setSelection(selectionStart, selectionEnd) {
+    if (selectionStart === null || selectionEnd === null) return;
 
     var el = this.refs.input;
-    if(el.setSelectionRange) {
+    if (el.setSelectionRange) {
       el.setSelectionRange(selectionStart, selectionEnd);
-    }
-    else if(el.createTextRange) {
+    } else if (el.createTextRange) {
       var range = el.createTextRange();
       range.collapse(true);
       range.moveEnd('character', selectionEnd);
@@ -557,7 +545,7 @@ module.exports = React.createClass({
     }
   },
 
-  updateMentionsQueries: function(plainTextValue, caretPosition) {
+  updateMentionsQueries: function updateMentionsQueries(plainTextValue, caretPosition) {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
     this.setState({
@@ -566,8 +554,7 @@ module.exports = React.createClass({
 
     // If caret is inside of or directly behind of mention, do not query
     var value = LinkedValueUtils.getValue(this.props) || "";
-    if( utils.isInsideOfMention(value, this.props.markup, caretPosition, this.props.displayTransform) ||
-        utils.isInsideOfMention(value, this.props.markup, caretPosition-1, this.props.displayTransform) ) {
+    if (utils.isInsideOfMention(value, this.props.markup, caretPosition, this.props.displayTransform) || utils.isInsideOfMention(value, this.props.markup, caretPosition - 1, this.props.displayTransform)) {
       return;
     }
 
@@ -576,21 +563,21 @@ module.exports = React.createClass({
     var substring = plainTextValue.substring(0, caretPosition);
 
     var that = this;
-    React.Children.forEach(this.props.children, function(child) {
-      if(!child) {
+    React.Children.forEach(this.props.children, function (child) {
+      if (!child) {
         return;
       }
 
       var regex = _getTriggerRegex(child.props.trigger);
       var match = substring.match(regex);
-      if(match) {
+      if (match) {
         var querySequenceStart = substring.indexOf(match[1], match.index);
-        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue);
+        that.queryData(match[2], child, querySequenceStart, querySequenceStart + match[1].length, plainTextValue);
       }
     });
   },
 
-  clearSuggestions: function() {
+  clearSuggestions: function clearSuggestions() {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
     this.setState({
@@ -598,17 +585,17 @@ module.exports = React.createClass({
     });
   },
 
-  queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  queryData: function queryData(query, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     var provideData = _getDataProvider(mentionDescriptor.props.data);
     var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue));
-    if(snycResult instanceof Array) {
+    if (snycResult instanceof Array) {
       this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, snycResult);
     }
   },
 
-  updateSuggestions: function(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, suggestions) {
+  updateSuggestions: function updateSuggestions(queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, suggestions) {
     // neglect async results from previous queries
-    if(queryId !== this._queryId) return;
+    if (queryId !== this._queryId) return;
 
     var update = {};
     update[mentionDescriptor.type] = {
@@ -625,7 +612,7 @@ module.exports = React.createClass({
     });
   },
 
-  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  addMention: function addMention(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this.props) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
@@ -646,13 +633,13 @@ module.exports = React.createClass({
 
     // Propagate change
     //var handleChange = LinkedValueUtils.getOnChange(this) || emptyFunction;
-    var eventMock = { target: { value: newValue }};
+    var eventMock = { target: { value: newValue } };
     var mentions = utils.getMentions(newValue, this.props.markup);
     var newPlainTextValue = utils.spliceString(plainTextValue, querySequenceStart, querySequenceEnd, displayValue);
     this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
 
     var onAdd = mentionDescriptor.props.onAdd;
-    if(onAdd) {
+    if (onAdd) {
       onAdd(suggestion.id, suggestion.display);
     }
 
@@ -660,9 +647,9 @@ module.exports = React.createClass({
     this.clearSuggestions();
   },
 
-  isLoading: function() {
+  isLoading: function isLoading() {
     var isLoading = false;
-    React.Children.forEach(this.props.children, function(child) {
+    React.Children.forEach(this.props.children, function (child) {
       isLoading = isLoading || child && child.props.isLoading;
     });
     return isLoading;
@@ -670,10 +657,12 @@ module.exports = React.createClass({
 
   _queryId: 0
 
-
 });
-
 },{"./Mention":1,"./SuggestionsOverlay":3,"./utils":5,"fbjs/lib/emptyFunction":6,"react-dom":7,"react/lib/LinkedValueUtils":28}],3:[function(_dereq_,module,exports){
+'use strict';
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var emptyFunction = _dereq_('fbjs/lib/emptyFunction');
 var utils = _dereq_('./utils');
@@ -682,136 +671,218 @@ module.exports = React.createClass({
 
   displayName: 'SuggestionsOverlay',
 
-  getDefaultProps: function() {
+  getDefaultProps: function getDefaultProps() {
     return {
       suggestions: {},
       onSelect: emptyFunction
     };
   },
 
-  getInitialState: function() {
+  getInitialState: function getInitialState() {
     return {
       focusIndex: 0
     };
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
     // always reset the focus on update
     this.setState({
       focusIndex: 0
     });
   },
 
-  render: function() {
+  render: function render() {
     // do not show suggestions until there is some data
-    if(this.countSuggestions() === 0 && !this.props.isLoading) return null;
+    if (this.countSuggestions() === 0 && !this.props.isLoading) return null;
 
-    return (
-      React.createElement("div", {
-        className: "suggestions", 
-        onMouseDown: this.props.onMouseDown}, 
-        React.createElement("ul", null,  this.renderSuggestions() ), 
-         this.renderLoadingIndicator() 
-      )
+    return React.createElement(
+      'div',
+      {
+        className: 'suggestions',
+        onMouseDown: this.props.onMouseDown },
+      React.createElement(
+        'ul',
+        null,
+        this.renderSuggestions()
+      ),
+      this.renderLoadingIndicator()
     );
   },
 
-  renderSuggestions: function() {
-    var listItems = [];
-    for(var mentionType in this.props.suggestions) {
-      if(!this.props.suggestions.hasOwnProperty(mentionType)) return;
-      var suggestions = this.props.suggestions[mentionType];
+  getSuggestions: function getSuggestions() {
+    var suggestions = [];
 
-      for(var i=0, l=suggestions.results.length; i < l; ++i) {
-        listItems.push(
-          this.renderSuggestion(
-            suggestions.results[i], suggestions.query,
-            suggestions.querySequenceStart, suggestions.querySequenceEnd,
-            suggestions.mentionDescriptor, listItems.length,
-            suggestions.plainTextValue
-          )
-        );
+    for (var mentionType in this.props.suggestions) {
+      if (!this.props.suggestions.hasOwnProperty(mentionType)) {
+        return;
       }
+
+      suggestions = suggestions.concat({
+        suggestions: this.props.suggestions[mentionType].results,
+        descriptor: this.props.suggestions[mentionType]
+      });
     }
-    return listItems;
+
+    return suggestions;
   },
 
-  renderSuggestion: function(suggestion, query, querySequenceStart, querySequenceEnd, mentionDescriptor, index, plainTextValue) {
-    var id, display;
-    var type = mentionDescriptor.props.type;
+  getSuggestion: function getSuggestion(index) {
+    return this.getSuggestions().reduce(function (result, _ref) {
+      var suggestions = _ref.suggestions;
+      var descriptor = _ref.descriptor;
 
-    if(suggestion instanceof String) {
-      id = display = suggestion;
-    } else if(!suggestion.id || !suggestion.display) {
-      id = display = suggestion.id || suggestion.id;
-    } else {
-      id = suggestion.id;
-      display = suggestion.display;
-    }
+      var partial = suggestions.map(function (suggestion) {
+        return {
+          suggestion: suggestion,
+          descriptor: descriptor
+        };
+      });
 
-    var isFocused = (index === this.state.focusIndex);
+      return [].concat(_toConsumableArray(result), _toConsumableArray(partial));
+    }, [])[index];
+  },
+
+  renderSuggestions: function renderSuggestions() {
+    var _this = this;
+
+    var transformSuggestions = function transformSuggestions(result, _ref2) {
+      var suggestions = _ref2.suggestions;
+      var descriptor = _ref2.descriptor;
+      var query = descriptor.query;
+      var querySequenceStart = descriptor.querySequenceStart;
+      var querySequenceEnd = descriptor.querySequenceEnd;
+      var mentionDescriptor = descriptor.mentionDescriptor;
+      var plainTextValue = descriptor.plainTextValue;
+
+      var partial = suggestions.map(function (suggestion, index) {
+        return _this.renderSuggestion(suggestion, descriptor, result.length + index);
+      });
+
+      return [].concat(_toConsumableArray(result), _toConsumableArray(partial));
+    };
+
+    return this.getSuggestions().reduce(transformSuggestions, []);
+  },
+
+  renderSuggestion: function renderSuggestion(suggestion, descriptor, index) {
+    var id = this.getID(suggestion);
+
+    var isFocused = index === this.state.focusIndex;
     var cls = isFocused ? "focus" : "";
-    var handleClick = this.select.bind(null, suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
+    var handleClick = this.select.bind(null, suggestion, descriptor);
 
+    return React.createElement(
+      'li',
+      {
+        key: id,
+        ref: isFocused && "focused",
+        className: cls,
+        onClick: handleClick,
+        onMouseEnter: this.handleMouseEnter.bind(null, index) },
+      this.renderContent(id, suggestion, descriptor)
+    );
+  },
+
+  renderContent: function renderContent(id, suggestion, _ref3) {
+    var mentionDescriptor = _ref3.mentionDescriptor;
+    var query = _ref3.query;
+
+    var display = this.getDisplay(suggestion);
     var highlightedDisplay = this.renderHighlightedDisplay(display, query);
-    var content = mentionDescriptor.props.renderSuggestion ?
-      mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay) :
-      highlightedDisplay;
 
-    return (
-      React.createElement("li", {key: id, ref: isFocused && "focused", className: cls, onClick: handleClick, onMouseEnter: this.handleMouseEnter.bind(null, index)}, 
-         content 
-      )
-    );
+    if (mentionDescriptor.props.renderSuggestion) {
+      return mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay);
+    }
+
+    return highlightedDisplay;
   },
 
-  renderHighlightedDisplay: function(display, query) {
+  getDisplay: function getDisplay(suggestion) {
+    if (suggestion instanceof String) {
+      return suggestion;
+    }
+
+    if (!suggestion.id || !suggestion.display) {
+      return suggestion.id;
+    }
+
+    return suggestion.display;
+  },
+
+  getID: function getID(suggestion) {
+    if (suggestion instanceof String) {
+      return suggestion;
+    }
+
+    return suggestion.id;
+  },
+
+  renderHighlightedDisplay: function renderHighlightedDisplay(display, query) {
     var i = display.toLowerCase().indexOf(query.toLowerCase());
-    if(i === -1) return React.createElement("span", null,  display );
+    if (i === -1) return React.createElement(
+      'span',
+      null,
+      display
+    );
 
-    return (
-      React.createElement("span", null, 
-         display.substring(0, i), 
-        React.createElement("b", null,  display.substring(i, i+query.length)), 
-         display.substring(i+query.length)
-      )
+    return React.createElement(
+      'span',
+      null,
+      display.substring(0, i),
+      React.createElement(
+        'b',
+        null,
+        display.substring(i, i + query.length)
+      ),
+      display.substring(i + query.length)
     );
   },
 
-  renderLoadingIndicator: function () {
-    if(!this.props.isLoading) {
+  renderLoadingIndicator: function renderLoadingIndicator() {
+    if (!this.props.isLoading) {
       return;
     }
 
-    return (
-      React.createElement("div", {className: "loading-indicator"}, 
-        React.createElement("div", {className: "spinner"}, 
-          React.createElement("div", {className: "element1"}), 
-          React.createElement("div", {className: "element2"}), 
-          React.createElement("div", {className: "element3"}), 
-          React.createElement("div", {className: "element4"}), 
-          React.createElement("div", {className: "element5"})
-        )
+    return React.createElement(
+      'div',
+      { className: 'loading-indicator' },
+      React.createElement(
+        'div',
+        { className: 'spinner' },
+        React.createElement('div', { className: 'element1' }),
+        React.createElement('div', { className: 'element2' }),
+        React.createElement('div', { className: 'element3' }),
+        React.createElement('div', { className: 'element4' }),
+        React.createElement('div', { className: 'element5' })
       )
     );
   },
 
-  handleMouseEnter: function(index, ev) {
+  handleMouseEnter: function handleMouseEnter(index, ev) {
     this.setState({
       focusIndex: index
     });
   },
 
-  select: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  select: function select(suggestion, _ref4) {
+    var mentionDescriptor = _ref4.mentionDescriptor;
+    var querySequenceStart = _ref4.querySequenceStart;
+    var querySequenceEnd = _ref4.querySequenceEnd;
+    var plainTextValue = _ref4.plainTextValue;
+
     this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
   },
 
-  selectFocused: function() {
-    // call click handler of the focused element
-    this.refs.focused.props.onClick();
+  selectFocused: function selectFocused() {
+    var _getSuggestion = this.getSuggestion(this.state.focusIndex);
+
+    var suggestion = _getSuggestion.suggestion;
+    var descriptor = _getSuggestion.descriptor;
+
+    this.select(suggestion, descriptor);
   },
 
-  shiftFocus: function(delta) {
+  shiftFocus: function shiftFocus(delta) {
     var suggestionsCount = this.countSuggestions();
 
     this.setState({
@@ -819,11 +890,11 @@ module.exports = React.createClass({
     });
   },
 
-  countSuggestions: function(props) {
-    props = props || this.props;
+  countSuggestions: function countSuggestions(props) {
+    props = props || this.props;
     var result = 0;
-    for(var prop in this.props.suggestions) {
-      if(this.props.suggestions.hasOwnProperty(prop)) {
+    for (var prop in this.props.suggestions) {
+      if (this.props.suggestions.hasOwnProperty(prop)) {
         result += this.props.suggestions[prop].results.length;
       }
     }
@@ -831,19 +902,21 @@ module.exports = React.createClass({
   }
 
 });
-
 },{"./utils":5,"fbjs/lib/emptyFunction":6}],4:[function(_dereq_,module,exports){
+'use strict';
+
 module.exports = {
   MentionsInput: _dereq_('./MentionsInput'),
   Mention: _dereq_('./Mention')
 };
-
 },{"./Mention":1,"./MentionsInput":2}],5:[function(_dereq_,module,exports){
+"use strict";
+
 var PLACEHOLDERS = {
   id: "__id__",
   display: "__display__",
   type: "__type__"
-}
+};
 
 var escapeMap = {
   '&': '&amp;',
@@ -853,24 +926,24 @@ var escapeMap = {
   "'": '&#x27;',
   '`': '&#x60;'
 };
-var createEscaper = function(map) {
-  var escaper = function(match) {
+var createEscaper = function createEscaper(map) {
+  var escaper = function escaper(match) {
     return map[match];
   };
   var keys = [];
-  for(var key in map) {
-    if(map.hasOwnProperty(key)) keys.push(key);
+  for (var key in map) {
+    if (map.hasOwnProperty(key)) keys.push(key);
   }
   var source = '(?:' + keys.join('|') + ')';
   var testRegexp = RegExp(source);
   var replaceRegexp = RegExp(source, 'g');
-  return function(string) {
+  return function (string) {
     string = string == null ? '' : '' + string;
     return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
   };
 };
 
-var numericComparator = function(a, b) {
+var numericComparator = function numericComparator(a, b) {
   a = a === null ? Number.MAX_VALUE : a;
   b = b === null ? Number.MAX_VALUE : b;
   return a - b;
@@ -880,48 +953,48 @@ module.exports = {
 
   escapeHtml: createEscaper(escapeMap),
 
-  escapeRegex: function(str) {
-      return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  escapeRegex: function escapeRegex(str) {
+    return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   },
 
-  markupToRegex: function(markup, matchAtEnd) {
+  markupToRegex: function markupToRegex(markup, matchAtEnd) {
     var markupPattern = this.escapeRegex(markup);
     markupPattern = markupPattern.replace(PLACEHOLDERS.display, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.id, "(.+?)");
     markupPattern = markupPattern.replace(PLACEHOLDERS.type, "(.+?)");
-    if(matchAtEnd) {
+    if (matchAtEnd) {
       // append a $ to match at the end of the string
       markupPattern = markupPattern + "$";
     }
     return new RegExp(markupPattern, "g");
   },
 
-  spliceString: function(str, start, end, insert) {
+  spliceString: function spliceString(str, start, end, insert) {
     return str.substring(0, start) + insert + str.substring(end);
   },
 
-  extend: function(obj) {
+  extend: function extend(obj) {
     var source, prop;
     for (var i = 1, length = arguments.length; i < length; i++) {
       source = arguments[i];
       for (prop in source) {
         if (hasOwnProperty.call(source, prop)) {
-            obj[prop] = source[prop];
+          obj[prop] = source[prop];
         }
       }
     }
     return obj;
   },
 
-  isNumber: function(obj) {
+  isNumber: function isNumber(obj) {
     return Object.prototype.toString.call(obj) === "[object Number]";
   },
 
   /**
    * parameterName: "id", "display", or "type"
    */
-  getPositionOfCapturingGroup: function(markup, parameterName) {
-    if(parameterName !== "id" && parameterName !== "display" && parameterName !== "type") {
+  getPositionOfCapturingGroup: function getPositionOfCapturingGroup(markup, parameterName) {
+    if (parameterName !== "id" && parameterName !== "display" && parameterName !== "type") {
       throw new Error("parameterName must be 'id', 'display', or 'type'");
     }
 
@@ -931,16 +1004,16 @@ module.exports = {
     var indexType = markup.indexOf(PLACEHOLDERS.type);
 
     // set indices to null if not found
-    if(indexDisplay < 0) indexDisplay = null;
-    if(indexId < 0) indexId = null;
-    if(indexType < 0) indexType = null;
+    if (indexDisplay < 0) indexDisplay = null;
+    if (indexId < 0) indexId = null;
+    if (indexType < 0) indexType = null;
 
-    if(indexDisplay === null && indexId === null) {
+    if (indexDisplay === null && indexId === null) {
       // markup contains none of the mandatory placeholders
       throw new Error("The markup `" + markup + "` must contain at least one of the placeholders `__id__` or `__display__`");
     }
 
-    if(indexType === null && parameterName === "type") {
+    if (indexType === null && parameterName === "type") {
       // markup does not contain optional __type__ placeholder
       return null;
     }
@@ -950,19 +1023,18 @@ module.exports = {
 
     // If only one the placeholders __id__ and __display__ is present,
     // use the captured string for both parameters, id and display
-    if(indexDisplay === null) indexDisplay = indexId;
-    if(indexId === null) indexId = indexDisplay;
+    if (indexDisplay === null) indexDisplay = indexId;
+    if (indexId === null) indexId = indexDisplay;
 
-    if(parameterName === "id") return sortedIndices.indexOf(indexId);
-    if(parameterName === "display") return sortedIndices.indexOf(indexDisplay);
-    if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
-
+    if (parameterName === "id") return sortedIndices.indexOf(indexId);
+    if (parameterName === "display") return sortedIndices.indexOf(indexDisplay);
+    if (parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
   },
 
   // Finds all occurences of the markup in the value and iterates the plain text sub strings
   // in between those markups using `textIteratee` and the markup occurrences using the
   // `markupIteratee`.
-  iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee, displayTransform) {
+  iterateMentionsMarkup: function iterateMentionsMarkup(value, markup, textIteratee, markupIteratee, displayTransform) {
     var regex = this.markupToRegex(markup);
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
     var idPos = this.getPositionOfCapturingGroup(markup, "id");
@@ -973,26 +1045,26 @@ module.exports = {
     var currentPlainTextIndex = 0;
 
     // detect all mention markup occurences in the value and iterate the matches
-    while((match = regex.exec(value)) !== null) {
+    while ((match = regex.exec(value)) !== null) {
 
-      var id = match[idPos+1];
-      var display = match[displayPos+1];
-      var type = typePos ? match[typePos+1] : null;
+      var id = match[idPos + 1];
+      var display = match[displayPos + 1];
+      var type = typePos ? match[typePos + 1] : null;
 
-      if(displayTransform) display = displayTransform(id, display, type);
+      if (displayTransform) display = displayTransform(id, display, type);
 
       var substr = value.substring(start, match.index);
-      textIteratee( substr, start, currentPlainTextIndex );
+      textIteratee(substr, start, currentPlainTextIndex);
       currentPlainTextIndex += substr.length;
 
-      markupIteratee( match[0], match.index, currentPlainTextIndex, id, display, type, start );
+      markupIteratee(match[0], match.index, currentPlainTextIndex, id, display, type, start);
       currentPlainTextIndex += display.length;
 
       start = regex.lastIndex;
     }
 
-    if(start < value.length) {
-      textIteratee( value.substring(start), start, currentPlainTextIndex );
+    if (start < value.length) {
+      textIteratee(value.substring(start), start, currentPlainTextIndex);
     }
   },
 
@@ -1000,24 +1072,24 @@ module.exports = {
   // in the marked up value string.
   // If the passed character index lies inside a mention, returns the index of the mention
   // markup's first char, or respectively tho one after its last char, if the flag `toEndOfMarkup` is set.
-  mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup, displayTransform) {
-    if(!this.isNumber(indexInPlainText)) {
+  mapPlainTextIndex: function mapPlainTextIndex(value, markup, indexInPlainText, toEndOfMarkup, displayTransform) {
+    if (!this.isNumber(indexInPlainText)) {
       return indexInPlainText;
     }
 
     var result;
-    var textIteratee = function(substr, index, substrPlainTextIndex) {
-      if(result !== undefined) return;
+    var textIteratee = function textIteratee(substr, index, substrPlainTextIndex) {
+      if (result !== undefined) return;
 
-      if(substrPlainTextIndex + substr.length >= indexInPlainText) {
+      if (substrPlainTextIndex + substr.length >= indexInPlainText) {
         // found the corresponding position in the current plain text range
         result = index + indexInPlainText - substrPlainTextIndex;
       }
     };
-    var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
-      if(result !== undefined) return;
+    var markupIteratee = function markupIteratee(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
+      if (result !== undefined) return;
 
-      if(mentionPlainTextIndex + display.length > indexInPlainText) {
+      if (mentionPlainTextIndex + display.length > indexInPlainText) {
         // found the corresponding position inside current match,
         // return the index of the first or after the last char of the matching markup
         // depending on whether the `toEndOfMarkup` is set
@@ -1035,17 +1107,17 @@ module.exports = {
   // For a given indexInPlainText that lies inside a mention,
   // returns a the index of of the first char of the mention in the plain text.
   // If indexInPlainText does not lie inside a mention, returns indexInPlainText.
-  findStartOfMentionInPlainText: function(value, markup, indexInPlainText, displayTransform) {
+  findStartOfMentionInPlainText: function findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform) {
     var result = indexInPlainText;
     var foundMention = false;
 
-    var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
-      if(mentionPlainTextIndex < indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
+    var markupIteratee = function markupIteratee(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
+      if (mentionPlainTextIndex < indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
         result = mentionPlainTextIndex;
         foundMention = true;
       }
     };
-    this.iterateMentionsMarkup(value, markup, function(){}, markupIteratee, displayTransform);
+    this.iterateMentionsMarkup(value, markup, function () {}, markupIteratee, displayTransform);
 
     if (foundMention) {
       return result;
@@ -1053,14 +1125,14 @@ module.exports = {
   },
 
   // Returns whether the given plain text index lies inside a mention
-  isInsideOfMention: function(value, markup, indexInPlainText, displayTransform) {
+  isInsideOfMention: function isInsideOfMention(value, markup, indexInPlainText, displayTransform) {
     var mentionStart = this.findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform);
-    return mentionStart !== undefined && mentionStart !== indexInPlainText
+    return mentionStart !== undefined && mentionStart !== indexInPlainText;
   },
 
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change
-  applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
+  applyChangeToValue: function applyChangeToValue(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
     var oldPlainTextValue = this.getPlainText(value, markup, displayTransform);
 
     var lengthDelta = oldPlainTextValue.length - plainTextValue.length;
@@ -1073,10 +1145,7 @@ module.exports = {
     }
 
     // Fixes an issue with replacing combined characters for complex input. Eg like acented letters on OSX
-    if (selectionStartBeforeChange === selectionEndBeforeChange &&
-      selectionEndBeforeChange === selectionEndAfterChange &&
-      oldPlainTextValue.length === plainTextValue.length
-    ) {
+    if (selectionStartBeforeChange === selectionEndBeforeChange && selectionEndBeforeChange === selectionEndAfterChange && oldPlainTextValue.length === plainTextValue.length) {
       selectionStartBeforeChange = selectionStartBeforeChange - 1;
     }
 
@@ -1087,38 +1156,33 @@ module.exports = {
     var spliceStart = Math.min(selectionStartBeforeChange, selectionEndAfterChange);
 
     var spliceEnd = selectionEndBeforeChange;
-    if(selectionStartBeforeChange === selectionEndAfterChange) {
+    if (selectionStartBeforeChange === selectionEndAfterChange) {
       // handling for Delete key with no range selection
       spliceEnd = Math.max(selectionEndBeforeChange, selectionStartBeforeChange + lengthDelta);
     }
 
     // splice the current marked up value and insert new chars
-    return this.spliceString(
-      value,
-      this.mapPlainTextIndex(value, markup, spliceStart, false, displayTransform),
-      this.mapPlainTextIndex(value, markup, spliceEnd, true, displayTransform),
-      insert
-    );
+    return this.spliceString(value, this.mapPlainTextIndex(value, markup, spliceStart, false, displayTransform), this.mapPlainTextIndex(value, markup, spliceEnd, true, displayTransform), insert);
   },
 
-  getPlainText: function(value, markup, displayTransform) {
+  getPlainText: function getPlainText(value, markup, displayTransform) {
     var regex = this.markupToRegex(markup);
     var idPos = this.getPositionOfCapturingGroup(markup, "id");
     var displayPos = this.getPositionOfCapturingGroup(markup, "display");
     var typePos = this.getPositionOfCapturingGroup(markup, "type");
-    return value.replace(regex, function() {
+    return value.replace(regex, function () {
       // first argument is the whole match, capturing groups are following
-      var id = arguments[idPos+1];
-      var display = arguments[displayPos+1];
-      var type = arguments[typePos+1];
-      if(displayTransform) display = displayTransform(id, display, type);
+      var id = arguments[idPos + 1];
+      var display = arguments[displayPos + 1];
+      var type = arguments[typePos + 1];
+      if (displayTransform) display = displayTransform(id, display, type);
       return display;
     });
   },
 
-  getMentions: function (value, markup) {
+  getMentions: function getMentions(value, markup) {
     var mentions = [];
-    this.iterateMentionsMarkup(value, markup, function (){}, function (match, index, plainTextIndex, id, display, type, start) {
+    this.iterateMentionsMarkup(value, markup, function () {}, function (match, index, plainTextIndex, id, display, type, start) {
       mentions.push({
         id: id,
         display: display,
@@ -1130,15 +1194,14 @@ module.exports = {
     return mentions;
   },
 
-  makeMentionsMarkup: function(markup, id, display, type) {
+  makeMentionsMarkup: function makeMentionsMarkup(markup, id, display, type) {
     var result = markup.replace(PLACEHOLDERS.id, id);
     result = result.replace(PLACEHOLDERS.display, display);
     result = result.replace(PLACEHOLDERS.type, type);
     return result;
   }
 
-}
-
+};
 },{}],6:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.

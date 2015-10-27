@@ -13,7 +13,7 @@ module.exports = function(config) {
 
     preprocessors: {
       'tests.js': ['browserify'],
-      'src/*.jsx': ['babelify', 'browserify', 'coverage']
+      'src/*.jsx': ['babel', 'browserify', 'coverage']
     },
 
     coverageReporter: {

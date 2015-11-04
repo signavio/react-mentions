@@ -320,13 +320,13 @@ module.exports = React.createClass({
     return utils.getPlainText(value, this.props.markup, this.props.displayTransform);
   },
 
-  getOnChange: function(props) {
+  executeOnChange: function(event, ...args) {
     if(this.props.onChange) {
-      return this.props.onChange;
+      return this.props.onChange(event, ...args);
     }
 
     if(this.props.valueLink) {
-      return this.props.valueLink.requestChange;
+      return this.props.valueLink.requestChange(event.target.value, ...args);
     }
   },
 
@@ -378,10 +378,10 @@ module.exports = React.createClass({
     var mentions = utils.getMentions(newValue, this.props.markup);
 
     // Propagate change
-    var handleChange = this.getOnChange(this.props) || emptyFunction;
+    // var handleChange = this.getOnChange(this.props) || emptyFunction;
     var eventMock = { target: { value: newValue } };
     // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
-    handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
+    this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions);
   },
 
   // Handle input element's select event
@@ -606,11 +606,11 @@ module.exports = React.createClass({
     });
 
     // Propagate change
-    var handleChange = this.getOnChange(this) || emptyFunction;
     var eventMock = { target: { value: newValue }};
     var mentions = utils.getMentions(newValue, this.props.markup);
     var newPlainTextValue = utils.spliceString(plainTextValue, querySequenceStart, querySequenceEnd, displayValue);
-    handleChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
+
+    this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions);
 
     var onAdd = mentionDescriptor.props.onAdd;
     if(onAdd) {

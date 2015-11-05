@@ -1153,11 +1153,11 @@ module.exports = {
     var oldPlainTextValue = this.getPlainText(value, markup, displayTransform);
 
     var lengthDelta = oldPlainTextValue.length - plainTextValue.length;
-    if (!selectionStartBeforeChange) {
+    if (selectionStartBeforeChange === 'undefined') {
       selectionStartBeforeChange = selectionEndAfterChange + lengthDelta;
     }
 
-    if (!selectionEndBeforeChange) {
+    if (selectionEndBeforeChange === 'undefined') {
       selectionEndBeforeChange = selectionStartBeforeChange;
     }
 

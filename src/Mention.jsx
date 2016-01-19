@@ -24,7 +24,8 @@ module.exports = React.createClass({
     onAdd: React.PropTypes.func,
 
     renderSuggestion: React.PropTypes.func,
-
+    
+    className: React.PropTypes.string  
   },
 
   getDefaultProps: function () {
@@ -39,7 +40,7 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      <strong>{ this.props.display }</strong>
+      <strong className={this.props.className}>{ this.props.display }</strong>
     );
   }
 

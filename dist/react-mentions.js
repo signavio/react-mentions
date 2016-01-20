@@ -25,7 +25,8 @@ module.exports = React.createClass({
 
     renderSuggestion: React.PropTypes.func,
 
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    style: React.PropTypes.object
   },
 
   getDefaultProps: function getDefaultProps() {
@@ -41,7 +42,7 @@ module.exports = React.createClass({
   render: function render() {
     return React.createElement(
       'strong',
-      { className: this.props.className },
+      { style: this.props.style, className: this.props.className },
       this.props.display
     );
   }

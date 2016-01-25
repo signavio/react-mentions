@@ -23,8 +23,10 @@ module.exports = React.createClass({
      */
     onAdd: React.PropTypes.func,
 
-    renderSuggestion: React.PropTypes.func
+    renderSuggestion: React.PropTypes.func,
 
+    className: React.PropTypes.string,
+    style: React.PropTypes.object
   },
 
   getDefaultProps: function getDefaultProps() {
@@ -40,7 +42,7 @@ module.exports = React.createClass({
   render: function render() {
     return React.createElement(
       'strong',
-      null,
+      { style: this.props.style, className: this.props.className },
       this.props.display
     );
   }
@@ -1393,7 +1395,7 @@ var LinkedValueUtils = {
 };
 
 module.exports = LinkedValueUtils;
-},{"./ReactPropTypeLocations":12,"./ReactPropTypes":13,"fbjs/lib/invariant":16,"fbjs/lib/warning":18}],8:[function(_dereq_,module,exports){
+},{"./ReactPropTypeLocations":12,"./ReactPropTypes":13,"fbjs/lib/invariant":17,"fbjs/lib/warning":19}],8:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -1489,6 +1491,7 @@ module.exports = ReactCurrentOwner;
 var ReactCurrentOwner = _dereq_('./ReactCurrentOwner');
 
 var assign = _dereq_('./Object.assign');
+var canDefineProperty = _dereq_('./canDefineProperty');
 
 // The Symbol used to tag the ReactElement type. If there is no native Symbol
 // nor polyfill, then a plain number is used for performance.
@@ -1500,16 +1503,6 @@ var RESERVED_PROPS = {
   __self: true,
   __source: true
 };
-
-var canDefineProperty = false;
-if ("production" !== 'production') {
-  try {
-    Object.defineProperty({}, 'x', {});
-    canDefineProperty = true;
-  } catch (x) {
-    // IE will fail on defineProperty
-  }
-}
 
 /**
  * Base constructor for all React elements. This is only used to make this
@@ -1729,7 +1722,7 @@ ReactElement.isValidElement = function (object) {
 };
 
 module.exports = ReactElement;
-},{"./Object.assign":8,"./ReactCurrentOwner":9}],11:[function(_dereq_,module,exports){
+},{"./Object.assign":8,"./ReactCurrentOwner":9,"./canDefineProperty":14}],11:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -1777,7 +1770,7 @@ var ReactPropTypeLocations = keyMirror({
 });
 
 module.exports = ReactPropTypeLocations;
-},{"fbjs/lib/keyMirror":17}],13:[function(_dereq_,module,exports){
+},{"fbjs/lib/keyMirror":18}],13:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2134,7 +2127,32 @@ function getClassName(propValue) {
 }
 
 module.exports = ReactPropTypes;
-},{"./ReactElement":10,"./ReactPropTypeLocationNames":11,"./getIteratorFn":14,"fbjs/lib/emptyFunction":15}],14:[function(_dereq_,module,exports){
+},{"./ReactElement":10,"./ReactPropTypeLocationNames":11,"./getIteratorFn":15,"fbjs/lib/emptyFunction":16}],14:[function(_dereq_,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule canDefineProperty
+ */
+
+'use strict';
+
+var canDefineProperty = false;
+if ("production" !== 'production') {
+  try {
+    Object.defineProperty({}, 'x', { get: function () {} });
+    canDefineProperty = true;
+  } catch (x) {
+    // IE will fail on defineProperty
+  }
+}
+
+module.exports = canDefineProperty;
+},{}],15:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2175,9 +2193,9 @@ function getIteratorFn(maybeIterable) {
 }
 
 module.exports = getIteratorFn;
-},{}],15:[function(_dereq_,module,exports){
-module.exports=_dereq_(6)
 },{}],16:[function(_dereq_,module,exports){
+module.exports=_dereq_(6)
+},{}],17:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2202,7 +2220,7 @@ module.exports=_dereq_(6)
  * will remain to ensure logic does not differ in production.
  */
 
-var invariant = function (condition, format, a, b, c, d, e, f) {
+function invariant(condition, format, a, b, c, d, e, f) {
   if ("production" !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
@@ -2216,18 +2234,19 @@ var invariant = function (condition, format, a, b, c, d, e, f) {
     } else {
       var args = [a, b, c, d, e, f];
       var argIndex = 0;
-      error = new Error('Invariant Violation: ' + format.replace(/%s/g, function () {
+      error = new Error(format.replace(/%s/g, function () {
         return args[argIndex++];
       }));
+      error.name = 'Invariant Violation';
     }
 
     error.framesToPop = 1; // we don't care about invariant's own frame
     throw error;
   }
-};
+}
 
 module.exports = invariant;
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2276,7 +2295,7 @@ var keyMirror = function (obj) {
 };
 
 module.exports = keyMirror;
-},{"./invariant":16}],18:[function(_dereq_,module,exports){
+},{"./invariant":17}],19:[function(_dereq_,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -2334,6 +2353,6 @@ if ("production" !== 'production') {
 }
 
 module.exports = warning;
-},{"./emptyFunction":15}]},{},[4])
+},{"./emptyFunction":16}]},{},[4])
 (4)
 });

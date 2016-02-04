@@ -617,7 +617,7 @@ module.exports = React.createClass({
     if (queryId !== this._queryId) return;
 
     var update = {};
-    update[mentionDescriptor.type] = {
+    update[mentionDescriptor.props.type] = {
       query: query,
       mentionDescriptor: mentionDescriptor,
       querySequenceStart: querySequenceStart,

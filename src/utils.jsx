@@ -136,7 +136,7 @@ module.exports = {
 
       var id = match[idPos+1];
       var display = match[displayPos+1];
-      var type = typePos ? match[typePos+1] : null;
+      var type = typePos !== null ? match[typePos+1] : null;
 
       if(displayTransform) display = displayTransform(id, display, type);
 

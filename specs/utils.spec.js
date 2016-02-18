@@ -34,6 +34,7 @@ describe("utils", function() {
     var testData = {
       "@[__display__](__id__)" : { display: 0, id: 1, type: null },
       "@[__display__](__type__:__id__)" : { display: 0, id: 2, type: 1 },
+      "@(__type__:__id__)" : { display: 1, id: 1, type: 0 },
       "{{__id__#__display__}}" : { display: 1, id: 0, type: null },
       "{{__id__}}" : { display: 0, id: 0, type: null },
       "{{__display__}}" : { display: 0, id: 0, type: null }

@@ -83,7 +83,8 @@ module.exports = React.createClass({
       },
       onKeyDown: emptyFunction,
       onSelect: emptyFunction,
-      onBlur: emptyFunction
+      onBlur: emptyFunction,
+      style: {}
     };
   },
 
@@ -101,6 +102,8 @@ module.exports = React.createClass({
       singleLine,
       className,
 
+      style: { base, highlighter },
+
       markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
       children, value, valueLink,
 
@@ -108,9 +111,9 @@ module.exports = React.createClass({
     } = this.props;
 
     return (
-      <div ref="container" className={className} style={{ position: "relative", overflowY: "visible" }}>
+      <div ref="container" className={className} style={{ ...defaultStyle.base, ...base }}>
         <div className={"control " + (singleLine ? "input" : "textarea")}>
-          <div className="highlighter" ref="highlighter" style={this.getHighlighterStyle()}>
+          <div className="highlighter" ref="highlighter" style={{ ...defaultStyle.highlighter(this.props), ...highlighter}}>
             { this.renderHighlighter() }
           </div>
           { this.renderInput(inputProps) }
@@ -130,59 +133,32 @@ module.exports = React.createClass({
       props.onBlur = this.handleBlur;
     }
 
-    // shared styles for input and textarea
-    var style = {
-      display: "block",
-      position: "absolute",
-      top: 0,
-      boxSizing: "border-box",
-      background: "transparent",
-      font: "inherit"
-    };
+    let { style: { input } } = this.props;
 
     if(this.props.singleLine) {
-
-      // styles for input only
-      style.width = "inherit";
-
       return (
-        <input type="text" { ...props } ref="input" style={style}/>
+        <input
+          type="text" { ...props }
+          ref="input"
+          style={{
+            ...defaultStyle.input(this.props),
+            ...input
+          }}/>
       );
     }
 
-    // styles for textarea only
-    style.width = "100%";
-    style.height = "100%";
-    style.bottom = 0;
-    style.overflow = "hidden";
-    style.resize = "none";
-
-    if(typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-      style.marginTop = 1;
-      style.marginLeft = -3;
-    }
+    let isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     return (
-      <textarea { ...props } ref="input" style={style} />
-    );
-  },
+      <textarea
+        { ...props }
 
-  getHighlighterStyle: function () {
-    var style = {
-      position: "relative",
-      width: "inherit",
-      color: "transparent",
-      font: "inherit",
-      overflow: "hidden"
-    };
-    if(this.props.singleLine) {
-      style.whiteSpace = "pre";
-    } else {
-      style.whiteSpace = "pre-wrap";
-      style.wordWrap = "break-word";
-    }
-    return style;
+        ref="input"
+        style={{
+          ...defaultStyle.textarea(this.props, isMobileSafari),
+          ...input
+        }} />
+    );
   },
 
   renderSuggestionsOverlay: function() {
@@ -304,14 +280,16 @@ module.exports = React.createClass({
 
       // clone the Mention child that is applicable for the given type
       return React.cloneElement(foundChild, props);
-    } else if(childrenCount === 1) {
+    }
+
+    if(childrenCount === 1) {
       // clone single Mention child
       var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
       return React.cloneElement(child, props );
-    } else {
-      // no children, use default configuration
-      return Mention(props);
     }
+
+    // no children, use default configuration
+    return Mention(props);
   },
 
   // Returns the text to set as the value of the textarea with all markups removed
@@ -633,3 +611,55 @@ module.exports = React.createClass({
 
 
 });
+
+const base = {
+  position: "relative",
+  overflowY: "visible"
+};
+
+const input = (props) => ({
+  display: "block",
+  position: "absolute",
+
+  top: 0,
+
+  boxSizing: "border-box",
+
+  background: "transparent",
+
+  font: "inherit",
+
+  width: "inherit"
+});
+
+const textarea = (props, isMobileSafari) => ({
+  ...input(props),
+
+  width: "100%",
+  height: "100%",
+
+  bottom: 0,
+
+  overflow: "hidden",
+
+  resize: "none",
+
+  // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+  ...(isMobileSafari ? {
+    marginTop: 1,
+    marginLeft: -3,
+  } : null)
+});
+
+const highlighter = (props) => ({
+  position: "relative",
+  width: "inherit",
+  color: "transparent",
+  font: "inherit",
+  overflow: "hidden",
+
+  whiteSpace: props.singleLine ? "pre" : "pre-wrap",
+  wordWrap: props.singleLine ? null : "break-word",
+});
+
+const defaultStyle = { base, input, textarea, highlighter };

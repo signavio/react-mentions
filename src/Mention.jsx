@@ -1,48 +1,47 @@
-var React = require('react');
-var emptyFunction = require('fbjs/lib/emptyFunction');
-var utils = require('./utils');
+import React, { PropTypes } from 'react';
+import substyle from 'substyle';
 
+import utils from './utils';
 
+export default function Mention(props={}) {
+  let { display } = props;
 
+  return (
+    <strong { ...substyle(props) }>
+      { display }
+    </strong>
+  );
+};
 
-module.exports = React.createClass({
+Mention.propTypes = {
+  /**
+   * Called when a new mention is added in the input
+   *
+   * Example:
+   *
+   * ```js
+   * function(id, display) {
+   *   console.log("user " + display + " was mentioned!");
+   * }
+   * ```
+   */
+  onAdd: PropTypes.func,
+  onRemove: PropTypes.func,
 
-  displayName: 'Mention',
+  renderSuggestion: PropTypes.func,
 
-  propTypes: {
-    /**
-     * Called when a new mention is added in the input
-     *
-     * Example:
-     *
-     * ```js
-     * function(id, display) {
-     *   console.log("user " + display + " was mentioned!");
-     * }
-     * ```
-     */
-    onAdd: React.PropTypes.func,
+  trigger: PropTypes.string,
 
-    renderSuggestion: React.PropTypes.func,
-    
-    className: React.PropTypes.string,
-    style: React.PropTypes.object
-  },
+  isLoading: PropTypes.bool,
+};
 
-  getDefaultProps: function () {
-    return {
-      trigger: "@",
-      onAdd: emptyFunction,
-      onRemove: emptyFunction,
-      renderSuggestion: null,
-      isLoading: false
-    };
-  },
+Mention.defaultProps = {
+  trigger: "@",
 
-  render: function() {
-    return (
-      <strong style={this.props.style} className={this.props.className}>{ this.props.display }</strong>
-    );
-  }
+  onAdd: () => null,
+  onRemove: () => null,
 
-});
+  renderSuggestion: null,
+
+  isLoading: false,
+};

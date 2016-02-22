@@ -3,7 +3,25 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "."
+			"path": ".",
+            "folder_exclude_patterns": [
+                "node_modules",
+                "target",
+                "coverage",
+                ".metadata",
+                ".idea",
+                "RemoteSystemsTempFiles",
+                ".settings",
+                "junit",
+                "coverage",
+                "results",
+                "lib",
+                "dist",
+                ".grunt"
+            ],
+            "file_exclude_patterns": [
+                "*.log"
+            ]
 		}
 	]
 }

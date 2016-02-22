@@ -1,46 +1,50 @@
-var React = require('react');
-var emptyFunction = require('fbjs/lib/emptyFunction');
-var utils = require('./utils');
+import React, { Component } from 'react';
+import substyle from 'substyle';
 
-module.exports = React.createClass({
+import utils from './utils';
 
-  displayName: 'SuggestionsOverlay',
+export default class SuggestionsOverlay extends Component {
 
-  getDefaultProps: function() {
-    return {
-      suggestions: {},
-      onSelect: emptyFunction
-    };
-  },
+  static defaultProps = {
+    suggestions: {},
+    onSelect: () => null
+  };
 
-  getInitialState: function() {
-    return {
+  constructor() {
+    super(...arguments);
+
+    this.state = {
       focusIndex: 0
     };
-  },
+  }
 
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps(nextProps) {
     // always reset the focus on update
     this.setState({
       focusIndex: 0
     });
-  },
+  }
 
-  render: function() {
+  render() {
     // do not show suggestions until there is some data
-    if(this.countSuggestions() === 0 && !this.props.isLoading) return null;
+    if(this.countSuggestions() === 0 && !this.props.isLoading) {
+      return null;
+    }
 
     return (
-      <div
-        className="suggestions"
+      <div { ...substyle(this.props) }
         onMouseDown={this.props.onMouseDown}>
-        <ul>{ this.renderSuggestions() }</ul>
+
+        <ul {...substyle(this.props, "list") }>
+          { this.renderSuggestions() }
+        </ul>
+
         { this.renderLoadingIndicator() }
       </div>
     );
-  },
+  }
 
-  getSuggestions: function() {
+  getSuggestions() {
     var suggestions = [];
 
     for(var mentionType in this.props.suggestions) {
@@ -55,58 +59,52 @@ module.exports = React.createClass({
     }
 
     return suggestions;
-  },
+  }
 
-  getSuggestion: function(index) {
-    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => {
-      var partial = suggestions.map((suggestion) => {
-        return {
-          suggestion: suggestion,
-          descriptor: descriptor
-        };
-      });
+  getSuggestion(index) {
+    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => [
+      ...result,
 
-      return [...result, ...partial];
-    }, [])[index];
-  },
+      ...suggestions.map((suggestion) => ({
+        suggestion: suggestion,
+        descriptor: descriptor
+      }))
+    ], [])[index];
+  }
 
-  renderSuggestions: function() {
-    var transformSuggestions = (result, { suggestions, descriptor }) => {
-      var { query, querySequenceStart, querySequenceEnd, mentionDescriptor, plainTextValue } = descriptor;
+  renderSuggestions() {
+    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => [
+      ...result,
 
-      var partial = suggestions.map((suggestion, index) => this.renderSuggestion(
+      ...suggestions.map((suggestion, index) => this.renderSuggestion(
         suggestion,
         descriptor,
         result.length + index
-      ));
+      ))
+    ], []);
+  }
 
-      return [...result, ...partial];
-    };
-
-    return this.getSuggestions().reduce(transformSuggestions, []);
-  },
-
-  renderSuggestion: function(suggestion, descriptor, index) {
-    var id = this.getID(suggestion);
-
-    var isFocused = (index === this.state.focusIndex);
-    var cls = isFocused ? "focus" : "";
-    var handleClick = this.select.bind(null, suggestion, descriptor);
+  renderSuggestion(suggestion, descriptor, index) {
+    let id = this.getID(suggestion);
+    let isFocused = (index === this.state.focusIndex);
 
     return (
       <li
         key={id}
-        ref={isFocused && "focused"}
-        className={cls}
-        onClick={handleClick}
-        onMouseEnter={this.handleMouseEnter.bind(null, index)}>
+        ref={isFocused ? "focused" : null}
+        { ...substyle(this.props, {
+          item: true,
+          "&focussed": isFocused
+        }) }
+        onClick={ () => this.select(suggestion, descriptor) }
+        onMouseEnter={ () => this.handleMouseEnter(index) }>
 
         { this.renderContent(id, suggestion, descriptor) }
       </li>
     );
-  },
+  }
 
-  renderContent: function(id, suggestion, { mentionDescriptor, query }) {
+  renderContent(id, suggestion, { mentionDescriptor, query }) {
     var display = this.getDisplay(suggestion);
     var highlightedDisplay = this.renderHighlightedDisplay(display, query);
 
@@ -115,9 +113,9 @@ module.exports = React.createClass({
     }
 
     return highlightedDisplay;
-  },
+  }
 
-  getDisplay: function(suggestion) {
+  getDisplay(suggestion) {
     if(suggestion instanceof String) {
       return suggestion;
     }
@@ -127,17 +125,17 @@ module.exports = React.createClass({
     }
 
     return suggestion.display;
-  },
+  }
 
-  getID: function(suggestion) {
+  getID(suggestion) {
     if(suggestion instanceof String) {
       return suggestion;
     }
 
     return suggestion.id;
-  },
+  }
 
-  renderHighlightedDisplay: function(display, query) {
+  renderHighlightedDisplay(display, query) {
     var i = display.toLowerCase().indexOf(query.toLowerCase());
     if(i === -1) return <span>{ display }</span>;
 
@@ -148,51 +146,51 @@ module.exports = React.createClass({
         { display.substring(i+query.length) }
       </span>
     );
-  },
+  }
 
-  renderLoadingIndicator: function () {
+  renderLoadingIndicator () {
     if(!this.props.isLoading) {
       return;
     }
 
     return (
-      <div className="loading-indicator">
-        <div className="spinner">
-          <div className="element1"></div>
-          <div className="element2"></div>
-          <div className="element3"></div>
-          <div className="element4"></div>
-          <div className="element5"></div>
+      <div { ...substyle(this.props, "loading-indicator") }>
+        <div { ...substyle(this.props, "spinner") }>
+          <div { ...substyle(this.props, "element1") } />
+          <div { ...substyle(this.props, "element2") } />
+          <div { ...substyle(this.props, "element3") } />
+          <div { ...substyle(this.props, "element4") } />
+          <div { ...substyle(this.props, "element5") } />
         </div>
       </div>
     );
-  },
+  }
 
-  handleMouseEnter: function(index, ev) {
+  handleMouseEnter(index, ev) {
     this.setState({
       focusIndex: index
     });
-  },
+  }
 
-  select: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
+  select(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
-  },
+  }
 
-  selectFocused: function() {
+  selectFocused() {
     var { suggestion, descriptor } = this.getSuggestion(this.state.focusIndex);
 
     this.select(suggestion, descriptor);
-  },
+  }
 
-  shiftFocus: function(delta) {
+  shiftFocus(delta) {
     var suggestionsCount = this.countSuggestions();
 
     this.setState({
       focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
     });
-  },
+  }
 
-  countSuggestions: function(props) {
+  countSuggestions(props) {
     props = props || this.props;
     var result = 0;
     for(var prop in this.props.suggestions) {
@@ -203,4 +201,4 @@ module.exports = React.createClass({
     return result;
   }
 
-});
+};

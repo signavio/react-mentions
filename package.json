@@ -12,7 +12,7 @@
     "bump-minor": "mversion minor -m",
     "bump-major": "mversion major -m",
     "predist": "npm run transpile",
-    "pretranspile": "npm run test",
+    "prepublish": "npm run test && npm run dist",
     "prepages-publish": "cd gh-pages && webpack",
     "pages-publish": "grunt publish"
   },

@@ -1,4 +1,2 @@
-module.exports = {
-  MentionsInput: require('./MentionsInput'),
-  Mention: require('./Mention')
-};
+export MentionsInput from './MentionsInput';
+export Mention from './Mention';

@@ -1,11 +1,15 @@
-var React = require('react');
-var LinkedValueUtils = require('react/lib/LinkedValueUtils');
-var emptyFunction = require('fbjs/lib/emptyFunction');
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
+import keys from 'lodash/keys';
+import omit from 'lodash/omit';
 
-var utils = require('./utils');
-var Mention = require('./Mention');
-var SuggestionsOverlay = require('./SuggestionsOverlay');
+import substyle from 'substyle';
+
+import utils from './utils';
+import Mention from './Mention';
+import SuggestionsOverlay from './SuggestionsOverlay';
 
 
 var _generateComponentKey = function(usedKeys, id) {
@@ -51,13 +55,9 @@ var _getDataProvider = function(data) {
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 
-module.exports = React.createClass({
+const MentionsInput = React.createClass({
 
   displayName: 'MentionsInput',
-
-  mixins: [
-    LinkedValueUtils.Mixin
-  ],
 
   propTypes: {
 
@@ -65,25 +65,33 @@ module.exports = React.createClass({
      * If set to `true` a regular text input element will be rendered
      * instead of a textarea
      */
-    singleLine: React.PropTypes.bool,
+    singleLine: PropTypes.bool,
 
-    markup: React.PropTypes.string,
+    markup: PropTypes.string,
+    value: PropTypes.string,
 
-    displayTransform: React.PropTypes.func
+    valueLink: PropTypes.shape({
+      value: PropTypes.string,
+      requestChange: PropTypes.func
+    }),
 
+    displayTransform: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    onSelect: PropTypes.func,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
   },
 
   getDefaultProps: function () {
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      className: "react-mentions",
       displayTransform: function(id, display, type) {
         return display;
       },
-      onKeyDown: emptyFunction,
-      onSelect: emptyFunction,
-      onBlur: emptyFunction,
+      onKeyDown: () => null,
+      onSelect: () => null,
+      onBlur: () => null,
       style: {}
     };
   },
@@ -98,65 +106,84 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var {
-      singleLine,
-      className,
-
-      style: { base, highlighter },
-
-      markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
-      children, value, valueLink,
-
-      ...inputProps
-    } = this.props;
+    let { className, style } = substyle(this.props);
 
     return (
-      <div ref="container" className={className} style={{ ...defaultStyle.base, ...base }}>
-        <div className={"control " + (singleLine ? "input" : "textarea")}>
-          <div className="highlighter" ref="highlighter" style={{ ...defaultStyle.highlighter(this.props), ...highlighter}}>
-            { this.renderHighlighter() }
-          </div>
-          { this.renderInput(inputProps) }
-        </div>
+      <div ref="container" className={className} style={{ ...defaultStyle.base, ...style }}>
+        { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
     );
   },
 
+  getInputProps: function() {
+    let { readOnly, disabled } = this.props;
+    let excludeProps = [
+      'className', 'style', 'children'
+    ];
+
+    let props = omit(this.props, keys(MentionsInput.propTypes).concat(excludeProps));
+
+    return {
+      ...props,
+
+      value: this.getPlainText(),
+
+      ...(!readOnly && !disabled && {
+        onChange: this.handleChange,
+        onSelect: this.handleSelect,
+        onKeyDown: this.handleKeyDown,
+        onBlur: this.handleBlur,
+      })
+    };
+  },
+
+  renderControl: function() {
+    let { singleLine } = this.props;
+    let inputProps = this.getInputProps();
+
+    return (
+      <div { ...substyle(this.props, "control") }>
+        { this.renderHighlighter() }
+        { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
+      </div>
+    );
+  },
+
   renderInput: function(props) {
-    props.value = this.getPlainText();
-
-    if(!this.props.readOnly && !this.props.disabled) {
-      props.onChange = this.handleChange;
-      props.onSelect = this.handleSelect;
-      props.onKeyDown = this.handleKeyDown;
-      props.onBlur = this.handleBlur;
-    }
-
-    let { style: { input } } = this.props;
+    let { className, style } = substyle(this.props, "input");
 
     if(this.props.singleLine) {
       return (
         <input
-          type="text" { ...props }
+          type="text"
+
+          { ...props }
+
           ref="input"
+          className={ className }
           style={{
             ...defaultStyle.input(this.props),
-            ...input
+            ...style
           }}/>
       );
     }
+  },
 
+  renderTextarea: function(props) {
     let isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    let { className, style } = substyle(this.props, "textarea");
 
     return (
       <textarea
         { ...props }
 
         ref="input"
+        className={ className }
         style={{
           ...defaultStyle.textarea(this.props, isMobileSafari),
-          ...input
+          ...style
         }} />
     );
   },
@@ -168,6 +195,8 @@ module.exports = React.createClass({
     }
     return (
       <SuggestionsOverlay
+        { ...substyle(this.props, "suggestions") }
+
         ref="suggestions"
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
@@ -233,7 +262,17 @@ module.exports = React.createClass({
       );
     }
 
-    return resultComponents;
+    let { className, style } = substyle(this.props, "highlighter");
+
+    return (
+      <div
+        ref="highlighter"
+        className={ className }
+        style={{ ...defaultStyle.highlighter(this.props), ...style }}>
+
+        { resultComponents }
+      </div>
+    );
   },
 
   renderSubstring: function (string, key) {
@@ -248,7 +287,7 @@ module.exports = React.createClass({
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret: function(children) {
     return (
-      <span className="caret-marker" ref="caret" key="caret">
+      <span { ...substyle(this.props, "caret-marker") } ref="caret" key="caret">
         { children }
       </span>
     );
@@ -440,7 +479,7 @@ module.exports = React.createClass({
 
     var containerEl = this.refs.container;
     var caretEl = this.refs.caret;
-    var suggestionsEl = React.findDOMNode(this.refs.suggestions);
+    var suggestionsEl = ReactDOM.findDOMNode(this.refs.suggestions);
     var highligherEl = this.refs.highlighter;
     if(!suggestionsEl) return;
 
@@ -611,6 +650,8 @@ module.exports = React.createClass({
 
 
 });
+
+export default MentionsInput;
 
 const base = {
   position: "relative",

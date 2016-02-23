@@ -8,18 +8,8 @@ import omit from 'lodash/omit';
 import substyle from 'substyle';
 
 import utils from './utils';
-import Mention from './Mention';
 import SuggestionsOverlay from './SuggestionsOverlay';
-
-
-var _generateComponentKey = function(usedKeys, id) {
-  if(!usedKeys.hasOwnProperty(id)) {
-    usedKeys[id] = 0;
-  } else {
-    usedKeys[id]++;
-  }
-  return id + "_" + usedKeys[id];
-};
+import Highlighter from './Highlighter';
 
 var _getTriggerRegex = function(trigger) {
   if(trigger instanceof RegExp) {
@@ -101,7 +91,9 @@ const MentionsInput = React.createClass({
       selectionStart: null,
       selectionEnd: null,
 
-      suggestions: {}
+      suggestions: {},
+
+      caretPosition: {}
     };
   },
 
@@ -204,133 +196,34 @@ const MentionsInput = React.createClass({
   },
 
   renderHighlighter: function(inputProps) {
-    var value = LinkedValueUtils.getValue(this.props) || "";
-
-    // If there's a caret (i.e. no range selection), map the caret position into the marked up value
-    var caretPositionInMarkup;
-    if(this.state.selectionStart === this.state.selectionEnd) {
-      caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart, false, this.props.displayTransform);
-    }
-
-    var resultComponents = [];
-    var componentKeys = {};
-
-    // start by appending directly to the resultComponents
-    var components = resultComponents;
-
-    var substringComponentKey = 0;
-
-    var textIteratee = function(substr, index, indexInPlainText) {
-      // check whether the caret element has to be inserted inside the current plain substring
-      if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
-        // if yes, split substr at the caret position and insert the caret component
-        var splitIndex = caretPositionInMarkup - index;
-        components.push(
-          this.renderSubstring(substr.substring(0, splitIndex), substringComponentKey)
-        );
-
-        // add all following substrings and mention components as children of the caret component
-        components = [ this.renderSubstring(substr.substring(splitIndex), substringComponentKey) ];
-      } else {
-        // otherwise just push the plain text substring
-        components.push(
-          this.renderSubstring(substr, substringComponentKey)
-        );
-      }
-
-      substringComponentKey++;
-    }.bind(this);
-
-    var mentionIteratee = function(markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
-      // generate a component key based on the id
-      var key = _generateComponentKey(componentKeys, id);
-      components.push(
-        this.getMentionComponentForMatch(id, display, type, key)
-      );
-    }.bind(this);
-    utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
-
-    // append a span containing a space, to ensure the last text line has the correct height
-    components.push(" ");
-
-    if(components !== resultComponents) {
-      // if a caret component is to be rendered, add all components that followed as its children
-      resultComponents.push(
-        this.renderHighlighterCaret(components)
-      );
-    }
-
     let { className, style } = substyle(this.props, "highlighter");
 
+    let { selectionStart, selectionEnd } = this.state;
+    let { markup, displayTransform, singleLine, children } = this.props;
+
+    let value = LinkedValueUtils.getValue(this.props);
+
     return (
-      <div
+      <Highlighter
         ref="highlighter"
         className={ className }
         style={{
-          ...defaultStyle.highlighter(this.props),
           ...inputProps.style,
           ...style
-        }}>
+        }}
+        value={ value }
+        markup={ markup }
+        displayTransform={ displayTransform }
+        singleLine={ singleLine }
+        selection={{
+          start: selectionStart,
+          end: selectionEnd
+        }}
+        onCaretPositionChange={ (position) => this.setState({ caretPosition: position }) }>
 
-        { resultComponents }
-      </div>
-    );
-  },
-
-  renderSubstring: function (string, key) {
-    // set substring spand to hidden, so that Emojis are not shown double in Mobile Safari
-    return (
-      <span style={{visibility: 'hidden'}} key={key}>
-        { string }
-      </span>
-    );
-  },
-
-  // Renders an component to be inserted in the highlighter at the current caret position
-  renderHighlighterCaret: function(children) {
-    return (
-      <span { ...substyle(this.props, "marker") } ref="caret" key="caret">
         { children }
-      </span>
+      </Highlighter>
     );
-  },
-
-  // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
-  getMentionComponentForMatch: function(id, display, type, key) {
-    var childrenCount = React.Children.count(this.props.children);
-    var props = { id, display, key, ...substyle(this.props, "mention") };
-
-    if(childrenCount > 1) {
-      if(!type) {
-        throw new Error(
-          "Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder"
-        );
-      }
-
-      // detect the Mention child to be cloned
-      var foundChild = null;
-      React.Children.forEach(this.props.children, function(child) {
-        if(!child) {
-          return;
-        }
-
-        if(child.props.type === type) {
-          foundChild = child;
-        }
-      });
-
-      // clone the Mention child that is applicable for the given type
-      return React.cloneElement(foundChild, props);
-    }
-
-    if(childrenCount === 1) {
-      // clone single Mention child
-      var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
-      return React.cloneElement(child, props );
-    }
-
-    // no children, use default configuration
-    return Mention(props);
   },
 
   // Returns the text to set as the value of the textarea with all markups removed
@@ -477,27 +370,29 @@ const MentionsInput = React.createClass({
   },
 
   updateSuggestionsPosition: function() {
-    if(!this.refs.caret || !this.refs.suggestions) {
+    let { caretPosition } = this.state;
+
+    if(!caretPosition || !this.refs.suggestions) {
       return;
     }
 
     var containerEl = this.refs.container;
-    var caretEl = this.refs.caret;
+
     var suggestionsEl = ReactDOM.findDOMNode(this.refs.suggestions);
-    var highligherEl = this.refs.highlighter;
+    var highligherEl = ReactDOM.findDOMNode(this.refs.highlighter);
 
     if(!suggestionsEl) {
       return;
     }
 
-    var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
+    var leftPos = caretPosition.left - highligherEl.scrollLeft;
     // guard for mentions suggestions list clipped by right edge of window
     if (leftPos + suggestionsEl.offsetWidth > containerEl.offsetWidth) {
       suggestionsEl.style.right = "0px"
     } else {
       suggestionsEl.style.left = leftPos + "px"
     }
-    suggestionsEl.style.top = caretEl.offsetTop - highligherEl.scrollTop + "px";
+    suggestionsEl.style.top = caretPosition.top - highligherEl.scrollTop + "px";
   },
 
   updateHighlighterScroll: function() {
@@ -507,7 +402,7 @@ const MentionsInput = React.createClass({
       return;
     }
     var input = this.refs.input;
-    var highlighter = this.refs.highlighter;
+    var highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
     highlighter.scrollLeft = input.scrollLeft;
   },
 
@@ -699,15 +594,4 @@ const textarea = (isMobileSafari) => ({
   } : null)
 });
 
-const highlighter = ({ isSingleLine }) => ({
-  position: "relative",
-  width: "inherit",
-  color: "transparent",
-  font: "inherit",
-  overflow: "hidden",
-
-  whiteSpace: isSingleLine ? "pre" : "pre-wrap",
-  wordWrap: isSingleLine ? null : "break-word",
-});
-
-const defaultStyle = { base, input, textarea, highlighter };
+const defaultStyle = { base, input, textarea };

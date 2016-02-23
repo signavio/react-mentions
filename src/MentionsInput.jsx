@@ -4,6 +4,7 @@ import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
 import keys from 'lodash/keys';
 import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
 
 import substyle from 'substyle';
 
@@ -93,7 +94,8 @@ const MentionsInput = React.createClass({
 
       suggestions: {},
 
-      caretPosition: {}
+      caretPosition: null,
+      suggestionsPosition: null
     };
   },
 
@@ -183,9 +185,16 @@ const MentionsInput = React.createClass({
       // do not show suggestions when the input does not have the focus
       return null;
     }
+
+    let { className, style } = substyle(this.props, "suggestions");
+
     return (
       <SuggestionsOverlay
-        { ...substyle(this.props, "suggestions") }
+        className={ className }
+        style={{
+          ...style,
+          ...this.state.suggestionsPosition
+        }}
 
         ref="suggestions"
         suggestions={this.state.suggestions}
@@ -376,23 +385,34 @@ const MentionsInput = React.createClass({
       return;
     }
 
-    var containerEl = this.refs.container;
+    let { container } = this.refs;
 
-    var suggestionsEl = ReactDOM.findDOMNode(this.refs.suggestions);
-    var highligherEl = ReactDOM.findDOMNode(this.refs.highlighter);
+    let suggestions = ReactDOM.findDOMNode(this.refs.suggestions);
+    let highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
 
-    if(!suggestionsEl) {
+    if(!suggestions) {
       return;
     }
 
-    var leftPos = caretPosition.left - highligherEl.scrollLeft;
+    let left = caretPosition.left - highlighter.scrollLeft;
+    let position = {};
+
     // guard for mentions suggestions list clipped by right edge of window
-    if (leftPos + suggestionsEl.offsetWidth > containerEl.offsetWidth) {
-      suggestionsEl.style.right = "0px"
+    if (left + suggestions.offsetWidth > container.offsetWidth) {
+      position.right = 0;
     } else {
-      suggestionsEl.style.left = leftPos + "px"
+      position.left = left
     }
-    suggestionsEl.style.top = caretPosition.top - highligherEl.scrollTop + "px";
+
+    position.top = caretPosition.top - highlighter.scrollTop;
+
+    if(isEqual(position, this.state.suggestionsPosition)) {
+      return;
+    }
+
+    this.setState({
+      suggestionsPosition: position
+    });
   },
 
   updateHighlighterScroll: function() {

@@ -33,8 +33,15 @@ export default class SuggestionsOverlay extends Component {
       return null;
     }
 
+    let { className, style } = substyle(this.props);
+
     return (
-      <div { ...substyle(this.props) }
+      <div
+        className={ className }
+        style={{
+          ...defaultStyle,
+          ...style
+        }}
         onMouseDown={this.props.onMouseDown}>
 
         <ul {...substyle(this.props, "list") }>
@@ -167,4 +174,9 @@ export default class SuggestionsOverlay extends Component {
     return result;
   }
 
+};
+
+const defaultStyle = {
+  position: "absolute",
+  zIndex: 1,
 };

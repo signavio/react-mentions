@@ -17,6 +17,7 @@ export default class SuggestionsOverlay extends Component {
 
   static defaultProps = {
     suggestions: {},
+
     onSelect: () => null
   };
 

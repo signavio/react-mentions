@@ -7,7 +7,7 @@ import values from 'lodash/values';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-import substyle from 'substyle';
+import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
@@ -72,6 +72,11 @@ const MentionsInput = React.createClass({
     onSelect: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
+
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired
   },
 
   getDefaultProps: function () {
@@ -103,10 +108,8 @@ const MentionsInput = React.createClass({
   },
 
   render: function() {
-    let { className, style } = substyle(this.props);
-
     return (
-      <div ref="container" className={className} style={{ ...defaultStyle.base, ...style }}>
+      <div ref="container" {...substyle(this.props)}>
         { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
@@ -115,11 +118,9 @@ const MentionsInput = React.createClass({
 
   getInputProps: function(isTextarea) {
     let { readOnly, disabled } = this.props;
-    let excludeProps = [
-      'className', 'style', 'children'
-    ];
 
-    let props = omit(this.props, keys(MentionsInput.propTypes).concat(excludeProps));
+    // pass all props that we don't use through to the input control
+    let props = omit(this.props, keys(MentionsInput.propTypes));
 
     return {
       ...props,
@@ -150,36 +151,20 @@ const MentionsInput = React.createClass({
   },
 
   renderInput: function(props) {
-    let { style, ...rest } = props;
 
     return (
       <input
         type="text"
-
-        { ...rest }
-
         ref="input"
-        style={{
-          ...defaultStyle.input,
-          ...style
-        }}/>
+        { ...props } />
     );
   },
 
   renderTextarea: function(props) {
-    let isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    let { style, ...rest } = props;
-
     return (
       <textarea
-        { ...rest }
-
         ref="input"
-        style={{
-          ...defaultStyle.textarea(isMobileSafari),
-          ...style
-        }} />
+        { ...props } />
     );
   },
 
@@ -609,36 +594,25 @@ const MentionsInput = React.createClass({
 
 export default MentionsInput;
 
-const base = {
-  position: "relative",
-  overflowY: "visible"
-};
+const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-const input = {
+const defaultInputStyle = {
   display: "block",
   position: "absolute",
-
   top: 0,
-
   boxSizing: "border-box",
-
   background: "transparent",
-
   font: "inherit",
+  width: "inherit",
+}
 
-  width: "inherit"
-};
-
-const textarea = (isMobileSafari) => ({
-  ...input,
+const defaultTextareaStyle = {
+  ...defaultInputStyle,
 
   width: "100%",
   height: "100%",
-
   bottom: 0,
-
   overflow: "hidden",
-
   resize: "none",
 
   // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
@@ -646,6 +620,13 @@ const textarea = (isMobileSafari) => ({
     marginTop: 1,
     marginLeft: -3,
   } : null)
+};
+
+const substyle = defaultStyle({
+  position: "relative",
+  overflowY: "visible",
+
+  input: defaultInputStyle,
+  textarea: defaultTextareaStyle
 });
 
-const defaultStyle = { base, input, textarea };

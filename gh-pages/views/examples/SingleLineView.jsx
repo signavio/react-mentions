@@ -1,11 +1,9 @@
-var React = require("react");
-var ReactMentions = require("react-mentions");
+import React from "react";
+import { Mention, MentionsInput } from "react-mentions";
 
-var MentionsMixin = require("../mixins/MentionsMixin");
+import MentionsMixin from "../mixins/MentionsMixin";
 
-
-var MentionsInput = ReactMentions.MentionsInput;
-var Mention = ReactMentions.Mention;
+import defaultStyle from "./defaultStyle";
 
 module.exports = React.createClass({
 
@@ -25,9 +23,10 @@ module.exports = React.createClass({
         <h3>Single line input</h3>
 
         <MentionsInput
-          singleLine={true}
+          singleLine
           value={this.state.value}
           onChange={this.handleChange}
+          style={ defaultStyle({ singleLine: true }) }
           placeholder={"Mention people using '@'"}>
 
           <Mention data={ this.props.data }/>

@@ -1,15 +1,13 @@
-var React = require("react");
-var ReactMentions = require("react-mentions");
+import React from "react";
+import { Mention, MentionsInput } from "react-mentions";
 
-var MentionsMixin = require("../mixins/MentionsMixin");
+import MentionsMixin from "../mixins/MentionsMixin";
 
-
-var MentionsInput = ReactMentions.MentionsInput;
-var Mention = ReactMentions.Mention;
+import defaultStyle from "./defaultStyle";
 
 // use first/outer capture group to extract the full entered sequence to be replaced
 // and second/inner capture group to extract search string from the match
-var emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
+const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
 
 module.exports = React.createClass({
 
@@ -32,6 +30,7 @@ module.exports = React.createClass({
         <MentionsInput
           value={this.state.value}
           onChange={this.handleChange}
+          style={ defaultStyle() }
           markup="@[__display__](__type__:__id__)"
           placeholder={"Mention people using '@'"}>
 

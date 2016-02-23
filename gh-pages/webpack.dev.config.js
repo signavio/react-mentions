@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './',
+  entry: './index.js',
   output: {
     filename: 'bundle.js',
   },
@@ -16,7 +16,8 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.jsx$/, loaders: ['react-hot-loader', 'babel'] },
+      { test: /\.jsx$/, loader: 'babel', exclude: /node_modules/ },
+      { test: /\.js$/, loader: 'babel', exclude: /node_modules/ },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,

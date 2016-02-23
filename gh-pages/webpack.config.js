@@ -25,6 +25,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.jsx$/, loader: 'babel', exlude:/node_modules/ },
+      { test: /\.js$/, loader: 'babel?stage-0', exlude:/node_modules/ },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,

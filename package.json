@@ -8,7 +8,7 @@
     "transpile": "babel src --out-dir lib",
     "dist": "script/dist",
     "clean": "rimraf dist && rimraf lib",
-    "start": "cd gh-pages && webpack-dev-server --config webpack.hot.config.js --port 9090 --d --hot --inline --progress --colors",
+    "start": "cd gh-pages && webpack-dev-server --config webpack.dev.config.js --port 9090 --d --hot --inline --progress --colors",
     "bump-patch": "mversion patch -m",
     "bump-minor": "mversion minor -m",
     "bump-major": "mversion major -m",
@@ -70,9 +70,9 @@
     "mocha": "1.20.1",
     "mversion": "^1.10.0",
     "react": "~0.14.0",
-    "react-hot-loader": "^1.2.5",
     "react-router": "^1.0.0-rc3",
     "react-tools": "~0.14.0-alpha3",
+    "react-transform-hmr": "^1.0.2",
     "reactify": "0.15.x",
     "rf-release": "0.3.2",
     "rimraf": "^2.5.2",
@@ -80,8 +80,8 @@
     "sinon-chai": "~2.6.0",
     "style-loader": "^0.12.4",
     "uglify-js": "2.4.15",
-    "webpack": "1.4.5",
-    "webpack-dev-server": "1.6.5"
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
   },
   "browserify-shim": {
     "react": "global:React",

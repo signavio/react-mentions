@@ -3,6 +3,8 @@ import substyle from 'substyle';
 
 import utils from './utils';
 
+import Suggestion from "./Suggestion";
+
 export default class SuggestionsOverlay extends Component {
 
   static defaultProps = {
@@ -88,42 +90,20 @@ export default class SuggestionsOverlay extends Component {
     let id = this.getID(suggestion);
     let isFocused = (index === this.state.focusIndex);
 
+    let { mentionDescriptor, query } = descriptor;
+
     return (
-      <li
-        key={id}
+      <Suggestion { ...substyle(this.props, "item") }
+        key={ id }
+        id={ id }
         ref={isFocused ? "focused" : null}
-        { ...substyle(substyle(this.props, 'item'), {
-          "&focussed": isFocused
-        }) }
+        query={ query }
+        descriptor={ mentionDescriptor }
+        suggestion={ suggestion }
+        focussed={ isFocused }
         onClick={ () => this.select(suggestion, descriptor) }
-        onMouseEnter={ () => this.handleMouseEnter(index) }>
-
-        { this.renderContent(id, suggestion, descriptor) }
-      </li>
+        onMouseEnter={ () => this.handleMouseEnter(index) } />
     );
-  }
-
-  renderContent(id, suggestion, { mentionDescriptor, query }) {
-    var display = this.getDisplay(suggestion);
-    var highlightedDisplay = this.renderHighlightedDisplay(display, query);
-
-    if(mentionDescriptor.props.renderSuggestion) {
-      return mentionDescriptor.props.renderSuggestion(id, display, query, highlightedDisplay);
-    }
-
-    return highlightedDisplay;
-  }
-
-  getDisplay(suggestion) {
-    if(suggestion instanceof String) {
-      return suggestion;
-    }
-
-    if(!suggestion.id || !suggestion.display) {
-      return suggestion.id;
-    }
-
-    return suggestion.display;
   }
 
   getID(suggestion) {
@@ -132,19 +112,6 @@ export default class SuggestionsOverlay extends Component {
     }
 
     return suggestion.id;
-  }
-
-  renderHighlightedDisplay(display, query) {
-    var i = display.toLowerCase().indexOf(query.toLowerCase());
-    if(i === -1) return <span>{ display }</span>;
-
-    return (
-      <span>
-        { display.substring(0, i) }
-        <b>{ display.substring(i, i+query.length) }</b>
-        { display.substring(i+query.length) }
-      </span>
-    );
   }
 
   renderLoadingIndicator () {

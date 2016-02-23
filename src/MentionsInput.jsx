@@ -383,6 +383,10 @@ const MentionsInput = React.createClass({
     let { suggestion, descriptor } = utils.getSuggestion(suggestions, focusIndex);
 
     this.addMention(suggestion, descriptor);
+
+    this.setState({
+      focusIndex: 0
+    });
   },
 
   handleBlur: function(ev) {
@@ -524,7 +528,8 @@ const MentionsInput = React.createClass({
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
     this.setState({
-      suggestions: {}
+      suggestions: {},
+      focusIndex: 0
     });
   },
 

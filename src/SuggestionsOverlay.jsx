@@ -8,20 +8,17 @@ import Suggestion from "./Suggestion";
 export default class SuggestionsOverlay extends Component {
 
   static propTypes = {
-    onSelect: PropTypes.func
+    suggestions: PropTypes.object.isRequired,
+
+    isLoading: PropTypes.bool,
+
+    onSelect: PropTypes.func,
   };
 
   static defaultProps = {
     suggestions: {},
     onSelect: () => null
   };
-
-  // componentWillReceiveProps(nextProps) {
-  //   // always reset the focus on update
-  //   this.setState({
-  //     focusIndex: 0
-  //   });
-  // }
 
   render() {
     // do not show suggestions until there is some data

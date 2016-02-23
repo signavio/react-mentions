@@ -400,9 +400,8 @@ const MentionsInput = React.createClass({
     };
     this._suggestionsMouseDown = false;
 
-    var that = this;
-    window.setTimeout(function() {
-      that.updateHighlighterScroll();
+    window.setTimeout(() => {
+      this.updateHighlighterScroll();
     }, 1);
 
     this.props.onBlur(ev);

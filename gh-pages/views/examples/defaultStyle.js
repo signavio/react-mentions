@@ -47,9 +47,6 @@ export default (props={}) => ({
         border: "2px inset",
     },
     suggestions: {
-        position: "absolute",
-        zIndex: 1,
-
         border: "1px solid rgba(0,0,0,0.15)",
         backgroundColor: "white",
         marginTop: 14,

@@ -19,7 +19,7 @@ export default class Suggestion extends Component {
     ]).isRequired,
     descriptor: PropTypes.object.isRequired,
 
-    focussed: PropTypes.bool,
+    focused: PropTypes.bool,
   };
 
   render() {
@@ -28,7 +28,7 @@ export default class Suggestion extends Component {
     return (
       <li
         { ...rest }
-        { ...substyle(this.props, { "&focussed": this.props.focussed}) }>
+        { ...substyle(this.props, { "&focused": this.props.focused}) }>
 
         { this.renderContent() }
       </li>

@@ -58,7 +58,7 @@ export default (props={}) => ({
             cursor: "pointer",
             borderBottom: "1px solid rgba(0,0,0,0.15)",
 
-            "&focussed": {
+            "&focused": {
                 backgroundColor: "#cee4e5",
             }
         }

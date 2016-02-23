@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import substyle from 'substyle';
+import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 
@@ -27,15 +27,9 @@ export default class SuggestionsOverlay extends Component {
       return null;
     }
 
-    let { className, style } = substyle(this.props);
-
     return (
       <div
-        className={ className }
-        style={{
-          ...defaultStyle,
-          ...style
-        }}
+        {...substyle(this.props)}
         onMouseDown={this.props.onMouseDown}>
 
         <ul {...substyle(this.props, "list") }>
@@ -73,7 +67,7 @@ export default class SuggestionsOverlay extends Component {
         query={ query }
         descriptor={ mentionDescriptor }
         suggestion={ suggestion }
-        focussed={ isFocused }
+        focused={ isFocused }
         onClick={ () => this.select(suggestion, descriptor) }
         onMouseEnter={ () => this.handleMouseEnter(index) } />
     );
@@ -117,7 +111,7 @@ export default class SuggestionsOverlay extends Component {
 
 };
 
-const defaultStyle = {
+const substyle = defaultStyle({
   position: "absolute",
   zIndex: 1,
-};
+});

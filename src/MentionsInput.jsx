@@ -116,7 +116,7 @@ const MentionsInput = React.createClass({
     );
   },
 
-  getInputProps: function() {
+  getInputProps: function(isTextarea) {
     let { readOnly, disabled } = this.props;
     let excludeProps = [
       'className', 'style', 'children'
@@ -126,6 +126,8 @@ const MentionsInput = React.createClass({
 
     return {
       ...props,
+
+      ...substyle(this.props, isTextarea ? "textarea" : "input"),
 
       value: this.getPlainText(),
 
@@ -140,49 +142,45 @@ const MentionsInput = React.createClass({
 
   renderControl: function() {
     let { singleLine } = this.props;
-    let inputProps = this.getInputProps();
+    let inputProps = this.getInputProps(!singleLine);
 
     return (
       <div { ...substyle(this.props, "control") }>
-        { this.renderHighlighter() }
+        { this.renderHighlighter(inputProps) }
         { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
       </div>
     );
   },
 
   renderInput: function(props) {
-    let { className, style } = substyle(this.props, "input");
+    let { style, ...rest } = props;
 
-    if(this.props.singleLine) {
-      return (
-        <input
-          type="text"
+    return (
+      <input
+        type="text"
 
-          { ...props }
+        { ...rest }
 
-          ref="input"
-          className={ className }
-          style={{
-            ...defaultStyle.input(this.props),
-            ...style
-          }}/>
-      );
-    }
+        ref="input"
+        style={{
+          ...defaultStyle.input,
+          ...style
+        }}/>
+    );
   },
 
   renderTextarea: function(props) {
     let isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    let { className, style } = substyle(this.props, "textarea");
+    let { style, ...rest } = props;
 
     return (
       <textarea
-        { ...props }
+        { ...rest }
 
         ref="input"
-        className={ className }
         style={{
-          ...defaultStyle.textarea(this.props, isMobileSafari),
+          ...defaultStyle.textarea(isMobileSafari),
           ...style
         }} />
     );
@@ -205,7 +203,7 @@ const MentionsInput = React.createClass({
     );
   },
 
-  renderHighlighter: function() {
+  renderHighlighter: function(inputProps) {
     var value = LinkedValueUtils.getValue(this.props) || "";
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
@@ -268,7 +266,11 @@ const MentionsInput = React.createClass({
       <div
         ref="highlighter"
         className={ className }
-        style={{ ...defaultStyle.highlighter(this.props), ...style }}>
+        style={{
+          ...defaultStyle.highlighter(this.props),
+          ...inputProps.style,
+          ...style
+        }}>
 
         { resultComponents }
       </div>
@@ -437,10 +439,10 @@ const MentionsInput = React.createClass({
     var suggestionsComp = this.refs.suggestions;
     if(suggestionsCount > 0 && suggestionsComp) {
       keyHandlers[KEY.ESC] = this.clearSuggestions;
-      keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
-      keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);
-      keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused;
-      keyHandlers[KEY.TAB] = suggestionsComp.selectFocused;
+      keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(suggestionsComp, +1);
+      keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(suggestionsComp, -1);
+      keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused.bind(suggestionsComp);
+      keyHandlers[KEY.TAB] = suggestionsComp.selectFocused.bind(suggestionsComp);
     }
 
     if(keyHandlers[ev.keyCode]) {
@@ -475,13 +477,18 @@ const MentionsInput = React.createClass({
   },
 
   updateSuggestionsPosition: function() {
-    if(!this.refs.caret || !this.refs.suggestions) return;
+    if(!this.refs.caret || !this.refs.suggestions) {
+      return;
+    }
 
     var containerEl = this.refs.container;
     var caretEl = this.refs.caret;
     var suggestionsEl = ReactDOM.findDOMNode(this.refs.suggestions);
     var highligherEl = this.refs.highlighter;
-    if(!suggestionsEl) return;
+
+    if(!suggestionsEl) {
+      return;
+    }
 
     var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
     // guard for mentions suggestions list clipped by right edge of window
@@ -658,7 +665,7 @@ const base = {
   overflowY: "visible"
 };
 
-const input = (props) => ({
+const input = {
   display: "block",
   position: "absolute",
 
@@ -671,10 +678,10 @@ const input = (props) => ({
   font: "inherit",
 
   width: "inherit"
-});
+};
 
-const textarea = (props, isMobileSafari) => ({
-  ...input(props),
+const textarea = (isMobileSafari) => ({
+  ...input,
 
   width: "100%",
   height: "100%",
@@ -692,15 +699,15 @@ const textarea = (props, isMobileSafari) => ({
   } : null)
 });
 
-const highlighter = (props) => ({
+const highlighter = ({ isSingleLine }) => ({
   position: "relative",
   width: "inherit",
   color: "transparent",
   font: "inherit",
   overflow: "hidden",
 
-  whiteSpace: props.singleLine ? "pre" : "pre-wrap",
-  wordWrap: props.singleLine ? null : "break-word",
+  whiteSpace: isSingleLine ? "pre" : "pre-wrap",
+  wordWrap: isSingleLine ? null : "break-word",
 });
 
 const defaultStyle = { base, input, textarea, highlighter };

@@ -92,8 +92,7 @@ export default class SuggestionsOverlay extends Component {
       <li
         key={id}
         ref={isFocused ? "focused" : null}
-        { ...substyle(this.props, {
-          item: true,
+        { ...substyle(substyle(this.props, 'item'), {
           "&focussed": isFocused
         }) }
         onClick={ () => this.select(suggestion, descriptor) }

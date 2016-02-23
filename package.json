@@ -67,7 +67,6 @@
     "mkdirp": "^0.5.1",
     "mocha": "^1.20.1",
     "mversion": "^1.10.0",
-    "react": "~0.14.0",
     "react-addons-test-utils": "^0.14.7",
     "react-router": "^1.0.0-rc3",
     "react-tools": "~0.14.0-alpha3",

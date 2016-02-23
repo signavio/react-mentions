@@ -7,7 +7,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.less', '.css']
+    extensions: ['', '.js', '.less', '.css']
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({ output: {comments: false} }),
@@ -24,8 +24,7 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.jsx$/, loader: 'babel', exlude:/node_modules/ },
-      { test: /\.js$/, loader: 'babel?stage-0', exlude:/node_modules/ },
+      { test: /\.js$/, loader: 'babel', exlude:/node_modules/ },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,

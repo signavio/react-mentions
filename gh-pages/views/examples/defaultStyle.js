@@ -43,19 +43,10 @@ export default (props={}) => ({
     },
     suggestions: {
         border: "1px solid rgba(0,0,0,0.15)",
-        backgroundColor: "white",
-        marginTop: 14,
         fontSize: 10,
-        minWidth: 100,
 
-        list: {
-            margin: 0,
-            padding: 0,
-            listStyleType: "none",
-        },
         item: {
             padding: "5px 15px",
-            cursor: "pointer",
             borderBottom: "1px solid rgba(0,0,0,0.15)",
 
             "&focused": {

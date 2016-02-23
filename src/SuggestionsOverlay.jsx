@@ -114,4 +114,13 @@ export default class SuggestionsOverlay extends Component {
 const substyle = defaultStyle({
   position: "absolute",
   zIndex: 1,
+  backgroundColor: "white",
+  marginTop: 14,
+  minWidth: 100,
+
+  list: {
+    margin: 0,
+    padding: 0,
+    listStyleType: "none",
+  }
 });

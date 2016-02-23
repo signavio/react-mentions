@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import omit from "lodash/omit";
 import keys from "lodash/keys";
 
-import substyle from "substyle";
+import { defaultStyle } from "substyle";
 
 export default class Suggestion extends Component {
 
@@ -85,3 +85,7 @@ export default class Suggestion extends Component {
   }
 
 }
+
+const substyle = defaultStyle({
+  cursor: "pointer"
+})

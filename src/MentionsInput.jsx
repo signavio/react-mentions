@@ -144,7 +144,7 @@ const MentionsInput = React.createClass({
 
     return (
       <div { ...substyle(this.props, "control") }>
-        { this.renderHighlighter(inputProps) }
+        { this.renderHighlighter(inputProps.style) }
         { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
       </div>
     );
@@ -193,9 +193,7 @@ const MentionsInput = React.createClass({
     );
   },
 
-  renderHighlighter: function(inputProps) {
-    let { className, style } = substyle(this.props, "highlighter");
-
+  renderHighlighter: function(inputStyle) {
     let { selectionStart, selectionEnd } = this.state;
     let { markup, displayTransform, singleLine, children } = this.props;
 
@@ -204,11 +202,8 @@ const MentionsInput = React.createClass({
     return (
       <Highlighter
         ref="highlighter"
-        className={ className }
-        style={{
-          ...inputProps.style,
-          ...style
-        }}
+        { ...substyle(this.props, "highlighter") }
+        inputStyle={ inputStyle }
         value={ value }
         markup={ markup }
         displayTransform={ displayTransform }

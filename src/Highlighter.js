@@ -2,8 +2,6 @@ import React, { Component, PropTypes, Children } from "react";
 
 import isEqual from "lodash/isEqual";
 
-import substyle from "substyle";
-
 import utils from './utils';
 import Mention from './Mention';
 
@@ -29,10 +27,12 @@ export default class Highlighter extends Component {
 
     displayTransform: PropTypes.func.isRequired,
     onCaretPositionChange: PropTypes.func.isRequired,
+    inputStyle: PropTypes.object
   };
 
   static defaultProps = {
-    value: ""
+    value: "",
+    inputStyle: {}
   };
 
   constructor() {
@@ -75,7 +75,7 @@ export default class Highlighter extends Component {
   }
 
   render() {
-    let { selection, value, markup, displayTransform } = this.props;
+    let { selection, value, markup, displayTransform, inputStyle, className, style } = this.props;
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
@@ -131,13 +131,12 @@ export default class Highlighter extends Component {
       );
     }
 
-    let { className, style } = substyle(this.props);
-
     return (
       <div
         className={ className }
         style={{
-          ...defaultStyle.highlighter(this.props),
+          ...inputStyle,
+          ...defaultStyle(this.props),
           ...style
         }}>
 
@@ -147,7 +146,7 @@ export default class Highlighter extends Component {
   }
 
   renderSubstring(string, key) {
-    // set substring spand to hidden, so that Emojis are not shown double in Mobile Safari
+    // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
       <span style={{visibility: 'hidden'}} key={key}>
         { string }
@@ -158,7 +157,7 @@ export default class Highlighter extends Component {
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
   getMentionComponentForMatch(id, display, type, key) {
     var childrenCount = Children.count(this.props.children);
-    var props = { id, display, key, ...substyle(this.props, "mention") };
+    var props = { id, display, key };
 
     if(childrenCount > 1) {
       if(!type) {
@@ -186,7 +185,7 @@ export default class Highlighter extends Component {
     if(childrenCount === 1) {
       // clone single Mention child
       var child = this.props.children.length ? this.props.children[0] : Children.only(this.props.children);
-      return React.cloneElement(child, props );
+      return React.cloneElement(child, props);
     }
 
     // no children, use default configuration
@@ -196,14 +195,14 @@ export default class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span { ...substyle(this.props, "marker") } ref="caret" key="caret">
+      <span ref="caret" key="caret">
         { children }
       </span>
     );
   }
 }
 
-const highlighter = ({ singleLine }) => ({
+const defaultStyle = ({ singleLine }) => ({
   position: "relative",
   width: "inherit",
   color: "transparent",
@@ -213,5 +212,3 @@ const highlighter = ({ singleLine }) => ({
   whiteSpace: singleLine ? "pre" : "pre-wrap",
   wordWrap: singleLine ? null : "break-word",
 });
-
-const defaultStyle = { highlighter };

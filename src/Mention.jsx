@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
-import substyle from 'substyle';
 
 import utils from './utils';
 
-export default function Mention(props={}) {
-  let { display } = props;
-
+export default function Mention({ display, className, style }) {
   return (
-    <strong { ...substyle(props) }>
+    <strong 
+      className={className}
+      style={{ ...defaultStyle, ...style}}
+    >
       { display }
     </strong>
   );
@@ -36,6 +36,8 @@ Mention.propTypes = {
   ]),
 
   isLoading: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.object
 };
 
 Mention.defaultProps = {
@@ -43,8 +45,10 @@ Mention.defaultProps = {
 
   onAdd: () => null,
   onRemove: () => null,
-
   renderSuggestion: null,
-
   isLoading: false,
 };
+
+const defaultStyle = {
+  fontWeight: "inherit"
+}

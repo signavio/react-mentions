@@ -4,6 +4,7 @@ import { Mention, MentionsInput } from "react-mentions";
 import MentionsMixin from "../mixins/MentionsMixin";
 
 import defaultStyle from "./defaultStyle";
+import defaultMentionStyle from "./defaultMentionStyle";
 
 module.exports = React.createClass({
 
@@ -29,7 +30,7 @@ module.exports = React.createClass({
           style={ defaultStyle({ singleLine: true }) }
           placeholder={"Mention people using '@'"}>
 
-          <Mention data={ this.props.data }/>
+          <Mention data={ this.props.data } style={defaultMentionStyle} />
         </MentionsInput>
       </div>
     );

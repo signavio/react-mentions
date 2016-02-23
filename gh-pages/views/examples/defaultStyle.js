@@ -28,11 +28,6 @@ export default (props={}) => ({
                 padding: 9,
             }
         ),
-
-        mention: {
-            fontWeight: "normal",
-            background: "#cee4e5",
-        },
     },
     textarea: {
         padding: 9,

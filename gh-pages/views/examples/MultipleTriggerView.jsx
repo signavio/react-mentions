@@ -4,6 +4,7 @@ import { Mention, MentionsInput } from "react-mentions";
 import MentionsMixin from "../mixins/MentionsMixin";
 
 import defaultStyle from "./defaultStyle";
+import defaultMentionStyle from "./defaultMentionStyle";
 
 // use first/outer capture group to extract the full entered sequence to be replaced
 // and second/inner capture group to extract search string from the match
@@ -40,12 +41,12 @@ module.exports = React.createClass({
             data={ this.props.data }
             renderSuggestion={this.renderSuggestion}
             onAdd={this.handleAdd}
-            onRemove={this.handleRemove} />
+            onRemove={this.handleRemove} style={defaultMentionStyle} />
           <Mention
             type="email"
             trigger={emailRegex}
             data={this.requestEmail}
-            onAdd={this.handleEmailAdd} />
+            onAdd={this.handleEmailAdd} style={{ backgroundColor: '#d1c4e9'}}/>
         </MentionsInput>
       </div>
     );

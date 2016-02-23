@@ -4,6 +4,7 @@ import { MentionsInput, Mention } from "react-mentions";
 import MentionsMixin from "../mixins/MentionsMixin";
 
 import defaultStyle from "./defaultStyle";
+import defaultMentionStyle from "./defaultMentionStyle";
 
 module.exports = React.createClass({
 
@@ -29,7 +30,7 @@ module.exports = React.createClass({
           style={ defaultStyle() }
           displayTransform={this.transformDisplay}>
 
-          <Mention data={ this.props.data } onAdd={this.handleAddMention} />
+          <Mention data={ this.props.data } onAdd={this.handleAddMention} style={defaultMentionStyle} />
         </MentionsInput>
       </div>
     );

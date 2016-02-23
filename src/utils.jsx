@@ -294,6 +294,44 @@ module.exports = {
     result = result.replace(PLACEHOLDERS.display, display);
     result = result.replace(PLACEHOLDERS.type, type);
     return result;
+  },
+
+  countSuggestions: function(suggestions) {
+    let result = 0;
+    for(let prop in suggestions) {
+      if(suggestions.hasOwnProperty(prop)) {
+        result += suggestions[prop].results.length;
+      }
+    }
+    return result;
+  },
+
+  getSuggestions: function(suggestions) {
+    var result = [];
+
+    for(var mentionType in suggestions) {
+      if(!suggestions.hasOwnProperty(mentionType)) {
+        return;
+      }
+
+      result = result.concat({
+        suggestions: suggestions[mentionType].results,
+        descriptor: suggestions[mentionType]
+      });
+    }
+
+    return result;
+  },
+
+  getSuggestion: function(suggestions, index) {
+    return this.getSuggestions(suggestions).reduce((result, { suggestions, descriptor }) => [
+      ...result,
+
+      ...suggestions.map((suggestion) => ({
+        suggestion: suggestion,
+        descriptor: descriptor
+      }))
+    ], [])[index];
   }
 
 }

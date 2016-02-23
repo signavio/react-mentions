@@ -25,9 +25,9 @@ export default class Highlighter extends Component {
     }).isRequired,
 
     markup: PropTypes.string.isRequired,
-    displayTransform: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
 
+    displayTransform: PropTypes.func.isRequired,
     onCaretPositionChange: PropTypes.func.isRequired,
   };
 

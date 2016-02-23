@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import substyle from 'substyle';
 
 import utils from './utils';
@@ -7,29 +7,25 @@ import Suggestion from "./Suggestion";
 
 export default class SuggestionsOverlay extends Component {
 
+  static propTypes = {
+    onSelect: PropTypes.func
+  };
+
   static defaultProps = {
     suggestions: {},
     onSelect: () => null
   };
 
-  constructor() {
-    super(...arguments);
-
-    this.state = {
-      focusIndex: 0
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // always reset the focus on update
-    this.setState({
-      focusIndex: 0
-    });
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   // always reset the focus on update
+  //   this.setState({
+  //     focusIndex: 0
+  //   });
+  // }
 
   render() {
     // do not show suggestions until there is some data
-    if(this.countSuggestions() === 0 && !this.props.isLoading) {
+    if(utils.countSuggestions(this.props.suggestions) === 0 && !this.props.isLoading) {
       return null;
     }
 
@@ -53,36 +49,8 @@ export default class SuggestionsOverlay extends Component {
     );
   }
 
-  getSuggestions() {
-    var suggestions = [];
-
-    for(var mentionType in this.props.suggestions) {
-      if(!this.props.suggestions.hasOwnProperty(mentionType)) {
-        return;
-      }
-
-      suggestions = suggestions.concat({
-        suggestions: this.props.suggestions[mentionType].results,
-        descriptor: this.props.suggestions[mentionType]
-      });
-    }
-
-    return suggestions;
-  }
-
-  getSuggestion(index) {
-    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => [
-      ...result,
-
-      ...suggestions.map((suggestion) => ({
-        suggestion: suggestion,
-        descriptor: descriptor
-      }))
-    ], [])[index];
-  }
-
   renderSuggestions() {
-    return this.getSuggestions().reduce((result, { suggestions, descriptor }) => [
+    return utils.getSuggestions(this.props.suggestions).reduce((result, { suggestions, descriptor }) => [
       ...result,
 
       ...suggestions.map((suggestion, index) => this.renderSuggestion(
@@ -95,7 +63,7 @@ export default class SuggestionsOverlay extends Component {
 
   renderSuggestion(suggestion, descriptor, index) {
     let id = this.getID(suggestion);
-    let isFocused = (index === this.state.focusIndex);
+    let isFocused = (index === this.props.focusIndex);
 
     let { mentionDescriptor, query } = descriptor;
 
@@ -140,38 +108,13 @@ export default class SuggestionsOverlay extends Component {
   }
 
   handleMouseEnter(index, ev) {
-    this.setState({
-      focusIndex: index
-    });
-  }
-
-  select(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
-    this.props.onSelect(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue);
-  }
-
-  selectFocused() {
-    var { suggestion, descriptor } = this.getSuggestion(this.state.focusIndex);
-
-    this.select(suggestion, descriptor);
-  }
-
-  shiftFocus(delta) {
-    var suggestionsCount = this.countSuggestions();
-
-    this.setState({
-      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
-    });
-  }
-
-  countSuggestions(props) {
-    props = props || this.props;
-    var result = 0;
-    for(var prop in this.props.suggestions) {
-      if(this.props.suggestions.hasOwnProperty(prop)) {
-        result += this.props.suggestions[prop].results.length;
-      }
+    if(this.props.onMouseEnter) {
+      this.props.onMouseEnter(index);
     }
-    return result;
+  }
+
+  select(suggestion, descriptor) {
+    this.props.onSelect(suggestion, descriptor);
   }
 
 };

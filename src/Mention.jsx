@@ -30,7 +30,10 @@ Mention.propTypes = {
 
   renderSuggestion: PropTypes.func,
 
-  trigger: PropTypes.string,
+  trigger: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(RegExp)
+  ]),
 
   isLoading: PropTypes.bool,
 };

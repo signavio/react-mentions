@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
 import keys from 'lodash/keys';
+import values from 'lodash/values';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
@@ -89,6 +90,8 @@ const MentionsInput = React.createClass({
 
   getInitialState: function () {
     return {
+      focusIndex: 0,
+
       selectionStart: null,
       selectionEnd: null,
 
@@ -195,11 +198,12 @@ const MentionsInput = React.createClass({
           ...style,
           ...this.state.suggestionsPosition
         }}
-
+        focusIndex={ this.state.focusIndex }
         ref="suggestions"
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
+        onMouseEnter={ (focusIndex) => this.setState({ focusIndex })}
         isLoading={this.isLoading()} />
     );
   },
@@ -328,31 +332,57 @@ const MentionsInput = React.createClass({
   },
 
   handleKeyDown: function(ev) {
-    var keyHandlers = {};
-
     // do not intercept key events if the suggestions overlay is not shown
-    var suggestionsCount = 0;
-    for(var prop in this.state.suggestions) {
-      if(this.state.suggestions.hasOwnProperty(prop)) {
-        suggestionsCount += this.state.suggestions[prop].results.length;
-      }
-    }
+    var suggestionsCount = utils.countSuggestions(this.state.suggestions);
 
     var suggestionsComp = this.refs.suggestions;
-    if(suggestionsCount > 0 && suggestionsComp) {
-      keyHandlers[KEY.ESC] = this.clearSuggestions;
-      keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(suggestionsComp, +1);
-      keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(suggestionsComp, -1);
-      keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused.bind(suggestionsComp);
-      keyHandlers[KEY.TAB] = suggestionsComp.selectFocused.bind(suggestionsComp);
+    if(suggestionsCount === 0 || !suggestionsComp) {
+      this.props.onKeyDown(ev);
+
+      return;
     }
 
-    if(keyHandlers[ev.keyCode]) {
-      keyHandlers[ev.keyCode]();
+    if(values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault();
-    } else {
-      this.props.onKeyDown(ev);
     }
+
+    switch(ev.keyCode) {
+      case KEY.ESC: {
+        this.clearSuggestions();
+        return;
+      }
+      case KEY.DOWN: {
+        this.shiftFocus(+1);
+        return;
+      }
+      case KEY.UP: {
+        this.shiftFocus(-1);
+        return;
+      }
+      case KEY.RETURN: {
+        this.selectFocused();
+        return;
+      }
+      case KEY.TAB: {
+        this.selectFocused();
+        return;
+      }
+    }
+  },
+
+  shiftFocus: function(delta) {
+    let suggestionsCount = utils.countSuggestions(this.state.suggestions);
+
+    this.setState({
+      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
+    });
+  },
+
+  selectFocused: function() {
+    let { suggestions, focusIndex } = this.state;
+    let { suggestion, descriptor } = utils.getSuggestion(suggestions, focusIndex);
+
+    this.addMention(suggestion, descriptor);
   },
 
   handleBlur: function(ev) {
@@ -525,7 +555,7 @@ const MentionsInput = React.createClass({
     });
   },
 
-  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  addMention: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this.props) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);

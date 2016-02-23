@@ -289,7 +289,7 @@ const MentionsInput = React.createClass({
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret: function(children) {
     return (
-      <span { ...substyle(this.props, "caret-marker") } ref="caret" key="caret">
+      <span { ...substyle(this.props, "marker") } ref="caret" key="caret">
         { children }
       </span>
     );
@@ -298,7 +298,7 @@ const MentionsInput = React.createClass({
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
   getMentionComponentForMatch: function(id, display, type, key) {
     var childrenCount = React.Children.count(this.props.children);
-    var props = { id: id, display: display, key: key };
+    var props = { id, display, key, ...substyle(this.props, "mention") };
 
     if(childrenCount > 1) {
       if(!type) {

@@ -36,13 +36,13 @@ export default class Suggestion extends Component {
   }
 
   renderContent() {
-    let { id, query, descriptor } = this.props;
+    let { id, query, descriptor, suggestion } = this.props;
 
     let display = this.getDisplay();
     let highlightedDisplay = this.renderHighlightedDisplay(display, query);
 
     if(descriptor.props.renderSuggestion) {
-      return descriptor.props.renderSuggestion(id, display, query, highlightedDisplay);
+      return descriptor.props.renderSuggestion(suggestion, query, highlightedDisplay);
     }
 
     return highlightedDisplay;

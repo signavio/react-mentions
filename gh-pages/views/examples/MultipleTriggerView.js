@@ -60,7 +60,7 @@ module.exports = React.createClass({
     console.log("added a new mention", arguments);
   },
 
-  renderSuggestion: function(id, display, search, highlightedDisplay) {
+  renderSuggestion: function(suggestion, search, highlightedDisplay) {
     return (
       <div className="user">
         { highlightedDisplay }

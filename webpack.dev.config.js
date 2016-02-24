@@ -1,12 +1,12 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './',
+  entry: './index.js',
   output: {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.less', '.css']
+    extensions: ['', '.js', '.less', '.css']
   },
   plugins: [
     new webpack.NormalModuleReplacementPlugin( // allow examples to include react-mentions
@@ -16,7 +16,7 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.jsx$/, loaders: ['react-hot-loader', 'babel'] },
+      { test: /\.js$/, loader: 'babel', exclude: /node_modules/ },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,

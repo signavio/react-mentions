@@ -7,6 +7,11 @@
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
+##### Used in production at:
+- [Effektif](http://effektif.com)
+- [State](http://state.com)
+
+Please [let us know](mailto:dev@effektif.com?subject=we're using react-mentions at ...) if you are using react-mentions, we'd love to add you to this list.
 
 
 ## Getting started

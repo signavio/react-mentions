@@ -1,2 +1,0 @@
-
-require('./specs/utils.spec');

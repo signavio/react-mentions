@@ -1,12 +1,10 @@
-var React = require("react");
-var ReactMentions = require("react-mentions");
+import React from "react";
+import { MentionsInput, Mention } from "react-mentions";
 
-var MentionsMixin = require("../mixins/MentionsMixin");
+import MentionsMixin from "../mixins/MentionsMixin";
 
-
-var MentionsInput = ReactMentions.MentionsInput;
-var Mention = ReactMentions.Mention;
-
+import defaultStyle from "./defaultStyle";
+import defaultMentionStyle from "./defaultMentionStyle";
 
 module.exports = React.createClass({
 
@@ -29,9 +27,10 @@ module.exports = React.createClass({
           value={this.state.value}
           onChange={this.handleChange}
           markup="{{__id__}}"
+          style={ defaultStyle() }
           displayTransform={this.transformDisplay}>
 
-          <Mention data={ this.props.data } onAdd={this.handleAddMention} />
+          <Mention data={ this.props.data } onAdd={this.handleAddMention} style={defaultMentionStyle} />
         </MentionsInput>
       </div>
     );

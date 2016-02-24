@@ -4,7 +4,7 @@ var sinonChai = require("sinon-chai");
 var expect = chai.expect;
 chai.use(sinonChai);
 
-var utils = require('../src/utils.jsx');
+var utils = require('../src/utils');
 
 
 describe("utils", function() {
@@ -230,8 +230,8 @@ describe("utils", function() {
     it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention with display transform", function() {
       // index of char inside the markup
       var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
-      plainTextIndex = plainTextDisplayTransform.indexOf("joe@smoe.com") + 3;
-      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
+      var plainTextIndex = plainTextDisplayTransform.indexOf("joe@smoe.com") + 3;
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex);
       expect(result).to.equal(value.indexOf(joeMarkup));
     });
 

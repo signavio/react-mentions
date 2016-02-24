@@ -3,4 +3,5 @@ examples
 karma.conf.js
 scripts
 specs
+src
 webpack.config.js

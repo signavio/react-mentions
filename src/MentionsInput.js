@@ -1,21 +1,17 @@
-var React = require('react');
-var LinkedValueUtils = require('react/lib/LinkedValueUtils');
-var emptyFunction = require('fbjs/lib/emptyFunction');
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
+import keys from 'lodash/keys';
+import values from 'lodash/values';
+import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
 
-var utils = require('./utils');
-var Mention = require('./Mention');
-var SuggestionsOverlay = require('./SuggestionsOverlay');
+import { defaultStyle } from 'substyle';
 
-
-var _generateComponentKey = function(usedKeys, id) {
-  if(!usedKeys.hasOwnProperty(id)) {
-    usedKeys[id] = 0;
-  } else {
-    usedKeys[id]++;
-  }
-  return id + "_" + usedKeys[id];
-};
+import utils from './utils';
+import SuggestionsOverlay from './SuggestionsOverlay';
+import Highlighter from './Highlighter';
 
 var _getTriggerRegex = function(trigger) {
   if(trigger instanceof RegExp) {
@@ -51,13 +47,9 @@ var _getDataProvider = function(data) {
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 
-module.exports = React.createClass({
+const MentionsInput = React.createClass({
 
   displayName: 'MentionsInput',
-
-  mixins: [
-    LinkedValueUtils.Mixin
-  ],
 
   propTypes: {
 
@@ -65,124 +57,115 @@ module.exports = React.createClass({
      * If set to `true` a regular text input element will be rendered
      * instead of a textarea
      */
-    singleLine: React.PropTypes.bool,
+    singleLine: PropTypes.bool,
 
-    markup: React.PropTypes.string,
+    markup: PropTypes.string,
+    value: PropTypes.string,
 
-    displayTransform: React.PropTypes.func
+    valueLink: PropTypes.shape({
+      value: PropTypes.string,
+      requestChange: PropTypes.func
+    }),
 
+    displayTransform: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    onSelect: PropTypes.func,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired
   },
 
   getDefaultProps: function () {
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
-      className: "react-mentions",
       displayTransform: function(id, display, type) {
         return display;
       },
-      onKeyDown: emptyFunction,
-      onSelect: emptyFunction,
-      onBlur: emptyFunction
+      onKeyDown: () => null,
+      onSelect: () => null,
+      onBlur: () => null,
+      style: {}
     };
   },
 
   getInitialState: function () {
     return {
+      focusIndex: 0,
+
       selectionStart: null,
       selectionEnd: null,
 
-      suggestions: {}
+      suggestions: {},
+
+      caretPosition: null,
+      suggestionsPosition: null
     };
   },
 
   render: function() {
-    var {
-      singleLine,
-      className,
-
-      markup, displayTransform, onKeyDown, onSelect, onBlur, onChange,
-      children, value, valueLink,
-
-      ...inputProps
-    } = this.props;
-
     return (
-      <div ref="container" className={className} style={{ position: "relative", overflowY: "visible" }}>
-        <div className={"control " + (singleLine ? "input" : "textarea")}>
-          <div className="highlighter" ref="highlighter" style={this.getHighlighterStyle()}>
-            { this.renderHighlighter() }
-          </div>
-          { this.renderInput(inputProps) }
-        </div>
+      <div ref="container" {...substyle(this.props)}>
+        { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
     );
   },
 
-  renderInput: function(props) {
-    props.value = this.getPlainText();
+  getInputProps: function(isTextarea) {
+    let { readOnly, disabled } = this.props;
 
-    if(!this.props.readOnly && !this.props.disabled) {
-      props.onChange = this.handleChange;
-      props.onSelect = this.handleSelect;
-      props.onKeyDown = this.handleKeyDown;
-      props.onBlur = this.handleBlur;
-    }
+    // pass all props that we don't use through to the input control
+    let props = omit(this.props, keys(MentionsInput.propTypes));
 
-    // shared styles for input and textarea
-    var style = {
-      display: "block",
-      position: "absolute",
-      top: 0,
-      boxSizing: "border-box",
-      background: "transparent",
-      font: "inherit"
+    return {
+      ...props,
+
+      ...substyle(this.props, isTextarea ? "textarea" : "input"),
+
+      value: this.getPlainText(),
+
+      ...(!readOnly && !disabled && {
+        onChange: this.handleChange,
+        onSelect: this.handleSelect,
+        onKeyDown: this.handleKeyDown,
+        onBlur: this.handleBlur,
+      })
     };
+  },
 
-    if(this.props.singleLine) {
-
-      // styles for input only
-      style.width = "inherit";
-
-      return (
-        <input type="text" { ...props } ref="input" style={style}/>
-      );
-    }
-
-    // styles for textarea only
-    style.width = "100%";
-    style.height = "100%";
-    style.bottom = 0;
-    style.overflow = "hidden";
-    style.resize = "none";
-
-    if(typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-      style.marginTop = 1;
-      style.marginLeft = -3;
-    }
+  renderControl: function() {
+    let { singleLine } = this.props;
+    let inputProps = this.getInputProps(!singleLine);
 
     return (
-      <textarea { ...props } ref="input" style={style} />
+      <div { ...substyle(this.props, "control") }>
+        { this.renderHighlighter(inputProps.style) }
+        { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
+      </div>
     );
   },
 
-  getHighlighterStyle: function () {
-    var style = {
-      position: "relative",
-      width: "inherit",
-      color: "transparent",
-      font: "inherit",
-      overflow: "hidden"
-    };
-    if(this.props.singleLine) {
-      style.whiteSpace = "pre";
-    } else {
-      style.whiteSpace = "pre-wrap";
-      style.wordWrap = "break-word";
-    }
-    return style;
+  renderInput: function(props) {
+
+    return (
+      <input
+        type="text"
+        ref="input"
+        { ...props } />
+    );
+  },
+
+  renderTextarea: function(props) {
+    return (
+      <textarea
+        ref="input"
+        { ...props } />
+    );
   },
 
   renderSuggestionsOverlay: function() {
@@ -190,128 +173,50 @@ module.exports = React.createClass({
       // do not show suggestions when the input does not have the focus
       return null;
     }
+
+    let { className, style } = substyle(this.props, "suggestions");
+
     return (
       <SuggestionsOverlay
+        className={ className }
+        style={{
+          ...style,
+          ...this.state.suggestionsPosition
+        }}
+        focusIndex={ this.state.focusIndex }
         ref="suggestions"
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
+        onMouseEnter={ (focusIndex) => this.setState({ focusIndex })}
         isLoading={this.isLoading()} />
     );
   },
 
-  renderHighlighter: function() {
-    var value = LinkedValueUtils.getValue(this.props) || "";
+  renderHighlighter: function(inputStyle) {
+    let { selectionStart, selectionEnd } = this.state;
+    let { markup, displayTransform, singleLine, children } = this.props;
 
-    // If there's a caret (i.e. no range selection), map the caret position into the marked up value
-    var caretPositionInMarkup;
-    if(this.state.selectionStart === this.state.selectionEnd) {
-      caretPositionInMarkup = utils.mapPlainTextIndex(value, this.props.markup, this.state.selectionStart, false, this.props.displayTransform);
-    }
+    let value = LinkedValueUtils.getValue(this.props);
 
-    var resultComponents = [];
-    var componentKeys = {};
-
-    // start by appending directly to the resultComponents
-    var components = resultComponents;
-
-    var substringComponentKey = 0;
-
-    var textIteratee = function(substr, index, indexInPlainText) {
-      // check whether the caret element has to be inserted inside the current plain substring
-      if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
-        // if yes, split substr at the caret position and insert the caret component
-        var splitIndex = caretPositionInMarkup - index;
-        components.push(
-          this.renderSubstring(substr.substring(0, splitIndex), substringComponentKey)
-        );
-
-        // add all following substrings and mention components as children of the caret component
-        components = [ this.renderSubstring(substr.substring(splitIndex), substringComponentKey) ];
-      } else {
-        // otherwise just push the plain text substring
-        components.push(
-          this.renderSubstring(substr, substringComponentKey)
-        );
-      }
-
-      substringComponentKey++;
-    }.bind(this);
-
-    var mentionIteratee = function(markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
-      // generate a component key based on the id
-      var key = _generateComponentKey(componentKeys, id);
-      components.push(
-        this.getMentionComponentForMatch(id, display, type, key)
-      );
-    }.bind(this);
-    utils.iterateMentionsMarkup(value, this.props.markup, textIteratee, mentionIteratee, this.props.displayTransform);
-
-    // append a span containing a space, to ensure the last text line has the correct height
-    components.push(" ");
-
-    if(components !== resultComponents) {
-      // if a caret component is to be rendered, add all components that followed as its children
-      resultComponents.push(
-        this.renderHighlighterCaret(components)
-      );
-    }
-
-    return resultComponents;
-  },
-
-  renderSubstring: function (string, key) {
-    // set substring spand to hidden, so that Emojis are not shown double in Mobile Safari
     return (
-      <span style={{visibility: 'hidden'}} key={key}>
-        { string }
-      </span>
-    );
-  },
+      <Highlighter
+        ref="highlighter"
+        { ...substyle(this.props, "highlighter") }
+        inputStyle={ inputStyle }
+        value={ value }
+        markup={ markup }
+        displayTransform={ displayTransform }
+        singleLine={ singleLine }
+        selection={{
+          start: selectionStart,
+          end: selectionEnd
+        }}
+        onCaretPositionChange={ (position) => this.setState({ caretPosition: position }) }>
 
-  // Renders an component to be inserted in the highlighter at the current caret position
-  renderHighlighterCaret: function(children) {
-    return (
-      <span className="caret-marker" ref="caret" key="caret">
         { children }
-      </span>
+      </Highlighter>
     );
-  },
-
-  // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
-  getMentionComponentForMatch: function(id, display, type, key) {
-    var childrenCount = React.Children.count(this.props.children);
-    var props = { id: id, display: display, key: key };
-
-    if(childrenCount > 1) {
-      if(!type) {
-        throw new Error(
-          "Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder"
-        );
-      }
-
-      // detect the Mention child to be cloned
-      var foundChild = null;
-      React.Children.forEach(this.props.children, function(child) {
-        if(!child) {
-          return;
-        }
-
-        if(child.props.type === type) {
-          foundChild = child;
-        }
-      });
-
-      // clone the Mention child that is applicable for the given type
-      return React.cloneElement(foundChild, props);
-    } else if(childrenCount === 1) {
-      // clone single Mention child
-      var child = this.props.children.length ? this.props.children[0] : React.Children.only(this.props.children);
-      return React.cloneElement(child, props );
-    } else {
-      // no children, use default configuration
-      return Mention(props);
-    }
   },
 
   // Returns the text to set as the value of the textarea with all markups removed
@@ -407,31 +312,61 @@ module.exports = React.createClass({
   },
 
   handleKeyDown: function(ev) {
-    var keyHandlers = {};
-
     // do not intercept key events if the suggestions overlay is not shown
-    var suggestionsCount = 0;
-    for(var prop in this.state.suggestions) {
-      if(this.state.suggestions.hasOwnProperty(prop)) {
-        suggestionsCount += this.state.suggestions[prop].results.length;
-      }
-    }
+    var suggestionsCount = utils.countSuggestions(this.state.suggestions);
 
     var suggestionsComp = this.refs.suggestions;
-    if(suggestionsCount > 0 && suggestionsComp) {
-      keyHandlers[KEY.ESC] = this.clearSuggestions;
-      keyHandlers[KEY.DOWN] = suggestionsComp.shiftFocus.bind(null, +1);
-      keyHandlers[KEY.UP] = suggestionsComp.shiftFocus.bind(null, -1);
-      keyHandlers[KEY.RETURN] = suggestionsComp.selectFocused;
-      keyHandlers[KEY.TAB] = suggestionsComp.selectFocused;
+    if(suggestionsCount === 0 || !suggestionsComp) {
+      this.props.onKeyDown(ev);
+
+      return;
     }
 
-    if(keyHandlers[ev.keyCode]) {
-      keyHandlers[ev.keyCode]();
+    if(values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault();
-    } else {
-      this.props.onKeyDown(ev);
     }
+
+    switch(ev.keyCode) {
+      case KEY.ESC: {
+        this.clearSuggestions();
+        return;
+      }
+      case KEY.DOWN: {
+        this.shiftFocus(+1);
+        return;
+      }
+      case KEY.UP: {
+        this.shiftFocus(-1);
+        return;
+      }
+      case KEY.RETURN: {
+        this.selectFocused();
+        return;
+      }
+      case KEY.TAB: {
+        this.selectFocused();
+        return;
+      }
+    }
+  },
+
+  shiftFocus: function(delta) {
+    let suggestionsCount = utils.countSuggestions(this.state.suggestions);
+
+    this.setState({
+      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
+    });
+  },
+
+  selectFocused: function() {
+    let { suggestions, focusIndex } = this.state;
+    let { suggestion, descriptor } = utils.getSuggestion(suggestions, focusIndex);
+
+    this.addMention(suggestion, descriptor);
+
+    this.setState({
+      focusIndex: 0
+    });
   },
 
   handleBlur: function(ev) {
@@ -445,9 +380,8 @@ module.exports = React.createClass({
     };
     this._suggestionsMouseDown = false;
 
-    var that = this;
-    window.setTimeout(function() {
-      that.updateHighlighterScroll();
+    window.setTimeout(() => {
+      this.updateHighlighterScroll();
     }, 1);
 
     this.props.onBlur(ev);
@@ -458,22 +392,40 @@ module.exports = React.createClass({
   },
 
   updateSuggestionsPosition: function() {
-    if(!this.refs.caret || !this.refs.suggestions) return;
+    let { caretPosition } = this.state;
 
-    var containerEl = this.refs.container;
-    var caretEl = this.refs.caret;
-    var suggestionsEl = React.findDOMNode(this.refs.suggestions);
-    var highligherEl = this.refs.highlighter;
-    if(!suggestionsEl) return;
-
-    var leftPos = caretEl.offsetLeft - highligherEl.scrollLeft;
-    // guard for mentions suggestions list clipped by right edge of window
-    if (leftPos + suggestionsEl.offsetWidth > containerEl.offsetWidth) {
-      suggestionsEl.style.right = "0px"
-    } else {
-      suggestionsEl.style.left = leftPos + "px"
+    if(!caretPosition || !this.refs.suggestions) {
+      return;
     }
-    suggestionsEl.style.top = caretEl.offsetTop - highligherEl.scrollTop + "px";
+
+    let { container } = this.refs;
+
+    let suggestions = ReactDOM.findDOMNode(this.refs.suggestions);
+    let highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
+
+    if(!suggestions) {
+      return;
+    }
+
+    let left = caretPosition.left - highlighter.scrollLeft;
+    let position = {};
+
+    // guard for mentions suggestions list clipped by right edge of window
+    if (left + suggestions.offsetWidth > container.offsetWidth) {
+      position.right = 0;
+    } else {
+      position.left = left
+    }
+
+    position.top = caretPosition.top - highlighter.scrollTop;
+
+    if(isEqual(position, this.state.suggestionsPosition)) {
+      return;
+    }
+
+    this.setState({
+      suggestionsPosition: position
+    });
   },
 
   updateHighlighterScroll: function() {
@@ -483,7 +435,7 @@ module.exports = React.createClass({
       return;
     }
     var input = this.refs.input;
-    var highlighter = this.refs.highlighter;
+    var highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
     highlighter.scrollLeft = input.scrollLeft;
   },
 
@@ -555,7 +507,8 @@ module.exports = React.createClass({
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
     this.setState({
-      suggestions: {}
+      suggestions: {},
+      focusIndex: 0
     });
   },
 
@@ -586,7 +539,7 @@ module.exports = React.createClass({
     });
   },
 
-  addMention: function(suggestion, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
+  addMention: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this.props) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
@@ -633,3 +586,42 @@ module.exports = React.createClass({
 
 
 });
+
+export default MentionsInput;
+
+const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+const defaultInputStyle = {
+  display: "block",
+  position: "absolute",
+  top: 0,
+  boxSizing: "border-box",
+  background: "transparent",
+  font: "inherit",
+  width: "inherit",
+}
+
+const defaultTextareaStyle = {
+  ...defaultInputStyle,
+
+  width: "100%",
+  height: "100%",
+  bottom: 0,
+  overflow: "hidden",
+  resize: "none",
+
+  // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+  ...(isMobileSafari ? {
+    marginTop: 1,
+    marginLeft: -3,
+  } : null)
+};
+
+const substyle = defaultStyle({
+  position: "relative",
+  overflowY: "visible",
+
+  input: defaultInputStyle,
+  textarea: defaultTextareaStyle
+});
+

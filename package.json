@@ -4,13 +4,13 @@
   "description": "React mentions input",
   "main": "lib/index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha",
-    "transpile": "NODE_ENV=production babel src --out-dir lib",
+    "test": "npm run env NODE_ENV=test && mocha",
+    "transpile": "npm run env NODE_ENV=production && babel src --out-dir lib",
     "clean": "rimraf lib",
     "start": "cd gh-pages && webpack-dev-server --config webpack.dev.config.js --port 9090 --d --hot --inline --progress --colors",
     "pretranspile": "npm run clean",
     "prepublish": "npm run transpile",
-    "prepages-publish": "NODE_ENV=production cd gh-pages && webpack",
+    "prepages-publish": "npm run env NODE_ENV=production && cd gh-pages && webpack",
     "pages-publish": "grunt publish"
   },
   "repository": {
@@ -60,7 +60,9 @@
     "react-addons-test-utils": "^0.14.7",
     "react-router": "^1.0.0-rc3",
     "react-tools": "~0.14.0-alpha3",
+    "react-transform-catch-errors": "^1.0.2",
     "react-transform-hmr": "^1.0.2",
+    "redbox-react": "^1.2.2",
     "rimraf": "^2.5.2",
     "sinon": "~1.12.1",
     "sinon-chai": "^2.8.0",

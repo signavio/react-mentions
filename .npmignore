@@ -1,7 +1,10 @@
-bower.json
-examples
-karma.conf.js
-scripts
-specs
+.DS_Store
+gh-pages
 src
-webpack.config.js
+test
+.gitignore
+.babelrc
+.travis.yml
+Gruntfile.js
+react-mentions.sublime-project
+.grunt

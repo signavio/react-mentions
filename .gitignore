@@ -1,9 +1,10 @@
-.grunt
-node_modules/
+.DS_Store
+node_modules
 gh-pages/lib
 gh-pages/css
+gh-pages/bundle.js
+gh-pages/bundle.js.map
 react-mentions.sublime-workspace
-coverage/
-results/
+coverage
 lib
-dist
+.grunt

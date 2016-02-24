@@ -4,7 +4,7 @@ var sinonChai = require("sinon-chai");
 var expect = chai.expect;
 chai.use(sinonChai);
 
-var utils = require('../src/utils.jsx');
+var utils = require('../src/utils');
 
 
 describe("utils", function() {

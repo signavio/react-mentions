@@ -74,7 +74,7 @@ If a function is passed as the `data` prop, that function will be called with th
 
 ## Styling
 
-_react-mentions_ supports CSS and inline styles (with [Radium](https://github.com/FormidableLabs/radium)). It is shipped with only some essential inline style definitions and without any CSS. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js). If you want to use CSS, simply assign a `className` prop to `MentionsInput`.
+_react-mentions_ supports CSS and inline styles (with [Radium](https://github.com/FormidableLabs/radium) soon to be added). It is shipped with only some essential inline style definitions and without any CSS. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js). If you want to use CSS, simply assign a `className` prop to `MentionsInput`.
 
 You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting. 
 

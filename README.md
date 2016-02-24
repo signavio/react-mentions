@@ -90,5 +90,5 @@ npm start
 Update the examples page on Github Pages:
 
 ```
-npm run page-publish
+npm run pages-publish
 ```

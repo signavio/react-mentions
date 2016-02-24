@@ -10,7 +10,7 @@
     "start": "cd gh-pages && webpack-dev-server --config webpack.dev.config.js --port 9090 --d --hot --inline --progress --colors",
     "pretranspile": "npm run clean",
     "prepublish": "npm run transpile",
-    "prepages-publish": "cd gh-pages && webpack",
+    "prepages-publish": "NODE_ENV=production cd gh-pages && webpack",
     "pages-publish": "grunt publish"
   },
   "repository": {

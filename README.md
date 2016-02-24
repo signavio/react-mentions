@@ -65,9 +65,11 @@ Each data source is configured using a `Mention` component, which has the follow
 |------------------|------------------------|-----------------|-----------------------------------------------------------------------------|
 | trigger          | regexp or string       | `'@'`           | Defines the char sequence upon which to trigger querying the data source    |
 | type             | string                 | `null`          | Identifier for the data source, when using multiple data sources (optional) |
-| data             | array or function      | `null`          | An array of the mentionable data entries (objects with `id` & `display` keys, or a filtering function that returns an array based on a query parameter |
+| data             | array or function (search, callback) | `null`          | An array of the mentionable data entries (objects with `id` & `display` keys, or a filtering function that returns an array based on a query parameter |
 | renderSuggestion | function (entry, search, highlightedDisplay)              | `null`          | Allows customizing how mention suggestions are rendered (optional)         |
 | onAdd            | function (id, display) | empty function  | Callback invoked when a suggestion has been added (optional)                |
+
+If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)
 
 
 ## Styling

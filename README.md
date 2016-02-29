@@ -20,17 +20,14 @@ Please [let us know](mailto:dev@effektif.com?subject=we're using react-mentions 
 Install the _react-mentions_ package via NPM:
 
 ```
-npm install react-mentions
+npm install react-mentions --save
 ```
 
 
 Require the _react-mentions_ package, which exports the two relevant React components for rendering the mentions textarea:
 
-```
-var mentions = require("react-mentions");
-
-var MentionsInput = mentions.MentionsInput;
-var Mention = mentions.Mention;
+```jsx
+import { MentionsInput, Mention } from "react-mentions";
 ```
 
 `MentionsInput` is the main component rendering the textarea control. It takes one or multiple `Mention` components as its children. Each `Mention` component represents a data source for a specific class of mentionable objects, such as users, template variables, issues, etc.
@@ -38,7 +35,7 @@ var Mention = mentions.Mention;
 
 Example:
 
-```
+```jsx
 <MentionsInput value={this.state.value} onChange={this.handleChange}>
     <Mention trigger="@"
         data={this.props.users}

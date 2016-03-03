@@ -11,6 +11,7 @@ A React component that let's you mention people in a textarea like you are used 
 - [Effektif](http://effektif.com)
 - [State](http://state.com)
 - [Swat.io](https://swat.io)
+- [GotDone](http://www.gotdone.me)
 
 Please [let us know](mailto:dev@effektif.com?subject=we're using react-mentions at ...) if you are using react-mentions, we'd love to add you to this list.
 

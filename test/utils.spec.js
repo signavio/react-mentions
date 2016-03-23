@@ -165,7 +165,7 @@ describe("utils", function() {
 
     it("should correctly calculate the index of a character in the plain text between mentions with display tranform", function() {
       var plainTextIndex = plainTextDisplayTransform.indexOf("let's add");
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, false, displayTransform);
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'START', displayTransform);
       expect(result).to.equal(value.indexOf("let's add"));
     });
 
@@ -209,23 +209,31 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf(joeMarkup));
     });
 
-    it("should return the index of the corresponding markup's last character if the plain text index lies inside a mention and the `toEndOfMarkup` flag is set", function() {
+    it("should return the index of the corresponding markup's last character if the plain text index lies inside a mention and the `inMarkupCorrection` is set to 'END'", function() {
       // index for first char of markup
       var plainTextIndex = plainText.indexOf("John Doe");
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'END');
       expect(result).to.equal(value.indexOf("@[John Doe](user:johndoe)"));
 
       // index of char inside the markup
       var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
       plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
-      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'END');
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
 
       // index of markup's last char
       plainTextIndex = plainText.indexOf("joe@smoe.com") + "joe@smoe.com".length - 1;
-      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, true);
+      result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'END');
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
     });
+
+    // it("should return the index of the respective char in the markup if `inMarkupCorrection` is set to false", function() {
+    //   // index of char inside the markup
+    //   var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
+    //   var plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
+    //   var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, false);
+    //   expect(result).to.equal(value.indexOf(joeMarkup) + "@[joe@smoe.com](email:".length + 3);
+    // });
 
     it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention with display transform", function() {
       // index of char inside the markup
@@ -238,7 +246,7 @@ describe("utils", function() {
     it("should return the correctly mapped caret position at the end of the string after a mention", function() {
       var value = "Hi @[John Doe](user:johndoe)";
       var plainText = "Hi John Doe";
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainText.length, true);
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainText.length, 'END');
       expect(result).to.equal(value.length);
     });
 
@@ -341,6 +349,11 @@ describe("utils", function() {
       var changed = plainTextDisplayTransform.replace("add", "dd");
       var result = utils.applyChangeToValue(value, defaultMarkup, changed, 26, 26, 26, displayTransform);
       expect(result).to.equal("Hi @[John Doe](user:johndoe), \n\nlet's dd @[joe@smoe.com](email:joe@smoe.com) to this conversation...");
+    });
+
+    it('should correctly handle text auto-correction', function () {
+      var result = utils.applyChangeToValue("ill", defaultMarkup, "I'll", 3, 3, 4);
+      expect(result).to.equal("I'll")
     });
 
   });

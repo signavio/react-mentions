@@ -25,5 +25,11 @@
 			"follow_symlinks": true,
 			"path": "."
 		}
-	]
+	],
+	"settings":
+	{
+		"FuzzyFilePath":
+		{
+		}
+	}
 }

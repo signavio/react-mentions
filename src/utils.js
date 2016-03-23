@@ -157,9 +157,12 @@ module.exports = {
 
   // For the passed character index in the plain text string, returns the corresponding index
   // in the marked up value string.
-  // If the passed character index lies inside a mention, returns the index of the mention
-  // markup's first char, or respectively tho one after its last char, if the flag `toEndOfMarkup` is set.
-  mapPlainTextIndex: function(value, markup, indexInPlainText, toEndOfMarkup, displayTransform) {
+  // If the passed character index lies inside a mention, the value of `inMarkupCorrection` defines the
+  // correction to apply:
+  //   - 'START' to return the index of the mention markup's first char
+  //   - 'END' to return the index after its last char
+  //   - false to not apply any correction
+  mapPlainTextIndex: function(value, markup, indexInPlainText, inMarkupCorrection='START', displayTransform) {
     if(!this.isNumber(indexInPlainText)) {
       return indexInPlainText;
     }
@@ -176,11 +179,11 @@ module.exports = {
     var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
       if(result !== undefined) return;
 
-      if(mentionPlainTextIndex + display.length > indexInPlainText) {
+      if(inMarkupCorrection && mentionPlainTextIndex + display.length > indexInPlainText) {
         // found the corresponding position inside current match,
         // return the index of the first or after the last char of the matching markup
         // depending on whether the `toEndOfMarkup` is set
-        result = index + (toEndOfMarkup ? markup.length : 0);
+        result = index + (inMarkupCorrection === 'END' ? markup.length : 0);
       }
     };
 
@@ -216,7 +219,7 @@ module.exports = {
     var mentionStart = this.findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform);
     return mentionStart !== undefined && mentionStart !== indexInPlainText
   },
-
+  
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change
   applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
@@ -251,13 +254,39 @@ module.exports = {
       spliceEnd = Math.max(selectionEndBeforeChange, selectionStartBeforeChange + lengthDelta);
     }
 
-    // splice the current marked up value and insert new chars
-    return this.spliceString(
-      value,
-      this.mapPlainTextIndex(value, markup, spliceStart, false, displayTransform),
-      this.mapPlainTextIndex(value, markup, spliceEnd, true, displayTransform),
-      insert
-    );
+    var mappedSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, 'START', displayTransform);
+    var controlSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, false, displayTransform);
+    var mappedSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, 'END', displayTransform);
+    var controlSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, false, displayTransform);
+    var willRemoveMention = mappedSpliceStart !== controlSpliceStart || mappedSpliceEnd !== controlSpliceEnd;
+
+    var newValue = this.spliceString(value, mappedSpliceStart, mappedSpliceEnd, insert);
+
+    if(!willRemoveMention) {
+      // test for auto-completion changes
+      var controlPlainTextValue = this.getPlainText(newValue, markup, displayTransform);
+      if(controlPlainTextValue !== plainTextValue) {
+        // some auto-correction is going on
+
+        // find start of diff
+        spliceStart = 0;
+        while(plainTextValue[spliceStart] === controlPlainTextValue[spliceStart])
+          spliceStart++
+
+        // extract auto-corrected insertion
+        insert = plainTextValue.slice(spliceStart, selectionEndAfterChange)
+
+        // find index of the unchanged remainder
+        spliceEnd = oldPlainTextValue.lastIndexOf(plainTextValue.substring(selectionEndAfterChange))
+
+        // re-map the corrected indices
+        mappedSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, 'START', displayTransform);
+        mappedSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, 'END', displayTransform);
+        newValue = this.spliceString(value, mappedSpliceStart, mappedSpliceEnd, insert);
+      }
+    }
+    
+    return newValue;
   },
 
   getPlainText: function(value, markup, displayTransform) {

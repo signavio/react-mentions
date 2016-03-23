@@ -28,8 +28,8 @@ npm install react-mentions --save
 
 Require the _react-mentions_ package, which exports the two relevant React components for rendering the mentions textarea:
 
-```jsx
-import { MentionsInput, Mention } from "react-mentions";
+```javascript
+import { MentionsInput, Mention } from 'react-mentions'
 ```
 
 `MentionsInput` is the main component rendering the textarea control. It takes one or multiple `Mention` components as its children. Each `Mention` component represents a data source for a specific class of mentionable objects, such as users, template variables, issues, etc.
@@ -37,7 +37,7 @@ import { MentionsInput, Mention } from "react-mentions";
 
 Example:
 
-```jsx
+```javascript
 <MentionsInput value={this.state.value} onChange={this.handleChange}>
     <Mention trigger="@"
         data={this.props.users}

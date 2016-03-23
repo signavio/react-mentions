@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import Radium from 'radium';
 import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 
 import Suggestion from "./Suggestion";
+import LoadingIndicator from "./LoadingIndicator";
 
-export default class SuggestionsOverlay extends Component {
+class SuggestionsOverlay extends Component {
 
   static propTypes = {
     suggestions: PropTypes.object.isRequired,
@@ -86,17 +88,7 @@ export default class SuggestionsOverlay extends Component {
       return;
     }
 
-    return (
-      <div { ...substyle(this.props, "loading-indicator") }>
-        <div { ...substyle(this.props, "spinner") }>
-          <div { ...substyle(this.props, "element1") } />
-          <div { ...substyle(this.props, "element2") } />
-          <div { ...substyle(this.props, "element3") } />
-          <div { ...substyle(this.props, "element4") } />
-          <div { ...substyle(this.props, "element5") } />
-        </div>
-      </div>
-    );
+    return <LoadingIndicator { ...substyle(this.props, "loadingIndicator") } />
   }
 
   handleMouseEnter(index, ev) {
@@ -110,6 +102,8 @@ export default class SuggestionsOverlay extends Component {
   }
 
 };
+
+export default Radium(SuggestionsOverlay);
 
 const substyle = defaultStyle({
   position: "absolute",

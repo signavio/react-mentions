@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import Radium from 'radium';
 import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
 import keys from 'lodash/keys';
@@ -109,7 +110,7 @@ const MentionsInput = React.createClass({
 
   render: function() {
     return (
-      <div ref="container" {...substyle(this.props)}>
+      <div ref="container" {...substyle(this.props, getModifiers(this.props))}>
         { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
@@ -125,7 +126,7 @@ const MentionsInput = React.createClass({
     return {
       ...props,
 
-      ...substyle(this.props, isTextarea ? "textarea" : "input"),
+      ...substyle(this.props, getModifiers(this.props, "input")),
 
       value: this.getPlainText(),
 
@@ -143,7 +144,7 @@ const MentionsInput = React.createClass({
     let inputProps = this.getInputProps(!singleLine);
 
     return (
-      <div { ...substyle(this.props, "control") }>
+      <div { ...substyle(this.props, getModifiers(this.props, "control")) }>
         { this.renderHighlighter(inputProps.style) }
         { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
       </div>
@@ -174,7 +175,7 @@ const MentionsInput = React.createClass({
       return null;
     }
 
-    let { className, style } = substyle(this.props, "suggestions");
+    let { className, style } = substyle(this.props, getModifiers(this.props, "suggestions"));
 
     return (
       <SuggestionsOverlay
@@ -202,7 +203,7 @@ const MentionsInput = React.createClass({
     return (
       <Highlighter
         ref="highlighter"
-        { ...substyle(this.props, "highlighter") }
+        { ...substyle(this.props, getModifiers(this.props, "highlighter")) }
         inputStyle={ inputStyle }
         value={ value }
         markup={ markup }
@@ -587,41 +588,48 @@ const MentionsInput = React.createClass({
 
 });
 
-export default MentionsInput;
+export default Radium(MentionsInput);
+
+const getModifiers = (props, ...modifiers) => ({
+  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
+
+  "&singleLine": props.singleLine,
+  "&multiLine": !props.singleLine,
+});
 
 const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-const defaultInputStyle = {
-  display: "block",
-  position: "absolute",
-  top: 0,
-  boxSizing: "border-box",
-  background: "transparent",
-  font: "inherit",
-  width: "inherit",
-}
-
-const defaultTextareaStyle = {
-  ...defaultInputStyle,
-
-  width: "100%",
-  height: "100%",
-  bottom: 0,
-  overflow: "hidden",
-  resize: "none",
-
-  // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-  ...(isMobileSafari ? {
-    marginTop: 1,
-    marginLeft: -3,
-  } : null)
-};
 
 const substyle = defaultStyle({
   position: "relative",
   overflowY: "visible",
 
-  input: defaultInputStyle,
-  textarea: defaultTextareaStyle
+  input: {
+    display: "block",
+    position: "absolute",
+
+    top: 0,
+
+    boxSizing: "border-box",
+
+    backgroundColor: "transparent",
+
+    width: "inherit",
+  },
+
+  '&multiLine': {
+    input: {
+      width: "100%",
+      height: "100%",
+      bottom: 0,
+      overflow: "hidden",
+      resize: "none",
+
+      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+      ...(isMobileSafari ? {
+        marginTop: 1,
+        marginLeft: -3,
+      } : null)
+    }
+  }
 });
 

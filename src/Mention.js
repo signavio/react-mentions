@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
+import Radium from 'radium';
 
 import utils from './utils';
 
-export default function Mention({ display, className, style }) {
+function Mention({ display, className, style }) {
   return (
-    <strong 
+    <strong
       className={className}
       style={{ ...defaultStyle, ...style}}
     >
@@ -52,3 +53,5 @@ Mention.defaultProps = {
 const defaultStyle = {
   fontWeight: "inherit"
 }
+
+export default Radium(Mention);

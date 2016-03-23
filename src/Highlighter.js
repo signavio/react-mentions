@@ -1,4 +1,6 @@
 import React, { Component, PropTypes, Children } from "react";
+import Radium from 'radium';
+import { defaultStyle } from 'substyle';
 
 import isEqual from "lodash/isEqual";
 
@@ -14,7 +16,7 @@ const _generateComponentKey = (usedKeys, id) => {
   return id + "_" + usedKeys[id];
 };
 
-export default class Highlighter extends Component {
+class Highlighter extends Component {
 
   static propTypes = {
     selection: PropTypes.shape({
@@ -75,7 +77,7 @@ export default class Highlighter extends Component {
   }
 
   render() {
-    let { selection, value, markup, displayTransform, inputStyle, className, style } = this.props;
+    let { selection, value, markup, displayTransform, inputStyle } = this.props;
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
@@ -131,12 +133,13 @@ export default class Highlighter extends Component {
       );
     }
 
+    let { style, className } = substyle(this.props, getModifiers(this.props));
+
     return (
       <div
         className={ className }
         style={{
           ...inputStyle,
-          ...defaultStyle(this.props),
           ...style
         }}>
 
@@ -148,7 +151,7 @@ export default class Highlighter extends Component {
   renderSubstring(string, key) {
     // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
-      <span style={{visibility: 'hidden'}} key={key}>
+      <span { ...substyle(this.props, "substring") } key={key}>
         { string }
       </span>
     );
@@ -195,20 +198,37 @@ export default class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span ref="caret" key="caret">
+      <span { ...substyle(this.props, "caret") } ref="caret" key="caret">
         { children }
       </span>
     );
   }
 }
 
-const defaultStyle = ({ singleLine }) => ({
-  position: "relative",
-  width: "inherit",
-  color: "transparent",
-  font: "inherit",
-  overflow: "hidden",
+export default Radium(Highlighter);
 
-  whiteSpace: singleLine ? "pre" : "pre-wrap",
-  wordWrap: singleLine ? null : "break-word",
+const getModifiers = (props, ...modifiers) => ({
+  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
+
+  '&singleLine': props.singleLine,
+});
+
+const substyle = defaultStyle({
+  position: 'relative',
+  width: 'inherit',
+  color: 'transparent',
+
+  overflow: 'hidden',
+
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
+
+  '&singleLine': {
+    whiteSpace: 'pre',
+    wordWrap: null
+  },
+
+  substring: {
+    visibility: 'hidden'
+  }
 });

@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from "react";
+import Radium from 'radium';
 import omit from "lodash/omit";
 import keys from "lodash/keys";
 
 import { defaultStyle } from "substyle";
 
-export default class Suggestion extends Component {
+class Suggestion extends Component {
 
   static propTypes = {
     id: PropTypes.string.isRequired,
@@ -85,6 +86,8 @@ export default class Suggestion extends Component {
   }
 
 }
+
+export default Radium(Suggestion);
 
 const substyle = defaultStyle({
   cursor: "pointer"

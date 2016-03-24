@@ -159,9 +159,9 @@ module.exports = {
   // in the marked up value string.
   // If the passed character index lies inside a mention, the value of `inMarkupCorrection` defines the
   // correction to apply:
-  //   - 'START' to return the index of the mention markup's first char
+  //   - 'START' to return the index of the mention markup's first char (default)
   //   - 'END' to return the index after its last char
-  //   - false to not apply any correction
+  //   - 'NULL' to return null
   mapPlainTextIndex: function(value, markup, indexInPlainText, inMarkupCorrection='START', displayTransform) {
     if(!this.isNumber(indexInPlainText)) {
       return indexInPlainText;
@@ -179,11 +179,15 @@ module.exports = {
     var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
       if(result !== undefined) return;
 
-      if(inMarkupCorrection && mentionPlainTextIndex + display.length > indexInPlainText) {
+      if(mentionPlainTextIndex + display.length > indexInPlainText) {
         // found the corresponding position inside current match,
         // return the index of the first or after the last char of the matching markup
-        // depending on whether the `toEndOfMarkup` is set
-        result = index + (inMarkupCorrection === 'END' ? markup.length : 0);
+        // depending on whether the `inMarkupCorrection`
+        if(inMarkupCorrection === 'NULL') {
+          result = null;
+        } else {
+          result = index + (inMarkupCorrection === 'END' ? markup.length : 0);
+        }
       }
     };
 
@@ -255,10 +259,11 @@ module.exports = {
     }
 
     var mappedSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, 'START', displayTransform);
-    var controlSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, false, displayTransform);
     var mappedSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, 'END', displayTransform);
-    var controlSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, false, displayTransform);
-    var willRemoveMention = mappedSpliceStart !== controlSpliceStart || mappedSpliceEnd !== controlSpliceEnd;
+
+    var controlSpliceStart = this.mapPlainTextIndex(value, markup, spliceStart, 'NULL', displayTransform);
+    var controlSpliceEnd = this.mapPlainTextIndex(value, markup, spliceEnd, 'NULL', displayTransform);
+    var willRemoveMention = controlSpliceStart === null || controlSpliceEnd === null;
 
     var newValue = this.spliceString(value, mappedSpliceStart, mappedSpliceEnd, insert);
 

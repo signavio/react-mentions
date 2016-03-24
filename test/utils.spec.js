@@ -227,13 +227,13 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf(joeMarkup) + joeMarkup.length);
     });
 
-    // it("should return the index of the respective char in the markup if `inMarkupCorrection` is set to false", function() {
-    //   // index of char inside the markup
-    //   var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
-    //   var plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
-    //   var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, false);
-    //   expect(result).to.equal(value.indexOf(joeMarkup) + "@[joe@smoe.com](email:".length + 3);
-    // });
+    it("should return `null` if `inMarkupCorrection` is set to 'NULL'", function() {
+      // index of char inside the markup
+      var joeMarkup = "@[joe@smoe.com](email:joe@smoe.com)";
+      var plainTextIndex = plainText.indexOf("joe@smoe.com") + 3;
+      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'NULL');
+      expect(result).to.equal(null);
+    });
 
     it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention with display transform", function() {
       // index of char inside the markup

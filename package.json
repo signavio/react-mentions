@@ -72,7 +72,6 @@
   },
   "dependencies": {
     "babel-runtime": "^6.5.0",
-    "diff": "^2.2.2",
     "lodash": "^4.5.1",
     "react": ">=0.14.0",
     "react-dom": ">=0.14.0",

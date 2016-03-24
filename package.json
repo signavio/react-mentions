@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/effektif/react-mentions",
   "devDependencies": {
-    "babel": "^6.5.1",
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.1",
     "babel-loader": "^6.2.2",

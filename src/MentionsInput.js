@@ -128,8 +128,6 @@ const MentionsInput = React.createClass({
 
       ...substyle(this.props, getModifiers(this.props, "input")),
 
-      value: this.getPlainText(),
-
       ...(!readOnly && !disabled && {
         onChange: this.handleChange,
         onSelect: this.handleSelect,

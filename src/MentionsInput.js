@@ -545,13 +545,13 @@ const MentionsInput = React.createClass({
     var value = LinkedValueUtils.getValue(this.props) || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
     var end = start + querySequenceEnd - querySequenceStart;
-    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
+    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type) + ' ';
     var newValue = utils.spliceString(value, start, end, insert);
 
     // Refocus input and set caret position to end of mention
     this.refs.input.focus();
 
-    var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
+    var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type) + ' ';
     var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({
       selectionStart: newCaretPosition,

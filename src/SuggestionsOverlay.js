@@ -67,6 +67,7 @@ class SuggestionsOverlay extends Component {
         id={ id }
         ref={isFocused ? "focused" : null}
         query={ query }
+        index={ index }
         descriptor={ mentionDescriptor }
         suggestion={ suggestion }
         focused={ isFocused }

@@ -37,7 +37,7 @@ import { MentionsInput, Mention } from 'react-mentions'
 
 Example:
 
-```javascript
+```jsx
 <MentionsInput value={this.state.value} onChange={this.handleChange}>
     <Mention trigger="@"
         data={this.props.users}

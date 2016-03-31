@@ -543,7 +543,7 @@ const MentionsInput = React.createClass({
   addMention: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     // Insert mention in the marked up value at the correct position
     var value = LinkedValueUtils.getValue(this.props) || "";
-    var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, false, this.props.displayTransform);
+    var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, 'START', this.props.displayTransform);
     var end = start + querySequenceEnd - querySequenceStart;
     var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
     var newValue = utils.spliceString(value, start, end, insert);

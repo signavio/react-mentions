@@ -82,7 +82,7 @@ class Highlighter extends Component {
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
     if(selection.start === selection.end) {
-      caretPositionInMarkup = utils.mapPlainTextIndex(value, markup, selection.start, false, displayTransform);
+      caretPositionInMarkup = utils.mapPlainTextIndex(value, markup, selection.start, 'START', displayTransform);
     }
 
     var resultComponents = [];

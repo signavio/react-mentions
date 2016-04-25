@@ -23,6 +23,21 @@ class SuggestionsOverlay extends Component {
     onSelect: () => null
   };
 
+  componentDidUpdate() {
+    let { suggestions } = this.refs
+    if (!suggestions || suggestions.offsetHeight >= suggestions.scrollHeight) {
+      return
+    }
+    let children = suggestions.children
+    let height = suggestions.offsetHeight
+    if (children[0]) {
+      let childHeight = children[0].offsetHeight
+      let windowCount = suggestions.offsetHeight / childHeight
+      let currentWindow = Math.floor(this.props.focusIndex / windowCount)
+      suggestions.scrollTop = currentWindow * suggestions.offsetHeight
+    }
+  }
+
   render() {
     // do not show suggestions until there is some data
     if(utils.countSuggestions(this.props.suggestions) === 0 && !this.props.isLoading) {
@@ -34,7 +49,7 @@ class SuggestionsOverlay extends Component {
         {...substyle(this.props)}
         onMouseDown={this.props.onMouseDown}>
 
-        <ul {...substyle(this.props, "list") }>
+        <ul ref="suggestions" {...substyle(this.props, "list") }>
           { this.renderSuggestions() }
         </ul>
 

@@ -23,19 +23,40 @@ class SuggestionsOverlay extends Component {
     onSelect: () => null
   };
 
+  static state = {
+    mouseOverSuggestions: false
+  }
+
   componentDidUpdate() {
     let { suggestions } = this.refs
-    if (!suggestions || suggestions.offsetHeight >= suggestions.scrollHeight) {
+    if (!suggestions || suggestions.offsetHeight >= suggestions.scrollHeight || this.state.mouseOverSuggestions) {
       return
     }
     let children = suggestions.children
-    let height = suggestions.offsetHeight
-    if (children[0]) {
-      let childHeight = children[0].offsetHeight
-      let windowCount = suggestions.offsetHeight / childHeight
-      let currentWindow = Math.floor(this.props.focusIndex / windowCount)
-      suggestions.scrollTop = currentWindow * suggestions.offsetHeight
+    let childrenOffset = 0
+    let scrollTop = 0
+    for (var i = 0; i < this.props.focusIndex + 1; i++) {
+      childrenOffset += children[i].offsetHeight
     }
+    if (childrenOffset > suggestions.offsetHeight) {
+      if (children[this.props.focusIndex + 1]) {
+        scrollTop = childrenOffset - children[this.props.focusIndex + 1].offsetHeight
+      } else {
+        scrollTop = childrenOffset
+      }
+    }
+    else if (childrenOffset == suggestions.offsetHeight) {
+      scrollTop = childrenOffset
+    }
+    suggestions.scrollTop = scrollTop
+  }
+
+  onMouseEnter() {
+    this.setState({ mouseOverSuggestions: true })
+  }
+
+  onMouseLeave() {
+    this.setState({ mouseOverSuggestions: false })
   }
 
   render() {
@@ -49,7 +70,10 @@ class SuggestionsOverlay extends Component {
         {...substyle(this.props)}
         onMouseDown={this.props.onMouseDown}>
 
-        <ul ref="suggestions" {...substyle(this.props, "list") }>
+        <ul ref="suggestions"
+          onMouseEnter={::this.onMouseEnter}
+          onMouseLeave={::this.onMouseLeave}
+          {...substyle(this.props, "list") }>
           { this.renderSuggestions() }
         </ul>
 

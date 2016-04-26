@@ -11,52 +11,34 @@ class SuggestionsOverlay extends Component {
 
   static propTypes = {
     suggestions: PropTypes.object.isRequired,
-
+    focusIndex: PropTypes.number,
+    scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
-
     onSelect: PropTypes.func,
   };
 
   static defaultProps = {
     suggestions: {},
-
-    onSelect: () => null
+    onSelect: () => null,
   };
 
-  static state = {
-    mouseOverSuggestions: false
-  }
-
   componentDidUpdate() {
-    let { suggestions } = this.refs
-    if (!suggestions || suggestions.offsetHeight >= suggestions.scrollHeight || this.state.mouseOverSuggestions) {
+    const { suggestions } = this.refs
+    if (!suggestions || suggestions.offsetHeight >= suggestions.scrollHeight || !this.props.scrollFocusedIntoView) {
       return
     }
-    let children = suggestions.children
-    let childrenOffset = 0
-    let scrollTop = 0
-    for (var i = 0; i < this.props.focusIndex + 1; i++) {
-      childrenOffset += children[i].offsetHeight
-    }
-    if (childrenOffset > suggestions.offsetHeight) {
-      if (children[this.props.focusIndex + 1]) {
-        scrollTop = childrenOffset - children[this.props.focusIndex + 1].offsetHeight
-      } else {
-        scrollTop = childrenOffset
-      }
-    }
-    else if (childrenOffset == suggestions.offsetHeight) {
-      scrollTop = childrenOffset
-    }
-    suggestions.scrollTop = scrollTop
-  }
 
-  onMouseEnter() {
-    this.setState({ mouseOverSuggestions: true })
-  }
-
-  onMouseLeave() {
-    this.setState({ mouseOverSuggestions: false })
+    const scrollTop = suggestions.scrollTop
+    let { top, bottom } = suggestions.children[this.props.focusIndex].getBoundingClientRect();
+    const { top: topContainer } = suggestions.getBoundingClientRect();
+    top = top - topContainer + scrollTop;
+    bottom = bottom - topContainer + scrollTop;
+    
+    if(top < scrollTop) {
+      suggestions.scrollTop = top
+    } else if(bottom > suggestions.offsetHeight) {
+      suggestions.scrollTop = bottom - suggestions.offsetHeight
+    }
   }
 
   render() {
@@ -71,8 +53,6 @@ class SuggestionsOverlay extends Component {
         onMouseDown={this.props.onMouseDown}>
 
         <ul ref="suggestions"
-          onMouseEnter={::this.onMouseEnter}
-          onMouseLeave={::this.onMouseLeave}
           {...substyle(this.props, "list") }>
           { this.renderSuggestions() }
         </ul>

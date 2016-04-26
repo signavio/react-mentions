@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+  import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import LinkedValueUtils from 'react/lib/LinkedValueUtils';
@@ -185,11 +185,15 @@ const MentionsInput = React.createClass({
           ...this.state.suggestionsPosition
         }}
         focusIndex={ this.state.focusIndex }
+        scrollFocusedIntoView={ this.state.scrollFocusedIntoView }
         ref="suggestions"
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
-        onMouseEnter={ (focusIndex) => this.setState({ focusIndex })}
+        onMouseEnter={ (focusIndex) => this.setState({ 
+          focusIndex, 
+          scrollFocusedIntoView: false 
+        }) }
         isLoading={this.isLoading()} />
     );
   },
@@ -355,7 +359,8 @@ const MentionsInput = React.createClass({
     let suggestionsCount = utils.countSuggestions(this.state.suggestions);
 
     this.setState({
-      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount
+      focusIndex: (suggestionsCount + this.state.focusIndex + delta) % suggestionsCount,
+      scrollFocusedIntoView: true
     });
   },
 

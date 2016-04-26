@@ -7,12 +7,32 @@ var Advanced = require("./examples/AdvancedView");
 
 var users = [
   {
-    id: "johndoe",
-    display: "John Doe"
+    id: "walter",
+    display: "Walter White"
   },
   {
-    id: "joesmoe",
-    display: "Joe Smoe"
+    id: "jesse",
+    display: "Jesse Pinkman"
+  },
+  {
+    id: "gus",
+    display: "Gustavo \"Gus\" Fring"
+  },
+  {
+    id: "saul",
+    display: "Saul Goodman"
+  },
+  {
+    id: "hank",
+    display: "Hank Schrader"
+  },
+  {
+    id: "skyler",
+    display: "Skyler White"
+  },
+  {
+    id: "mike",
+    display: "Mike Ehrmantraut"
   }
 ];
 

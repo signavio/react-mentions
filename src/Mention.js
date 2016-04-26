@@ -48,6 +48,7 @@ Mention.defaultProps = {
   onRemove: () => null,
   renderSuggestion: null,
   isLoading: false,
+  appendSpaceOnAdd: false
 };
 
 const defaultStyle = {

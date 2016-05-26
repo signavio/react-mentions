@@ -8,7 +8,7 @@
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
 ##### Used in production at:
-- [Effektif](http://effektif.com)
+- [Signavio](http://signavio.com)
 - [State](http://state.com)
 - [Swat.io](https://swat.io)
 - [GotDone](http://www.gotdone.me)

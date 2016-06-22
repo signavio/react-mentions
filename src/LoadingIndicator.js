@@ -1,5 +1,5 @@
 import React from 'react';
-import Radium from 'radium';
+import Radium from './OptionalRadium';
 import substyle from 'substyle';
 
 function Spinner(props) {

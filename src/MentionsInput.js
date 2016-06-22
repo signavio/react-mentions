@@ -1,6 +1,6 @@
-  import React, { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
+import Radium from './OptionalRadium';
 import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
 import keys from 'lodash/keys';

@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from "react";
-import Radium from 'radium';
-import omit from "lodash/omit";
-import keys from "lodash/keys";
+import React, { Component, PropTypes } from 'react';
+import Radium from './OptionalRadium';
+import omit from 'lodash/omit';
+import keys from 'lodash/keys';
 
 import { defaultStyle } from "substyle";
 

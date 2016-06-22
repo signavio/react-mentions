@@ -1,5 +1,5 @@
-import React, { Component, PropTypes, Children } from "react";
-import Radium from 'radium';
+import React, { Component, PropTypes, Children } from 'react';
+import Radium from './OptionalRadium';
 import { defaultStyle } from 'substyle';
 
 import isEqual from "lodash/isEqual";

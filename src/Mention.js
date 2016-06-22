@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Radium from 'radium';
+import Radium from './OptionalRadium';
 
 import utils from './utils';
 

@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from 'radium';
+import Radium from './OptionalRadium';
 import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 
-import Suggestion from "./Suggestion";
-import LoadingIndicator from "./LoadingIndicator";
+import Suggestion from './Suggestion';
+import LoadingIndicator from './LoadingIndicator';
 
 class SuggestionsOverlay extends Component {
 

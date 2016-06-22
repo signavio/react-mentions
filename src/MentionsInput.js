@@ -376,7 +376,7 @@ const MentionsInput = React.createClass({
   },
 
   handleBlur: function(ev) {
-    // only reset selection if the mousdown happened on an element
+    // only reset selection if the mousedown happened on an element
     // other than the suggestions overlay
     if(!this._suggestionsMouseDown) {
       this.setState({
@@ -390,7 +390,9 @@ const MentionsInput = React.createClass({
       this.updateHighlighterScroll();
     }, 1);
 
-    this.props.onBlur(ev);
+    // do not intercept key events if the suggestions overlay is not shown
+    const suggestionsShown = utils.countSuggestions(this.state.suggestions) > 0;
+    this.props.onBlur(ev, suggestionsShown);
   },
 
   handleSuggestionsMouseDown: function(ev) {

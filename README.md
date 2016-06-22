@@ -61,7 +61,8 @@ The `MentionsInput` supports the following props for configuring the widget:
 | onChange         | function (event, newValue, newPlainTextValue, mentions) | empty function             | A callback that is invoked when the user changes the value in the mentions input         |
 | markup           | string                                                  | `'@[__display__](__id__)'` | A template string for the markup to use for mentions                                     |
 | singleLine       | boolean                                                 | `false`                    | Renders a single line text input instead of a textarea, if set to `true`                 |
-| displayTransform | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention (optional) |
+| displayTransform | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention            |
+| onBlur           | function (event, isSuggestionsDropdownShowing)          | empty function             | Passes `true` as second argument if the blur was caused by a click on a suggestion       |
 
 
 Each data source is configured using a `Mention` component, which has the following props:

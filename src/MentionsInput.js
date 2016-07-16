@@ -152,7 +152,6 @@ const MentionsInput = React.createClass({
   },
 
   renderInput: function(props) {
-
     return (
       <input
         type="text"

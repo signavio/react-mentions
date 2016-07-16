@@ -608,16 +608,8 @@ const MentionsInput = React.createClass({
 
   _queryId: 0
 
-
 });
 
 export default MentionsInput;
-
-const getModifiers = (props, ...modifiers) => ({
-  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
-
-  "&singleLine": props.singleLine,
-  "&multiLine": !props.singleLine,
-});
 
 const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);

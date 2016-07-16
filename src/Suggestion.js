@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import omit from 'lodash/omit';
 import keys from 'lodash/keys';
+import classNames from 'classnames';
 
 class Suggestion extends Component {
 
@@ -23,9 +24,12 @@ class Suggestion extends Component {
   render() {
     let rest = omit(this.props, keys(Suggestion.propTypes));
 
+    const className = classNames('mentions-input__suggestion', {
+      'mentions-input__suggestion--focused': this.props.focused
+    })
+
     return (
-      <li
-        className={this.props.focused ? "focused" : ""}
+      <li className={className}
         { ...rest }>
         { this.renderContent() }
       </li>

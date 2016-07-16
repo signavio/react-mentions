@@ -46,10 +46,9 @@ class SuggestionsOverlay extends Component {
     }
 
     return (
-      <div className="suggestions-overlay"
+      <div className="mentions-input__suggestions-overlay"
         onMouseDown={this.props.onMouseDown}>
-
-        <ul ref="suggestions" className="suggestions-list">
+        <ul ref="suggestions" className="mentions-input__suggestions-list">
           { this.renderSuggestions() }
         </ul>
 
@@ -77,7 +76,7 @@ class SuggestionsOverlay extends Component {
     let { mentionDescriptor, query } = descriptor;
 
     return (
-      <Suggestion className="suggestion-item"
+      <Suggestion
         key={ id }
         id={ id }
         ref={isFocused ? "focused" : null}

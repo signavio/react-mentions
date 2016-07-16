@@ -202,8 +202,3 @@ class Highlighter extends Component {
 }
 
 export default Highlighter;
-
-const getModifiers = (props, ...modifiers) => ({
-  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
-  '&singleLine': props.singleLine,
-});

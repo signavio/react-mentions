@@ -189,9 +189,9 @@ const MentionsInput = React.createClass({
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
-        onMouseEnter={ (focusIndex) => this.setState({ 
-          focusIndex, 
-          scrollFocusedIntoView: false 
+        onMouseEnter={ (focusIndex) => this.setState({
+          focusIndex,
+          scrollFocusedIntoView: false
         }) }
         isLoading={this.isLoading()} />
     );

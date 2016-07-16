@@ -3,8 +3,6 @@ import { Mention, MentionsInput } from "react-mentions";
 
 import MentionsMixin from "../mixins/MentionsMixin";
 
-import defaultStyle from "./defaultStyle";
-import defaultMentionStyle from "./defaultMentionStyle";
 
 // use first/outer capture group to extract the full entered sequence to be replaced
 // and second/inner capture group to extract search string from the match
@@ -31,7 +29,6 @@ module.exports = React.createClass({
         <MentionsInput
           value={this.state.value}
           onChange={this.handleChange}
-          style={ defaultStyle() }
           markup="@[__display__](__type__:__id__)"
           placeholder={"Mention people using '@'"}>
 
@@ -41,12 +38,12 @@ module.exports = React.createClass({
             data={ this.props.data }
             renderSuggestion={this.renderSuggestion}
             onAdd={this.handleAdd}
-            onRemove={this.handleRemove} style={defaultMentionStyle} />
+            onRemove={this.handleRemove} />
           <Mention
             type="email"
             trigger={emailRegex}
             data={this.requestEmail}
-            onAdd={this.handleEmailAdd} style={{ backgroundColor: '#d1c4e9'}}/>
+            onAdd={this.handleEmailAdd} />
         </MentionsInput>
       </div>
     );

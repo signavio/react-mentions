@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Radium from './OptionalRadium';
 import LinkedValueUtils from 'react/lib/LinkedValueUtils';
+import classNames from 'classnames';
 
 import keys from 'lodash/keys';
 import values from 'lodash/values';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
-
-import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
@@ -109,8 +107,14 @@ const MentionsInput = React.createClass({
   },
 
   render: function() {
+    const className = classNames(this.props.className, 'mentions-input',
+      this.props.singleLine
+        ? 'mentions-input--singleline'
+        : 'mentions-input--multiline'
+    )
+
     return (
-      <div ref="container" {...substyle(this.props, getModifiers(this.props))}>
+      <div ref="container" className={className}>
         { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
@@ -126,8 +130,6 @@ const MentionsInput = React.createClass({
     return {
       ...props,
 
-      ...substyle(this.props, getModifiers(this.props, "input")),
-
       value: this.getPlainText(),
 
       ...(!readOnly && !disabled && {
@@ -142,9 +144,14 @@ const MentionsInput = React.createClass({
   renderControl: function() {
     let { singleLine } = this.props;
     let inputProps = this.getInputProps(!singleLine);
+    const className = classNames('mentions-input__control',
+      singleLine
+        ? 'mentions-input__control--singleline'
+        : 'mentions-input__control--multiline'
+    )
 
     return (
-      <div { ...substyle(this.props, getModifiers(this.props, "control")) }>
+      <div className={className}>
         { this.renderHighlighter(inputProps.style) }
         { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
       </div>
@@ -152,11 +159,11 @@ const MentionsInput = React.createClass({
   },
 
   renderInput: function(props) {
-
     return (
       <input
         type="text"
         ref="input"
+        className="mentions-input__input mentions-input__input--singleline"
         { ...props } />
     );
   },
@@ -165,6 +172,7 @@ const MentionsInput = React.createClass({
     return (
       <textarea
         ref="input"
+        className="mentions-input__input mentions-input__input--multiline"
         { ...props } />
     );
   },
@@ -175,13 +183,16 @@ const MentionsInput = React.createClass({
       return null;
     }
 
-    let { className, style } = substyle(this.props, getModifiers(this.props, "suggestions"));
+    const className = classNames('mentions-input__suggestion-overlay',
+      this.props.singleLine
+      ? 'mentions-input__suggestion-overlay--singleline'
+      : 'mentions-input__suggestion-overlay--multiline'
+    )
 
     return (
       <SuggestionsOverlay
         className={ className }
         style={{
-          ...style,
           ...this.state.suggestionsPosition
         }}
         focusIndex={ this.state.focusIndex }
@@ -190,9 +201,9 @@ const MentionsInput = React.createClass({
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
-        onMouseEnter={ (focusIndex) => this.setState({ 
-          focusIndex, 
-          scrollFocusedIntoView: false 
+        onMouseEnter={ (focusIndex) => this.setState({
+          focusIndex,
+          scrollFocusedIntoView: false
         }) }
         isLoading={this.isLoading()} />
     );
@@ -207,7 +218,6 @@ const MentionsInput = React.createClass({
     return (
       <Highlighter
         ref="highlighter"
-        { ...substyle(this.props, getModifiers(this.props, "highlighter")) }
         inputStyle={ inputStyle }
         value={ value }
         markup={ markup }
@@ -598,51 +608,8 @@ const MentionsInput = React.createClass({
 
   _queryId: 0
 
-
 });
 
-export default Radium(MentionsInput);
-
-const getModifiers = (props, ...modifiers) => ({
-  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
-
-  "&singleLine": props.singleLine,
-  "&multiLine": !props.singleLine,
-});
+export default MentionsInput;
 
 const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-const substyle = defaultStyle({
-  position: "relative",
-  overflowY: "visible",
-
-  input: {
-    display: "block",
-    position: "absolute",
-
-    top: 0,
-
-    boxSizing: "border-box",
-
-    backgroundColor: "transparent",
-
-    width: "inherit",
-  },
-
-  '&multiLine': {
-    input: {
-      width: "100%",
-      height: "100%",
-      bottom: 0,
-      overflow: "hidden",
-      resize: "none",
-
-      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-      ...(isMobileSafari ? {
-        marginTop: 1,
-        marginLeft: -3,
-      } : null)
-    }
-  }
-});
-

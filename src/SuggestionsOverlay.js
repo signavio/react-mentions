@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from './OptionalRadium';
-import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 
@@ -33,7 +31,7 @@ class SuggestionsOverlay extends Component {
     const { top: topContainer } = suggestions.getBoundingClientRect();
     top = top - topContainer + scrollTop;
     bottom = bottom - topContainer + scrollTop;
-    
+
     if(top < scrollTop) {
       suggestions.scrollTop = top
     } else if(bottom > suggestions.offsetHeight) {
@@ -48,12 +46,9 @@ class SuggestionsOverlay extends Component {
     }
 
     return (
-      <div
-        {...substyle(this.props)}
+      <div className="mentions-input__suggestions-overlay"
         onMouseDown={this.props.onMouseDown}>
-
-        <ul ref="suggestions"
-          {...substyle(this.props, "list") }>
+        <ul ref="suggestions" className="mentions-input__suggestions-list">
           { this.renderSuggestions() }
         </ul>
 
@@ -81,7 +76,7 @@ class SuggestionsOverlay extends Component {
     let { mentionDescriptor, query } = descriptor;
 
     return (
-      <Suggestion { ...substyle(this.props, "item") }
+      <Suggestion
         key={ id }
         id={ id }
         ref={isFocused ? "focused" : null}
@@ -108,7 +103,7 @@ class SuggestionsOverlay extends Component {
       return;
     }
 
-    return <LoadingIndicator { ...substyle(this.props, "loadingIndicator") } />
+    return <LoadingIndicator />
   }
 
   handleMouseEnter(index, ev) {
@@ -123,18 +118,4 @@ class SuggestionsOverlay extends Component {
 
 };
 
-export default Radium(SuggestionsOverlay);
-
-const substyle = defaultStyle({
-  position: "absolute",
-  zIndex: 1,
-  backgroundColor: "white",
-  marginTop: 14,
-  minWidth: 100,
-
-  list: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  }
-});
+export default SuggestionsOverlay;

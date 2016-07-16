@@ -1,14 +1,11 @@
 import React, { PropTypes } from 'react';
-import Radium from './OptionalRadium';
+import classNames from 'classnames';
 
 import utils from './utils';
 
-function Mention({ display, className, style }) {
+function Mention({ display, className }) {
   return (
-    <strong
-      className={className}
-      style={{ ...defaultStyle, ...style}}
-    >
+    <strong className={classNames(className, 'mention')}>
       { display }
     </strong>
   );
@@ -37,8 +34,7 @@ Mention.propTypes = {
   ]),
 
   isLoading: PropTypes.bool,
-  className: PropTypes.string,
-  style: PropTypes.object
+  className: PropTypes.string
 };
 
 Mention.defaultProps = {
@@ -51,8 +47,4 @@ Mention.defaultProps = {
   appendSpaceOnAdd: false
 };
 
-const defaultStyle = {
-  fontWeight: "inherit"
-}
-
-export default Radium(Mention);
+export default Mention;

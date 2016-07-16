@@ -5,7 +5,6 @@ import merge from 'lodash/merge';
 import MentionsMixin from "../mixins/MentionsMixin";
 
 import defaultStyle from "./defaultStyle";
-import defaultMentionStyle from "./defaultMentionStyle";
 
 const style = merge({}, defaultStyle(), {
   suggestions: {
@@ -40,7 +39,7 @@ module.exports = React.createClass({
           style={style}
           displayTransform={this.transformDisplay}>
 
-          <Mention data={ this.props.data } onAdd={this.handleAddMention} style={defaultMentionStyle} />
+          <Mention data={ this.props.data } onAdd={this.handleAddMention} />
         </MentionsInput>
       </div>
     );

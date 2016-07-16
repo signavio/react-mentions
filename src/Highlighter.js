@@ -1,6 +1,5 @@
 import React, { Component, PropTypes, Children } from 'react';
-import Radium from './OptionalRadium';
-import { defaultStyle } from 'substyle';
+import classNames from 'classnames';
 
 import isEqual from "lodash/isEqual";
 
@@ -133,16 +132,13 @@ class Highlighter extends Component {
       );
     }
 
-    let { style, className } = substyle(this.props, getModifiers(this.props));
+    const className = classNames('mentions-input__highlighter',
+      this.props.singleLine
+      ? 'mentions-input__highlighter--singleline'
+      : 'mentions-input__highlighter--multiline')
 
     return (
-      <div
-        className={ className }
-        style={{
-          ...inputStyle,
-          ...style
-        }}>
-
+      <div className={className}>
         { resultComponents }
       </div>
     );
@@ -151,7 +147,7 @@ class Highlighter extends Component {
   renderSubstring(string, key) {
     // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
-      <span { ...substyle(this.props, "substring") } key={key}>
+      <span className="substring" key={key}>
         { string }
       </span>
     );
@@ -198,37 +194,16 @@ class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span { ...substyle(this.props, "caret") } ref="caret" key="caret">
+      <span className="caret" ref="caret" key="caret">
         { children }
       </span>
     );
   }
 }
 
-export default Radium(Highlighter);
+export default Highlighter;
 
 const getModifiers = (props, ...modifiers) => ({
   ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
-
   '&singleLine': props.singleLine,
-});
-
-const substyle = defaultStyle({
-  position: 'relative',
-  width: 'inherit',
-  color: 'transparent',
-
-  overflow: 'hidden',
-
-  whiteSpace: 'pre-wrap',
-  wordWrap: 'break-word',
-
-  '&singleLine': {
-    whiteSpace: 'pre',
-    wordWrap: null
-  },
-
-  substring: {
-    visibility: 'hidden'
-  }
 });

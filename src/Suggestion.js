@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from './OptionalRadium';
 import omit from 'lodash/omit';
 import keys from 'lodash/keys';
-
-import { defaultStyle } from "substyle";
 
 class Suggestion extends Component {
 
@@ -28,9 +25,8 @@ class Suggestion extends Component {
 
     return (
       <li
-        { ...rest }
-        { ...substyle(this.props, { "&focused": this.props.focused}) }>
-
+        className={this.props.focused ? "focused" : ""}
+        { ...rest }>
         { this.renderContent() }
       </li>
     );
@@ -71,13 +67,13 @@ class Suggestion extends Component {
     let i = display.toLowerCase().indexOf(query.toLowerCase());
 
     if(i === -1) {
-      return <span { ...substyle(this.props, "display") }>{ display }</span>;
+      return <span className="display">{ display }</span>;
     }
 
     return (
-      <span { ...substyle(this.props, "display") }>
+      <span className="display">
         { display.substring(0, i) }
-        <b { ...substyle(this.props, "highlight") }>
+        <b className="highlight">
           { display.substring(i, i+query.length) }
         </b>
         { display.substring(i+query.length) }
@@ -87,8 +83,4 @@ class Suggestion extends Component {
 
 }
 
-export default Radium(Suggestion);
-
-const substyle = defaultStyle({
-  cursor: "pointer"
-})
+export default Suggestion;

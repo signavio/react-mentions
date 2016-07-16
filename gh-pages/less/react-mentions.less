@@ -12,3 +12,78 @@ body {
 	background-color: rgb(206, 228, 229);
 }
 
+.mentions-input {
+	position: relative;
+	overflow-y: visible;
+}
+
+.mentions-input__control {
+	background-color: #fff;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.mentions-input__control--singleline {
+	display: inline-block;
+	width: 130px;
+}
+
+.mentions-input__control--multiline {
+	font-family: monospace;
+	border: 1px solid silver;
+}
+
+.mentions-input__highlighter {
+	position: relative;
+	width: inherit;
+	color: transparent;
+
+	overflow: hidden;
+
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.mentions-input__highlighter--singleline {
+	white-space: pre;
+	word-wrap: initial;
+}
+
+.mentions-input__highlighter--multiline {
+    display: block;
+    position: relative;
+    top: 0;
+    box-sizing: border-box;
+    background-color: transparent;
+    width: inherit;
+    margin: 0;
+    height: 100%;
+    bottom: 0;
+    overflow: hidden;
+    resize: none;
+    padding: 9px;
+    min-height: 63px;
+    outline: 0;
+    border: 0;
+    color: transparent;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.mentions-input__input--multiline {
+    display: block;
+    position: absolute;
+    top: 0;
+    box-sizing: border-box;
+    background-color: transparent;
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    bottom: 0;
+    overflow: hidden;
+    resize: none;
+    padding: 9px;
+    min-height: 63px;
+    outline: 0;
+    border: 0;
+}

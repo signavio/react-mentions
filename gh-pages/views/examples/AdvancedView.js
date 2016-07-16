@@ -1,19 +1,8 @@
 import React from "react";
 import { MentionsInput, Mention } from "react-mentions";
-import merge from 'lodash/merge';
 
 import MentionsMixin from "../mixins/MentionsMixin";
 
-import defaultStyle from "./defaultStyle";
-
-const style = merge({}, defaultStyle(), {
-  suggestions: {
-    list: {
-      maxHeight: 100,
-      overflow: 'auto',
-    },
-  }
-})
 
 module.exports = React.createClass({
 
@@ -36,7 +25,6 @@ module.exports = React.createClass({
           value={this.state.value}
           onChange={this.handleChange}
           markup="{{__id__}}"
-          style={style}
           displayTransform={this.transformDisplay}>
 
           <Mention data={ this.props.data } onAdd={this.handleAddMention} />

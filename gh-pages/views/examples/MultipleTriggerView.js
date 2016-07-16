@@ -3,7 +3,6 @@ import { Mention, MentionsInput } from "react-mentions";
 
 import MentionsMixin from "../mixins/MentionsMixin";
 
-import defaultStyle from "./defaultStyle";
 
 // use first/outer capture group to extract the full entered sequence to be replaced
 // and second/inner capture group to extract search string from the match
@@ -30,7 +29,6 @@ module.exports = React.createClass({
         <MentionsInput
           value={this.state.value}
           onChange={this.handleChange}
-          style={ defaultStyle() }
           markup="@[__display__](__type__:__id__)"
           placeholder={"Mention people using '@'"}>
 

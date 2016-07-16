@@ -3,8 +3,6 @@ import { Mention, MentionsInput } from "react-mentions";
 
 import MentionsMixin from "../mixins/MentionsMixin";
 
-import defaultStyle from "./defaultStyle";
-
 module.exports = React.createClass({
 
   displayName: "SingleLine",
@@ -26,7 +24,6 @@ module.exports = React.createClass({
           singleLine
           value={this.state.value}
           onChange={this.handleChange}
-          style={ defaultStyle({ singleLine: true }) }
           placeholder={"Mention people using '@'"}>
 
           <Mention data={ this.props.data } />

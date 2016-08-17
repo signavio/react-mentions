@@ -47,6 +47,7 @@ var _getDataProvider = function(data) {
 
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
+var isComposing = false;
 
 const MentionsInput = React.createClass({
 
@@ -135,6 +136,8 @@ const MentionsInput = React.createClass({
         onSelect: this.handleSelect,
         onKeyDown: this.handleKeyDown,
         onBlur: this.handleBlur,
+        onCompositionStart: this.handleCompositionStart,
+        onCompositionEnd: this.handleCompositionEnd,
       })
     };
   },
@@ -190,9 +193,9 @@ const MentionsInput = React.createClass({
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
-        onMouseEnter={ (focusIndex) => this.setState({ 
-          focusIndex, 
-          scrollFocusedIntoView: false 
+        onMouseEnter={ (focusIndex) => this.setState({
+          focusIndex,
+          scrollFocusedIntoView: false
         }) }
         isLoading={this.isLoading()} />
     );
@@ -296,6 +299,9 @@ const MentionsInput = React.createClass({
 
   // Handle input element's select event
   handleSelect: function(ev) {
+    // do nothing while a IME composition session is active
+    if (isComposing) return;
+
     // keep track of selection range / caret position
     this.setState({
       selectionStart: ev.target.selectionStart,
@@ -445,6 +451,14 @@ const MentionsInput = React.createClass({
     var input = this.refs.input;
     var highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
     highlighter.scrollLeft = input.scrollLeft;
+  },
+
+  handleCompositionStart: function() {
+    isComposing = true;
+  },
+
+  handleCompositionEnd: function() {
+    isComposing = false;
   },
 
   componentDidMount: function() {
@@ -645,4 +659,3 @@ const substyle = defaultStyle({
     }
   }
 });
-

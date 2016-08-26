@@ -295,6 +295,13 @@ const MentionsInput = React.createClass({
     var eventMock = { target: { value: newValue } };
     // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
     this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions);
+
+    // refresh suggestions queries
+    if(ev.target.selectionStart === ev.target.selectionEnd) {
+      this.updateMentionsQueries(this.refs.input.value, ev.target.selectionStart);
+    } else {
+      this.clearSuggestions();
+    }
   },
 
   // Handle input element's select event

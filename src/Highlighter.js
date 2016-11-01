@@ -1,6 +1,6 @@
 import React, { Component, PropTypes, Children } from 'react';
 import Radium from './OptionalRadium';
-import { defaultStyle } from 'substyle';
+import defaultStyle from 'substyle';
 
 import isEqual from "lodash/isEqual";
 
@@ -214,21 +214,23 @@ const getModifiers = (props, ...modifiers) => ({
 });
 
 const substyle = defaultStyle({
-  position: 'relative',
-  width: 'inherit',
-  color: 'transparent',
+  style: {
+    position: 'relative',
+    width: 'inherit',
+    color: 'transparent',
 
-  overflow: 'hidden',
+    overflow: 'hidden',
 
-  whiteSpace: 'pre-wrap',
-  wordWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+    wordWrap: 'break-word',
 
-  '&singleLine': {
-    whiteSpace: 'pre',
-    wordWrap: null
-  },
+    '&singleLine': {
+      whiteSpace: 'pre',
+      wordWrap: null
+    },
 
-  substring: {
-    visibility: 'hidden'
+    substring: {
+      visibility: 'hidden'
+    }
   }
 });

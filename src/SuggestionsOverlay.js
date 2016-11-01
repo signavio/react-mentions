@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Radium from './OptionalRadium';
-import { defaultStyle } from 'substyle';
+import defaultStyle from 'substyle';
 
 import utils from './utils';
 
@@ -126,15 +126,17 @@ class SuggestionsOverlay extends Component {
 export default Radium(SuggestionsOverlay);
 
 const substyle = defaultStyle({
-  position: "absolute",
-  zIndex: 1,
-  backgroundColor: "white",
-  marginTop: 14,
-  minWidth: 100,
+  style: {
+    position: "absolute",
+    zIndex: 1,
+    backgroundColor: "white",
+    marginTop: 14,
+    minWidth: 100,
 
-  list: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
+    list: {
+      margin: 0,
+      padding: 0,
+      listStyleType: "none",
+    }
   }
 });

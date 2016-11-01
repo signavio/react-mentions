@@ -8,7 +8,7 @@ import values from 'lodash/values';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-import { defaultStyle } from 'substyle';
+import defaultStyle from 'substyle';
 
 import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
@@ -627,35 +627,37 @@ const getModifiers = (props, ...modifiers) => ({
 const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const substyle = defaultStyle({
-  position: "relative",
-  overflowY: "visible",
+  style: {
+    position: "relative",
+    overflowY: "visible",
 
-  input: {
-    display: "block",
-    position: "absolute",
-
-    top: 0,
-
-    boxSizing: "border-box",
-
-    backgroundColor: "transparent",
-
-    width: "inherit",
-  },
-
-  '&multiLine': {
     input: {
-      width: "100%",
-      height: "100%",
-      bottom: 0,
-      overflow: "hidden",
-      resize: "none",
+      display: "block",
+      position: "absolute",
 
-      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-      ...(isMobileSafari ? {
-        marginTop: 1,
-        marginLeft: -3,
-      } : null)
+      top: 0,
+
+      boxSizing: "border-box",
+
+      backgroundColor: "transparent",
+
+      width: "inherit",
+    },
+
+    '&multiLine': {
+      input: {
+        width: "100%",
+        height: "100%",
+        bottom: 0,
+        overflow: "hidden",
+        resize: "none",
+
+        // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+        ...(isMobileSafari ? {
+          marginTop: 1,
+          marginLeft: -3,
+        } : null)
+      }
     }
   }
 });

@@ -3,7 +3,7 @@ import Radium from './OptionalRadium';
 import omit from 'lodash/omit';
 import keys from 'lodash/keys';
 
-import { defaultStyle } from "substyle";
+import defaultStyle from "substyle";
 
 class Suggestion extends Component {
 
@@ -90,5 +90,7 @@ class Suggestion extends Component {
 export default Radium(Suggestion);
 
 const substyle = defaultStyle({
-  cursor: "pointer"
+  style: {
+    cursor: "pointer"
+  }
 })

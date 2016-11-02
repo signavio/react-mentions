@@ -74,7 +74,7 @@
   "dependencies": {
     "babel-runtime": "^6.11.6",
     "lodash": "^4.5.1",
-    "substyle": "^2.0.2"
+    "substyle": "^3.0.1"
   },
   "peerDependencies": {
     "react": ">=0.14.0",

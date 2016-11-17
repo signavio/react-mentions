@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Radium from './OptionalRadium';
-import LinkedValueUtils from 'react/lib/LinkedValueUtils';
 
 import keys from 'lodash/keys';
 import values from 'lodash/values';
@@ -63,11 +62,6 @@ const MentionsInput = React.createClass({
 
     markup: PropTypes.string,
     value: PropTypes.string,
-
-    valueLink: PropTypes.shape({
-      value: PropTypes.string,
-      requestChange: PropTypes.func
-    }),
 
     displayTransform: PropTypes.func,
     onKeyDown: PropTypes.func,
@@ -203,9 +197,7 @@ const MentionsInput = React.createClass({
 
   renderHighlighter: function(inputStyle) {
     let { selectionStart, selectionEnd } = this.state;
-    let { markup, displayTransform, singleLine, children } = this.props;
-
-    let value = LinkedValueUtils.getValue(this.props);
+    let { markup, displayTransform, singleLine, children, value } = this.props;
 
     return (
       <Highlighter
@@ -229,8 +221,11 @@ const MentionsInput = React.createClass({
 
   // Returns the text to set as the value of the textarea with all markups removed
   getPlainText: function() {
-    var value = LinkedValueUtils.getValue(this.props) || "";
-    return utils.getPlainText(value, this.props.markup, this.props.displayTransform);
+    return utils.getPlainText(
+      this.props.value || "", 
+      this.props.markup, 
+      this.props.displayTransform
+    );
   },
 
   executeOnChange: function(event, ...args) {
@@ -251,7 +246,7 @@ const MentionsInput = React.createClass({
       return;
     }
 
-    var value = LinkedValueUtils.getValue(this.props) || "";
+    var value = this.props.value || "";
     var newPlainTextValue = ev.target.value;
 
     // Derive the new value to set by applying the local change in the textarea's plain text
@@ -500,7 +495,7 @@ const MentionsInput = React.createClass({
     });
 
     // If caret is inside of or directly behind of mention, do not query
-    var value = LinkedValueUtils.getValue(this.props) || "";
+    var value = this.props.value || "";
     if( utils.isInsideOfMention(value, this.props.markup, caretPosition, this.props.displayTransform) ||
         utils.isInsideOfMention(value, this.props.markup, caretPosition-1, this.props.displayTransform) ) {
       return;
@@ -563,7 +558,7 @@ const MentionsInput = React.createClass({
 
   addMention: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     // Insert mention in the marked up value at the correct position
-    var value = LinkedValueUtils.getValue(this.props) || "";
+    var value = this.props.value || "";
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, 'START', this.props.displayTransform);
     var end = start + querySequenceEnd - querySequenceStart;
     var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);

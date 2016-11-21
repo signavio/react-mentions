@@ -10,6 +10,7 @@ class Suggestion extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     query: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired,
 
     suggestion: PropTypes.oneOfType([
       PropTypes.string,

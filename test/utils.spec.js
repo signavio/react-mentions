@@ -264,6 +264,11 @@ describe("utils", function() {
       expect(result).to.equal(undefined);
     });
 
+    it("should return the index of the mention's first char if that one is the probe value", function() {
+      var result = utils.findStartOfMentionInPlainText(value, defaultMarkup, plainText.indexOf("John"));
+      expect(result).to.equal(plainText.indexOf("John"));
+    });
+
   });
 
   describe("#applyChangeToValue", function() {

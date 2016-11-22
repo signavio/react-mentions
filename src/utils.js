@@ -206,7 +206,7 @@ module.exports = {
     var foundMention = false;
 
     var markupIteratee = function(markup, index, mentionPlainTextIndex, id, display, type, lastMentionEndIndex) {
-      if(mentionPlainTextIndex < indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
+      if(mentionPlainTextIndex <= indexInPlainText && mentionPlainTextIndex + display.length > indexInPlainText) {
         result = mentionPlainTextIndex;
         foundMention = true;
       }

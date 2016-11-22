@@ -264,7 +264,6 @@ const MentionsInput = React.createClass({
     // Save current selection after change to be able to restore caret position after rerendering
     var selectionStart = ev.target.selectionStart;
     var selectionEnd = ev.target.selectionEnd;
-    var setSelectionAfterMentionChange = false;
 
     // Adjust selection range in case a mention will be deleted by the characters outside of the
     // selection range that are automatically deleted
@@ -274,13 +273,11 @@ const MentionsInput = React.createClass({
       // only if a deletion has taken place
       selectionStart = startOfMention;
       selectionEnd = selectionStart;
-      setSelectionAfterMentionChange = true;
     }
 
     this.setState({
       selectionStart: selectionStart,
-      selectionEnd: selectionEnd,
-      setSelectionAfterMentionChange: setSelectionAfterMentionChange,
+      selectionEnd: selectionEnd
     });
 
     var mentions = utils.getMentions(newValue, this.props.markup);
@@ -465,10 +462,7 @@ const MentionsInput = React.createClass({
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
-    if (this.state.setSelectionAfterMentionChange) {
-      this.setState({setSelectionAfterMentionChange: false});
-      this.setSelection(this.state.selectionStart, this.state.selectionEnd);
-    }
+    this.setSelection(this.state.selectionStart, this.state.selectionEnd);
   },
 
   setSelection: function(selectionStart, selectionEnd) {
@@ -577,8 +571,7 @@ const MentionsInput = React.createClass({
     var newCaretPosition = querySequenceStart + displayValue.length;
     this.setState({
       selectionStart: newCaretPosition,
-      selectionEnd: newCaretPosition,
-      setSelectionAfterMentionChange: true
+      selectionEnd: newCaretPosition
     });
 
     // Propagate change

@@ -36,6 +36,7 @@ module.exports = React.createClass({
         <MentionsInput
           value={this.state.value}
           onChange={this.handleChange}
+          onBlur={this.handleBlur}
           markup="{{__id__}}"
           style={style}
           displayTransform={this.transformDisplay}>
@@ -52,6 +53,12 @@ module.exports = React.createClass({
 
   handleAddMention: function (id, display) {
     console.log("Added mention of " + id);
+  },
+
+  handleBlur: function(ev, clickedOnSuggestion) {
+    if(!clickedOnSuggestion) {
+      console.log("finished editing");
+    }
   }
 
 });

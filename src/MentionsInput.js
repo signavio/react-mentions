@@ -78,6 +78,7 @@ const MentionsInput = React.createClass({
 
   getDefaultProps: function () {
     return {
+      positionSuggestionsAboveCaret: false,
       markup: "@[__display__](__id__)",
       singleLine: false,
       displayTransform: function(id, display, type) {

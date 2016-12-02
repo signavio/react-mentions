@@ -12,6 +12,8 @@ const style = merge({}, defaultStyle(), {
     list: {
       maxHeight: 100,
       overflow: 'auto',
+      position: 'absolute',
+      bottom: 14,
     },
   }
 })

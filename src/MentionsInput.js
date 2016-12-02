@@ -21,7 +21,7 @@ var _getTriggerRegex = function(trigger) {
 
     // first capture group is the part to be replaced on completion
     // second capture group is for extracting the search query
-    return new RegExp("(?:^|\\s)(" + escapedTriggerChar + "([^" + escapedTriggerChar + "]*))$");
+    return new RegExp("(?:^|\\s)(" + escapedTriggerChar + "([^\\s" + escapedTriggerChar + "]*))$");
   }
 };
 

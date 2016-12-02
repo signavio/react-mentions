@@ -49,8 +49,12 @@ export default (props={}) => ({
     },
 
     suggestions: {
-        border: "1px solid rgba(0,0,0,0.15)",
-        fontSize: 10,
+
+        list: {
+            backgroundColor: 'white',
+            border: "1px solid rgba(0,0,0,0.15)",
+            fontSize: 10,
+        },
 
         item: {
             padding: "5px 15px",

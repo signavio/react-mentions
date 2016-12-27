@@ -90,6 +90,7 @@ const MentionsInput = React.createClass({
   },
 
   getInitialState: function () {
+    this.suggestions = {}
     return {
       focusIndex: 0,
 
@@ -222,8 +223,8 @@ const MentionsInput = React.createClass({
   // Returns the text to set as the value of the textarea with all markups removed
   getPlainText: function() {
     return utils.getPlainText(
-      this.props.value || "", 
-      this.props.markup, 
+      this.props.value || "",
+      this.props.markup,
       this.props.displayTransform
     );
   },
@@ -551,8 +552,12 @@ const MentionsInput = React.createClass({
       plainTextValue: plainTextValue
     };
 
+    // save in property so that multiple sync state updates from different mentions sources
+    // won't overwrite each other
+    this.suggestions = utils.extend({}, this.suggestions, update)
+
     this.setState({
-      suggestions: utils.extend({}, this.state.suggestions, update)
+      suggestions: utils.extend(this.suggestions)
     });
   },
 

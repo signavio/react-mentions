@@ -90,7 +90,8 @@ const MentionsInput = React.createClass({
   },
 
   getInitialState: function () {
-    this.suggestions = {}
+    this.suggestions = {};
+
     return {
       focusIndex: 0,
 
@@ -491,6 +492,7 @@ const MentionsInput = React.createClass({
   updateMentionsQueries: function(plainTextValue, caretPosition) {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
+    this.suggestions = {};
     this.setState({
       suggestions: {}
     });
@@ -524,6 +526,7 @@ const MentionsInput = React.createClass({
   clearSuggestions: function() {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++;
+    this.suggestions = {};
     this.setState({
       suggestions: {},
       focusIndex: 0
@@ -557,7 +560,7 @@ const MentionsInput = React.createClass({
     this.suggestions = utils.extend({}, this.suggestions, update)
 
     this.setState({
-      suggestions: utils.extend(this.suggestions)
+      suggestions: this.suggestions,
     });
   },
 

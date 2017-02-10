@@ -8,31 +8,36 @@ var Advanced = require("./examples/AdvancedView");
 var users = [
   {
     id: "walter",
-    display: "Walter White"
+    display: "Walter White",
+    type: "user"
   },
   {
     id: "jesse",
-    display: "Jesse Pinkman"
+    display: "Jesse Pinkman",
+    type: "user"
   },
   {
     id: "gus",
-    display: "Gustavo \"Gus\" Fring"
+    display: "Gustavo \"Gus\" Fring",
   },
   {
     id: "saul",
-    display: "Saul Goodman"
+    display: "Saul Goodman",
+    type: "admin"
   },
   {
     id: "hank",
-    display: "Hank Schrader"
+    display: "Hank Schrader",
+    type: "admin"
   },
   {
     id: "skyler",
-    display: "Skyler White"
+    display: "Skyler White",
+    type: "admin"
   },
   {
     id: "mike",
-    display: "Mike Ehrmantraut"
+    display: "Mike Ehrmantraut",
   }
 ];
 

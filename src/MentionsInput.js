@@ -545,15 +545,42 @@ const MentionsInput = React.createClass({
     // neglect async results from previous queries
     if(queryId !== this._queryId) return;
 
+    var type = mentionDescriptor.props.type;
     var update = {};
-    update[mentionDescriptor.props.type] = {
-      query: query,
-      mentionDescriptor: mentionDescriptor,
-      querySequenceStart: querySequenceStart,
-      querySequenceEnd: querySequenceEnd,
-      results: suggestions,
-      plainTextValue: plainTextValue
-    };
+
+    // If mention doesn't specify type try suggestion type
+    if(!type) {
+      var groups = {}
+      for(var i=0; i<suggestions.length; i++) {
+        var group = groups[suggestions[i].type];
+        if(!!group) {
+          groups[suggestions[i].type].push(suggestions[i]);
+        } else {
+          groups[suggestions[i].type] = [suggestions[i]];
+        }
+
+      }
+
+      for(var prop in groups) {
+        update[prop] = {
+          query: query,
+          mentionDescriptor: mentionDescriptor,
+          querySequenceStart: querySequenceStart,
+          querySequenceEnd: querySequenceEnd,
+          results: groups[prop],
+          plainTextValue: plainTextValue
+        };
+      }
+    } else {
+      update[type] = {
+        query: query,
+        mentionDescriptor: mentionDescriptor,
+        querySequenceStart: querySequenceStart,
+        querySequenceEnd: querySequenceEnd,
+        results: suggestions,
+        plainTextValue: plainTextValue
+      };
+    }
 
     // save in property so that multiple sync state updates from different mentions sources
     // won't overwrite each other
@@ -567,9 +594,11 @@ const MentionsInput = React.createClass({
   addMention: function(suggestion, {mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue}) {
     // Insert mention in the marked up value at the correct position
     var value = this.props.value || "";
+    // If mention doesn't specify type try suggestion type
+    var type = !!mentionDescriptor.props.type ? mentionDescriptor.props.type : suggestion.type; 
     var start = utils.mapPlainTextIndex(value, this.props.markup, querySequenceStart, 'START', this.props.displayTransform);
     var end = start + querySequenceEnd - querySequenceStart;
-    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, mentionDescriptor.props.type);
+    var insert = utils.makeMentionsMarkup(this.props.markup, suggestion.id, suggestion.display, type);
     if (mentionDescriptor.props.appendSpaceOnAdd) {
       insert = insert + ' '
     }
@@ -578,7 +607,7 @@ const MentionsInput = React.createClass({
     // Refocus input and set caret position to end of mention
     this.refs.input.focus();
 
-    var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, mentionDescriptor.props.type);
+    var displayValue = this.props.displayTransform(suggestion.id, suggestion.display, type);
     if (mentionDescriptor.props.appendSpaceOnAdd) {
       displayValue = displayValue + ' '
     }

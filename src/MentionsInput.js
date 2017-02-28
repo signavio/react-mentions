@@ -44,6 +44,18 @@ var _getDataProvider = function(data) {
   }
 };
 
+var _getScrollParent = function(node) {
+  if (node === null) {
+    return null;
+  }
+
+  if (node.scrollHeight > node.clientHeight) {
+    return node;
+  } else {
+    return _getScrollParent(node.parentNode);
+  }
+};
+
 var KEY = { TAB : 9, RETURN : 13, ESC : 27, UP : 38, DOWN : 40 };
 
 var isComposing = false;
@@ -180,8 +192,8 @@ const MentionsInput = React.createClass({
       <SuggestionsOverlay
         className={ className }
         style={{
+          ...this.state.suggestionsPosition,
           ...style,
-          ...this.state.suggestionsPosition
         }}
         focusIndex={ this.state.focusIndex }
         scrollFocusedIntoView={ this.state.scrollFocusedIntoView }
@@ -412,13 +424,13 @@ const MentionsInput = React.createClass({
     let { container } = this.refs;
 
     let suggestions = ReactDOM.findDOMNode(this.refs.suggestions);
-    let highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
+    let scrollParent = _getScrollParent(container);
 
     if(!suggestions) {
       return;
     }
 
-    let left = caretPosition.left - highlighter.scrollLeft;
+    let left = caretPosition.left + container.offsetLeft;
     let position = {};
 
     // guard for mentions suggestions list clipped by right edge of window
@@ -428,7 +440,7 @@ const MentionsInput = React.createClass({
       position.left = left
     }
 
-    position.top = caretPosition.top - highlighter.scrollTop;
+    position.top = caretPosition.top + container.offsetTop - scrollParent.scrollTop;
 
     if(isEqual(position, this.state.suggestionsPosition)) {
       return;
@@ -458,12 +470,33 @@ const MentionsInput = React.createClass({
     isComposing = false;
   },
 
+  handleParentScroll: function() {
+    if (!this._ticking) {
+      // Recommended approach to do expensive operations on
+      // the high fire rate of the scroll event
+      window.requestAnimationFrame(() => {
+        this.updateSuggestionsPosition();
+        this._ticking = false;
+      });
+    }
+    this._ticking = true;
+  },
+
   componentDidMount: function() {
     this.updateSuggestionsPosition();
+    this._scrollParent = _getScrollParent(this.refs.container);
+    this._scrollParent.addEventListener('scroll', this.handleParentScroll);
   },
 
   componentDidUpdate: function() {
     this.updateSuggestionsPosition();
+    let newScrollParent = _getScrollParent(this.refs.container);
+    // In case the parent scroll container changes
+    if (newScrollParent !== this._scrollParent) {
+      this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
+      this._scrollParent = newScrollParent;
+      this._scrollParent.addEventListener('scroll', this.handleParentScroll);
+    }
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
@@ -471,6 +504,10 @@ const MentionsInput = React.createClass({
       this.setState({setSelectionAfterMentionChange: false});
       this.setSelection(this.state.selectionStart, this.state.selectionEnd);
     }
+  },
+
+  componentWillUnmount: function() {
+    this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
   },
 
   setSelection: function(selectionStart, selectionEnd) {
@@ -613,7 +650,8 @@ const MentionsInput = React.createClass({
     return isLoading;
   },
 
-  _queryId: 0
+  _queryId: 0,
+  _ticking: false
 
 
 });
@@ -631,7 +669,6 @@ const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.t
 
 const substyle = defaultStyle({
   style: {
-    position: "relative",
     overflowY: "visible",
 
     input: {
@@ -645,6 +682,10 @@ const substyle = defaultStyle({
       backgroundColor: "transparent",
 
       width: "inherit",
+    },
+
+    control: {
+      position: "relative"
     },
 
     '&multiLine': {

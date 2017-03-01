@@ -484,8 +484,7 @@ const MentionsInput = React.createClass({
 
   componentDidMount: function() {
     this.updateSuggestionsPosition();
-    this._scrollParent = _getScrollParent(this.refs.container);
-    this._scrollParent.addEventListener('scroll', this.handleParentScroll);
+    this.addScrollListener();
   },
 
   componentDidUpdate: function() {
@@ -494,8 +493,7 @@ const MentionsInput = React.createClass({
     // In case the parent scroll container changes
     if (newScrollParent !== this._scrollParent) {
       this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
-      this._scrollParent = newScrollParent;
-      this._scrollParent.addEventListener('scroll', this.handleParentScroll);
+      this.addScrollListener();
     }
 
     // maintain selection in case a mention is added/removed causing
@@ -509,6 +507,14 @@ const MentionsInput = React.createClass({
   componentWillUnmount: function() {
     this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
   },
+
+  addScrollListener: function () {
+    const scrollParent = _getScrollParent(this.refs.container);
+    if (scrollParent) {
+      this._scrollParent = scrollParent;
+      this._scrollParent.addEventListener('scroll', this.handleParentScroll);
+    }
+  }
 
   setSelection: function(selectionStart, selectionEnd) {
     if(selectionStart === null || selectionEnd === null) return;

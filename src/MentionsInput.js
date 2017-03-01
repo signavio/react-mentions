@@ -493,6 +493,7 @@ const MentionsInput = React.createClass({
     // In case the parent scroll container changes
     if (newScrollParent !== this._scrollParent) {
       this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
+      this._scrollParent = null;
       this.addScrollListener();
     }
 
@@ -505,6 +506,8 @@ const MentionsInput = React.createClass({
   },
 
   componentWillUnmount: function() {
+    if(this._scrollParent === null) return;
+
     this._scrollParent.removeEventListener('scroll', this.handleParentScroll);
   },
 
@@ -657,8 +660,8 @@ const MentionsInput = React.createClass({
   },
 
   _queryId: 0,
-  _ticking: false
-
+  _ticking: false,
+  _scrollParent: null
 
 });
 

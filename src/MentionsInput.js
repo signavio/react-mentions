@@ -514,7 +514,7 @@ const MentionsInput = React.createClass({
       this._scrollParent = scrollParent;
       this._scrollParent.addEventListener('scroll', this.handleParentScroll);
     }
-  }
+  },
 
   setSelection: function(selectionStart, selectionEnd) {
     if(selectionStart === null || selectionEnd === null) return;

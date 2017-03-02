@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+const webpack = require('webpack')
 
 module.exports = {
   entry: './',
@@ -7,33 +7,33 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: ['', '.js', '.less', '.css']
+    extensions: ['.js', '.less', '.css'],
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({ output: {comments: false} }),
+    new webpack.optimize.UglifyJsPlugin({ output: { comments: false } }),
     new webpack.DefinePlugin({
-      "process.env": {
+      'process.env': {
         // This has effect on the react lib size
-        "NODE_ENV": JSON.stringify("production")
-      }
+        NODE_ENV: JSON.stringify('production'),
+      },
     }),
     new webpack.NormalModuleReplacementPlugin( // allow examples to include react-mentions
       /^react-mentions$/,
-      __dirname + '/../src'
-    )
+      `${__dirname}/../src`
+    ),
   ],
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel', exclude: /node_modules/ },
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,
         loaders: [
           'style-loader',
           'css-loader',
-          'less-loader'
+          'less-loader',
         ],
-      }
-    ]
-  }
-};
+      },
+    ],
+  },
+}

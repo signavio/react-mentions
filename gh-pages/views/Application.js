@@ -1,27 +1,22 @@
-var React = require("react");
+import React from 'react'
 
-var Header = require("./HeaderView");
-var Examples = require("./ExamplesView");
-var License = require("./LicenseView");
+import Header from './HeaderView'
+import Examples from './ExamplesView'
+import License from './LicenseView'
 
 
-module.exports = React.createClass({
+export default function ReactMentions() {
+  return (
+    <div className="react-mentions">
+      <Header />
 
-  displayName: "ReactMentions",
+      <div className="container">
+        <h2 id="examples">Examples</h2>
+        <Examples />
 
-  render: function() {
-    return (
-      <div className="react-mentions">
-        <Header />
-
-        <div className="container">
-          <h2 id="examples">Examples</h2>
-          <Examples />
-
-          <h2 id="license">License</h2>
-          <License />
-        </div>
+        <h2 id="license">License</h2>
+        <License />
       </div>
-    );
-  }
-});
+    </div>
+  )
+}

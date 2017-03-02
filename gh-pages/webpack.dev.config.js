@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+const webpack = require('webpack')
 
 module.exports = {
   entry: './index.js',
@@ -6,44 +6,27 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: ['', '.js', '.less', '.css']
+    extensions: ['.js', '.less', '.css'],
   },
   plugins: [
-    new webpack.NormalModuleReplacementPlugin( // allow examples to include react-mentions
+    // allow examples to include react-mentions
+    new webpack.NormalModuleReplacementPlugin(
       /^react-mentions$/,
-      __dirname + '/../src'
-    )
+      `${__dirname}/../src`
+    ),
   ],
   module: {
     loaders: [
-      { 
-        test: /\.js$/, 
-        loader: 'babel', 
+      {
+        test: /\.js$/,
         exclude: /node_modules/,
-        query: {
-          "plugins": [
-            ["react-transform", {
-              "transforms": [{
-                "transform": "react-transform-hmr",
-                "imports": ["react"],
-                "locals": ["module"]
-              }, {
-                "transform": "react-transform-catch-errors",
-                "imports": ["react", "redbox-react"]
-              }]
-            }]
-          ]
-        }
+        loaders: ['react-hot-loader/webpack', 'babel-loader'],
       },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.less$/,
-        loaders: [
-          'style-loader',
-          'css-loader',
-          'less-loader'
-        ],
-      }
-    ]
-  }
-};
+        loaders: ['style-loader', 'css-loader', 'less-loader'],
+      },
+    ],
+  },
+}

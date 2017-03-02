@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Header from './Header'
-import Examples from './Examples'
+import Examples from './examples'
 import License from './License'
 
 export default function ReactMentions() {

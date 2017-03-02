@@ -1,11 +1,13 @@
-import React from "react";
-import { MentionsInput, Mention } from "react-mentions";
-import merge from 'lodash/merge';
+import React from 'react'
+import { merge } from 'lodash'
+import { compose, withHandlers } from 'recompose'
 
-import MentionsMixin from "../mixins/MentionsMixin";
+import { MentionsInput, Mention } from '../../../src'
 
-import defaultStyle from "./defaultStyle";
-import defaultMentionStyle from "./defaultMentionStyle";
+import { provideExampleValue } from './higher-order'
+
+import defaultStyle from './defaultStyle'
+import defaultMentionStyle from './defaultMentionStyle'
 
 const style = merge({}, defaultStyle(), {
   suggestions: {
@@ -15,52 +17,39 @@ const style = merge({}, defaultStyle(), {
       position: 'absolute',
       bottom: 14,
     },
-  }
+  },
 })
 
-module.exports = React.createClass({
+function Advanced({ value, data, onChange, onBlur, onAdd }) {
+  return (
+    <div className="advanced">
+      <h3>Advanced options</h3>
 
-  displayName: "Advanced",
+      <MentionsInput
+        value={ value }
+        onChange={ onChange }
+        onBlur={ onBlur }
+        markup="{{__id__}}"
+        style={style}
+        displayTransform={ (id) => `<-- ${id} -->` }
+      >
+        <Mention
+          data={ data }
+          onAdd={ onAdd }
+          style={ defaultMentionStyle }
+        />
+      </MentionsInput>
+    </div>
+  )
+}
 
-  mixins: [ MentionsMixin ],
-
-  getInitialState: function() {
-    return {
-      value: "Hi {{johndoe}}!"
-    };
-  },
-
-  render: function() {
-    return (
-      <div className="advanced">
-        <h3>Advanced options</h3>
-
-        <MentionsInput
-          value={this.state.value}
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
-          markup="{{__id__}}"
-          style={style}
-          displayTransform={this.transformDisplay}>
-
-          <Mention data={ this.props.data } onAdd={this.handleAddMention} style={defaultMentionStyle} />
-        </MentionsInput>
-      </div>
-    );
-  },
-
-  transformDisplay: function(id) {
-    return "<-- " + id + " -->";
-  },
-
-  handleAddMention: function (id, display) {
-    console.log("Added mention of " + id);
-  },
-
-  handleBlur: function(ev, clickedOnSuggestion) {
-    if(!clickedOnSuggestion) {
-      console.log("finished editing");
-    }
-  }
-
-});
+export default compose(
+  provideExampleValue('Hi {{johndoe}}!'),
+  withHandlers({
+    onBlur: () => (ev, clickedOnSuggestion) => {
+      if (!clickedOnSuggestion) {
+        console.log('finished editing')
+      }
+    },
+  })
+)(Advanced)

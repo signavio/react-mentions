@@ -1,77 +1,56 @@
-import React from "react";
-import { Mention, MentionsInput } from "react-mentions";
+import React from 'react'
 
-import MentionsMixin from "../mixins/MentionsMixin";
+import { Mention, MentionsInput } from '../../../src'
 
-import defaultStyle from "./defaultStyle";
-import defaultMentionStyle from "./defaultMentionStyle";
+import { provideExampleValue } from './higher-order'
+
+import defaultStyle from './defaultStyle'
+import defaultMentionStyle from './defaultMentionStyle'
 
 // use first/outer capture group to extract the full entered sequence to be replaced
 // and second/inner capture group to extract search string from the match
-const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
+const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/
 
-module.exports = React.createClass({
+function MultipleTriggers({ value, data, onChange, onAdd }) {
+  return (
+    <div className="multiple-triggers">
+      <h3>Multiple trigger patterns</h3>
+      <p>Mention people using '@' + username or type an email address</p>
 
-  displayName: "MultipleTriggers",
+      <MentionsInput
+        value={ value }
+        onChange={ onChange }
+        style={ defaultStyle() }
+        markup="@[__display__](__type__:__id__)"
+        placeholder={"Mention people using '@'"}
+      >
+        <Mention
+          type="user"
+          trigger="@"
+          data={ data }
+          renderSuggestion={ (suggestion, search, highlightedDisplay) => (
+            <div className="user">
+              { highlightedDisplay }
+            </div>
+          )}
+          onAdd={ onAdd }
+          style={defaultMentionStyle}
+        />
 
-  mixins: [ MentionsMixin ],
+        <Mention
+          type="email"
+          trigger={emailRegex}
+          data={ (search) => [
+            { id: search, display: search },
+          ]}
+          onAdd={ onAdd }
+          style={{ backgroundColor: '#d1c4e9' }}
+        />
+      </MentionsInput>
+    </div>
+  )
+}
 
-  getInitialState: function() {
-    return {
-      value: "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
-    };
-  },
+const asExample = provideExampleValue('Hi @[John Doe](user:johndoe), \n\nlet\'s add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... ')
 
-  render: function() {
-    return (
-      <div className="multiple-triggers">
-        <h3>Multiple trigger patterns</h3>
-        <p>Mention people using '@' + username or type an email address</p>
-
-        <MentionsInput
-          value={this.state.value}
-          onChange={this.handleChange}
-          style={ defaultStyle() }
-          markup="@[__display__](__type__:__id__)"
-          placeholder={"Mention people using '@'"}>
-
-          <Mention
-            type="user"
-            trigger="@"
-            data={ this.props.data }
-            renderSuggestion={this.renderSuggestion}
-            onAdd={this.handleAdd}
-            onRemove={this.handleRemove} style={defaultMentionStyle} />
-          <Mention
-            type="email"
-            trigger={emailRegex}
-            data={this.requestEmail}
-            onAdd={this.handleEmailAdd} style={{ backgroundColor: '#d1c4e9'}}/>
-        </MentionsInput>
-      </div>
-    );
-  },
-
-  handleRemove: function() {
-    console.log("removed a mention", arguments);
-  },
-
-  handleAdd: function() {
-    console.log("added a new mention", arguments);
-  },
-
-  renderSuggestion: function(suggestion, search, highlightedDisplay) {
-    return (
-      <div className="user">
-        { highlightedDisplay }
-      </div>
-    );
-  },
-
-  requestEmail: function(search) {
-    return [
-      { id: search, display: search }
-    ];
-  }
-
-});
+export default asExample(MultipleTriggers)

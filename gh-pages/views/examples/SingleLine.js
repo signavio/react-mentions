@@ -1,39 +1,34 @@
-import React from "react";
-import { Mention, MentionsInput } from "react-mentions";
+import React from 'react'
 
-import MentionsMixin from "../mixins/MentionsMixin";
+import { Mention, MentionsInput } from '../../../src'
 
-import defaultStyle from "./defaultStyle";
-import defaultMentionStyle from "./defaultMentionStyle";
+import { provideExampleValue } from './higher-order'
 
-module.exports = React.createClass({
+import defaultStyle from './defaultStyle'
+import defaultMentionStyle from './defaultMentionStyle'
 
-  displayName: "SingleLine",
+function SingleLine({ value, data, onChange, onAdd }) {
+  return (
+    <div className="single-line">
+      <h3>Single line input</h3>
 
-  mixins: [ MentionsMixin ],
+      <MentionsInput
+        singleLine
+        value={ value }
+        onChange={ onChange }
+        style={ defaultStyle({ singleLine: true }) }
+        placeholder={"Mention people using '@'"}
+      >
+        <Mention
+          data={ data }
+          onAdd={ onAdd }
+          style={ defaultMentionStyle }
+        />
+      </MentionsInput>
+    </div>
+  )
+}
 
-  getInitialState: function() {
-    return {
-      value: ""
-    };
-  },
+const asExample = provideExampleValue('')
 
-  render: function() {
-    return (
-      <div className="single-line">
-        <h3>Single line input</h3>
-
-        <MentionsInput
-          singleLine
-          value={this.state.value}
-          onChange={this.handleChange}
-          style={ defaultStyle({ singleLine: true }) }
-          placeholder={"Mention people using '@'"}>
-
-          <Mention data={ this.props.data } style={defaultMentionStyle} />
-        </MentionsInput>
-      </div>
-    );
-  }
-
-});
+export default asExample(SingleLine)

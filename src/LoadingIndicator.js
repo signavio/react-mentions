@@ -1,25 +1,19 @@
 import React from 'react';
-import Radium from './OptionalRadium';
 import substyle from 'substyle';
 
-function Spinner(props) {
+function LoadingIndicator({ style }) {
+  const spinnerStyle = style("spinner")
   return (
-    <div { ...substyle(props) }>
-      <div { ...substyle(props, ["element", "element1"]) } />
-      <div { ...substyle(props, ["element", "element2"]) } />
-      <div { ...substyle(props, ["element", "element3"]) } />
-      <div { ...substyle(props, ["element", "element4"]) } />
-      <div { ...substyle(props, ["element", "element5"]) } />
+    <div { ...style }>
+      <div { ...spinnerStyle }>
+        <div { ...spinnerStyle(["element", "element1"]) } />
+        <div { ...spinnerStyle(["element", "element2"]) } />
+        <div { ...spinnerStyle(["element", "element3"]) } />
+        <div { ...spinnerStyle(["element", "element4"]) } />
+        <div { ...spinnerStyle(["element", "element5"]) } />
+      </div>
     </div>
   );
 };
 
-function LoadingIndicator(props) {
-  return (
-    <div { ...substyle(props) }>
-      <Spinner { ...substyle(props, "spinner") } />
-    </div>
-  );
-};
-
-export default Radium(LoadingIndicator);
+export default substyle(LoadingIndicator);

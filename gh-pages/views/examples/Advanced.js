@@ -9,7 +9,7 @@ import { provideExampleValue } from './higher-order'
 import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
-const style = merge({}, defaultStyle(), {
+const style = merge({}, defaultStyle, {
   suggestions: {
     list: {
       maxHeight: 100,

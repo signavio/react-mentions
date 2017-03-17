@@ -1,7 +1,5 @@
 import React, { Component, PropTypes, Children } from 'react';
-import Radium from './OptionalRadium';
-import defaultStyle from 'substyle';
-
+import { defaultStyle } from 'substyle';
 import isEqual from "lodash/isEqual";
 
 import utils from './utils';
@@ -77,7 +75,7 @@ class Highlighter extends Component {
   }
 
   render() {
-    let { selection, value, markup, displayTransform, inputStyle } = this.props;
+    let { selection, value, markup, displayTransform, style, inputStyle } = this.props;
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
@@ -133,14 +131,12 @@ class Highlighter extends Component {
       );
     }
 
-    let { style, className } = substyle(this.props, getModifiers(this.props));
-
     return (
       <div
-        className={ className }
+        { ...style }
         style={{
           ...inputStyle,
-          ...style
+          ...style.style
         }}>
 
         { resultComponents }
@@ -151,7 +147,7 @@ class Highlighter extends Component {
   renderSubstring(string, key) {
     // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
-      <span { ...substyle(this.props, "substring") } key={key}>
+      <span { ...this.props.style("substring") } key={key}>
         { string }
       </span>
     );
@@ -198,39 +194,33 @@ class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span { ...substyle(this.props, "caret") } ref="caret" key="caret">
+      <span { ...this.props.style("caret") } ref="caret" key="caret">
         { children }
       </span>
     );
   }
 }
 
-export default Radium(Highlighter);
+const styled = defaultStyle({
+  position: 'relative',
+  width: 'inherit',
+  color: 'transparent',
 
-const getModifiers = (props, ...modifiers) => ({
-  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
+  overflow: 'hidden',
 
-  '&singleLine': props.singleLine,
-});
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
 
-const substyle = defaultStyle({
-  style: {
-    position: 'relative',
-    width: 'inherit',
-    color: 'transparent',
+  '&singleLine': {
+    whiteSpace: 'pre',
+    wordWrap: null
+  },
 
-    overflow: 'hidden',
-
-    whiteSpace: 'pre-wrap',
-    wordWrap: 'break-word',
-
-    '&singleLine': {
-      whiteSpace: 'pre',
-      wordWrap: null
-    },
-
-    substring: {
-      visibility: 'hidden'
-    }
+  substring: {
+    visibility: 'hidden'
   }
-});
+}, (props) => ({
+  '&singleLine': props.singleLine,
+}));
+
+export default styled(Highlighter);

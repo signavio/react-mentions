@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from './OptionalRadium';
-import defaultStyle from 'substyle';
+import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 
@@ -33,7 +32,7 @@ class SuggestionsOverlay extends Component {
     const { top: topContainer } = suggestions.getBoundingClientRect();
     top = top - topContainer + scrollTop;
     bottom = bottom - topContainer + scrollTop;
-    
+
     if(top < scrollTop) {
       suggestions.scrollTop = top
     } else if(bottom > suggestions.offsetHeight) {
@@ -42,18 +41,23 @@ class SuggestionsOverlay extends Component {
   }
 
   render() {
+    const { suggestions, isLoading, style, onMouseDown } = this.props;
+
     // do not show suggestions until there is some data
-    if(utils.countSuggestions(this.props.suggestions) === 0 && !this.props.isLoading) {
+    if(utils.countSuggestions(suggestions) === 0 && !isLoading) {
       return null;
     }
 
     return (
       <div
-        {...substyle(this.props)}
-        onMouseDown={this.props.onMouseDown}>
+        {...style}
+        onMouseDown={onMouseDown}
+      >
 
-        <ul ref="suggestions"
-          {...substyle(this.props, "list") }>
+        <ul
+          ref="suggestions"
+          { ...style("list") }
+        >
           { this.renderSuggestions() }
         </ul>
 
@@ -81,7 +85,8 @@ class SuggestionsOverlay extends Component {
     let { mentionDescriptor, query } = descriptor;
 
     return (
-      <Suggestion { ...substyle(this.props, "item") }
+      <Suggestion
+        style={this.props.style("item")}
         key={ id }
         id={ id }
         ref={isFocused ? "focused" : null}
@@ -108,7 +113,7 @@ class SuggestionsOverlay extends Component {
       return;
     }
 
-    return <LoadingIndicator { ...substyle(this.props, "loadingIndicator") } />
+    return <LoadingIndicator { ...this.props.style("loadingIndicator") } />
   }
 
   handleMouseEnter(index, ev) {
@@ -123,20 +128,19 @@ class SuggestionsOverlay extends Component {
 
 };
 
-export default Radium(SuggestionsOverlay);
+const styled = defaultStyle(({ position }) => ({
+  position: "absolute",
+  zIndex: 1,
+  backgroundColor: "white",
+  marginTop: 14,
+  minWidth: 100,
+  ...position,
 
-const substyle = defaultStyle({
-  style: {
-    position: "absolute",
-    zIndex: 1,
-    backgroundColor: "white",
-    marginTop: 14,
-    minWidth: 100,
-
-    list: {
-      margin: 0,
-      padding: 0,
-      listStyleType: "none",
-    }
+  list: {
+    margin: 0,
+    padding: 0,
+    listStyleType: "none",
   }
-});
+}));
+
+export default styled(SuggestionsOverlay);

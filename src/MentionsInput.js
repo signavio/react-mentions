@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Radium from './OptionalRadium';
 
 import keys from 'lodash/keys';
 import values from 'lodash/values';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-import defaultStyle from 'substyle';
+import { defaultStyle } from 'substyle';
 
 import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
@@ -84,8 +83,7 @@ const MentionsInput = React.createClass({
       },
       onKeyDown: () => null,
       onSelect: () => null,
-      onBlur: () => null,
-      style: {}
+      onBlur: () => null
     };
   },
 
@@ -107,7 +105,7 @@ const MentionsInput = React.createClass({
 
   render: function() {
     return (
-      <div ref="container" {...substyle(this.props, getModifiers(this.props))}>
+      <div ref="container" {...this.props.style}>
         { this.renderControl() }
         { this.renderSuggestionsOverlay() }
       </div>
@@ -115,15 +113,14 @@ const MentionsInput = React.createClass({
   },
 
   getInputProps: function(isTextarea) {
-    let { readOnly, disabled } = this.props;
+    let { readOnly, disabled, style } = this.props;
 
     // pass all props that we don't use through to the input control
-    let props = omit(this.props, keys(MentionsInput.propTypes));
+    let props = omit(this.props, 'style', keys(MentionsInput.propTypes));
 
     return {
       ...props,
-
-      ...substyle(this.props, getModifiers(this.props, "input")),
+      ...style("input"),
 
       value: this.getPlainText(),
 
@@ -139,11 +136,11 @@ const MentionsInput = React.createClass({
   },
 
   renderControl: function() {
-    let { singleLine } = this.props;
+    let { singleLine, style } = this.props;
     let inputProps = this.getInputProps(!singleLine);
 
     return (
-      <div { ...substyle(this.props, getModifiers(this.props, "control")) }>
+      <div { ...style("control") }>
         { this.renderHighlighter(inputProps.style) }
         { singleLine ? this.renderInput(inputProps) : this.renderTextarea(inputProps) }
       </div>
@@ -151,7 +148,6 @@ const MentionsInput = React.createClass({
   },
 
   renderInput: function(props) {
-
     return (
       <input
         type="text"
@@ -173,16 +169,10 @@ const MentionsInput = React.createClass({
       // do not show suggestions when the input does not have the focus
       return null;
     }
-
-    let { className, style } = substyle(this.props, getModifiers(this.props, "suggestions"));
-
     return (
       <SuggestionsOverlay
-        className={ className }
-        style={{
-          ...style,
-          ...this.state.suggestionsPosition
-        }}
+        style={ this.props.style("suggestions") }
+        position={ this.state.suggestionsPosition }
         focusIndex={ this.state.focusIndex }
         scrollFocusedIntoView={ this.state.scrollFocusedIntoView }
         ref="suggestions"
@@ -198,13 +188,13 @@ const MentionsInput = React.createClass({
   },
 
   renderHighlighter: function(inputStyle) {
-    let { selectionStart, selectionEnd } = this.state;
-    let { markup, displayTransform, singleLine, children, value } = this.props;
+    const { selectionStart, selectionEnd } = this.state;
+    const { markup, displayTransform, singleLine, children, value, style } = this.props;
 
     return (
       <Highlighter
         ref="highlighter"
-        { ...substyle(this.props, getModifiers(this.props, "highlighter")) }
+        style={ style("highlighter") }
         inputStyle={ inputStyle }
         value={ value }
         markup={ markup }
@@ -248,11 +238,11 @@ const MentionsInput = React.createClass({
       return;
     }
 
-    var value = this.props.value || "";
-    var newPlainTextValue = ev.target.value;
+    let value = this.props.value || "";
+    let newPlainTextValue = ev.target.value;
 
     // Derive the new value to set by applying the local change in the textarea's plain text
-    var newValue = utils.applyChangeToValue(
+    let newValue = utils.applyChangeToValue(
       value, this.props.markup,
       newPlainTextValue,
       this.state.selectionStart, this.state.selectionEnd,
@@ -264,13 +254,13 @@ const MentionsInput = React.createClass({
     newPlainTextValue = utils.getPlainText(newValue, this.props.markup, this.props.displayTransform);
 
     // Save current selection after change to be able to restore caret position after rerendering
-    var selectionStart = ev.target.selectionStart;
-    var selectionEnd = ev.target.selectionEnd;
-    var setSelectionAfterMentionChange = false;
+    let selectionStart = ev.target.selectionStart;
+    let selectionEnd = ev.target.selectionEnd;
+    let setSelectionAfterMentionChange = false;
 
     // Adjust selection range in case a mention will be deleted by the characters outside of the
     // selection range that are automatically deleted
-    var startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart, this.props.displayTransform);
+    let startOfMention = utils.findStartOfMentionInPlainText(value, this.props.markup, selectionStart, this.props.displayTransform);
 
     if(startOfMention !== undefined && this.state.selectionEnd > startOfMention) {
       // only if a deletion has taken place
@@ -285,11 +275,11 @@ const MentionsInput = React.createClass({
       setSelectionAfterMentionChange: setSelectionAfterMentionChange,
     });
 
-    var mentions = utils.getMentions(newValue, this.props.markup);
+    let mentions = utils.getMentions(newValue, this.props.markup);
 
     // Propagate change
-    // var handleChange = this.getOnChange(this.props) || emptyFunction;
-    var eventMock = { target: { value: newValue } };
+    // let handleChange = this.getOnChange(this.props) || emptyFunction;
+    let eventMock = { target: { value: newValue } };
     // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
     this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions);
   },
@@ -615,52 +605,45 @@ const MentionsInput = React.createClass({
 
   _queryId: 0
 
-
-});
-
-export default Radium(MentionsInput);
-
-const getModifiers = (props, ...modifiers) => ({
-  ...modifiers.reduce((result, modifier) => ({ ...result, [modifier]: true }), {}),
-
-  "&singleLine": props.singleLine,
-  "&multiLine": !props.singleLine,
 });
 
 const isMobileSafari = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-const substyle = defaultStyle({
-  style: {
-    position: "relative",
-    overflowY: "visible",
+const styled = defaultStyle({
+  position: "relative",
+  overflowY: "visible",
 
+  input: {
+    display: "block",
+    position: "absolute",
+
+    top: 0,
+
+    boxSizing: "border-box",
+
+    backgroundColor: "transparent",
+
+    width: "inherit",
+  },
+
+  '&multiLine': {
     input: {
-      display: "block",
-      position: "absolute",
+      width: "100%",
+      height: "100%",
+      bottom: 0,
+      overflow: "hidden",
+      resize: "none",
 
-      top: 0,
-
-      boxSizing: "border-box",
-
-      backgroundColor: "transparent",
-
-      width: "inherit",
-    },
-
-    '&multiLine': {
-      input: {
-        width: "100%",
-        height: "100%",
-        bottom: 0,
-        overflow: "hidden",
-        resize: "none",
-
-        // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
-        ...(isMobileSafari ? {
-          marginTop: 1,
-          marginLeft: -3,
-        } : null)
-      }
+      // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
+      ...(isMobileSafari ? {
+        marginTop: 1,
+        marginLeft: -3,
+      } : null)
     }
   }
-});
+}, ({ singleLine }) => ({
+  "&singleLine": singleLine,
+  "&multiLine": !singleLine,
+}));
+
+export default styled(MentionsInput);

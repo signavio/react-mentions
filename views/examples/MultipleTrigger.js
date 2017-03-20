@@ -20,7 +20,7 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
       <MentionsInput
         value={ value }
         onChange={ onChange }
-        style={ defaultStyle() }
+        style={ defaultStyle }
         markup="@[__display__](__type__:__id__)"
         placeholder={"Mention people using '@'"}
       >

@@ -16,7 +16,7 @@ function SingleLine({ value, data, onChange, onAdd }) {
         singleLine
         value={ value }
         onChange={ onChange }
-        style={ defaultStyle({ singleLine: true }) }
+        style={ defaultStyle }
         placeholder={"Mention people using '@'"}
       >
         <Mention

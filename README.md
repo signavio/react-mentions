@@ -1,4 +1,4 @@
-#[React Mentions](http://effektif.github.io/react-mentions)
+# [React Mentions](http://effektif.github.io/react-mentions)
 
 [![Build Status](https://travis-ci.org/effektif/react-mentions.svg?branch=master)](https://travis-ci.org/effektif/react-mentions)
 [![Dependency Status](https://david-dm.org/effektif/react-mentions.svg)](https://david-dm.org/effektif/react-mentions)
@@ -14,7 +14,7 @@ A React component that let's you mention people in a textarea like you are used 
 - [GotDone](http://www.gotdone.me)
 - [Volinspire](https://volinspire.com)
 
-Please [let us know](mailto:dev@effektif.com?subject=we're using react-mentions at ...) if you are using react-mentions, we'd love to add you to this list.
+Please [let us know](mailto:dev@effektif.com?subject=we're%20using%20react-mentions%20at%20...) if you are using react-mentions, we'd love to add you to this list.
 
 
 ## Getting started

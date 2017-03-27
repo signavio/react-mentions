@@ -58,6 +58,7 @@ const MentionsInput = React.createClass({
      * instead of a textarea
      */
     singleLine: PropTypes.bool,
+    positionSuggestionsAboveCaret: PropTypes.bool,
 
     markup: PropTypes.string,
     value: PropTypes.string,
@@ -76,6 +77,7 @@ const MentionsInput = React.createClass({
 
   getDefaultProps: function () {
     return {
+      positionSuggestionsAboveCaret: false,
       markup: "@[__display__](__id__)",
       singleLine: false,
       displayTransform: function(id, display, type) {
@@ -403,7 +405,6 @@ const MentionsInput = React.createClass({
 
     let suggestions = ReactDOM.findDOMNode(this.refs.suggestions);
     let highlighter = ReactDOM.findDOMNode(this.refs.highlighter);
-
     if(!suggestions) {
       return;
     }
@@ -418,7 +419,13 @@ const MentionsInput = React.createClass({
       position.left = left
     }
 
-    position.top = caretPosition.top - highlighter.scrollTop;
+    if(this.props.positionSuggestionsAboveCaret) {
+      position.top = caretPosition.top - suggestions.scrollHeight;
+      position.marginTop = "0px";
+      position.marginBottom = "14px";
+    } else {
+      position.top = caretPosition.top - highlighter.scrollTop;
+    }
 
     if(isEqual(position, this.state.suggestionsPosition)) {
       return;

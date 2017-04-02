@@ -63,6 +63,8 @@ The `MentionsInput` supports the following props for configuring the widget:
 | singleLine       | boolean                                                 | `false`                    | Renders a single line text input instead of a textarea, if set to `true`                 |
 | displayTransform | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention            |
 | onBlur           | function (event, clickedSuggestion)          | empty function             | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion       |
+| minSearchLength  | number                                                  |  0                         | The minimum number of characters required to initiate a search                            |
+| maxResults       | number                                                  |  0                         | The maximum number of suggestions to display, 0 for no limit                           |
 
 
 Each data source is configured using a `Mention` component, which has the following props:
@@ -83,7 +85,7 @@ If a function is passed as the `data` prop, that function will be called with th
 
 _react-mentions_ supports CSS and inline styles. It is shipped with only some essential inline style definitions and without any CSS. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js). If you want to use CSS, simply assign a `className` prop to `MentionsInput`.
 
-You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting. 
+You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting.
 
 
 ## Contributing

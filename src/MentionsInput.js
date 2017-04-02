@@ -29,9 +29,10 @@ var _getDataProvider = function(data) {
     // if data is an array, create a function to query that
     return function(query, callback) {
       var results = [];
+      var lcQuery = query.toLowerCase(); // cache lower-cased query.
       for(var i=0, l=data.length; i < l; ++i) {
         var display = data[i].display || data[i].id;
-        if(display.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+        if(display.toLowerCase().indexOf(lcQuery) >= 0) {
           results.push(data[i]);
         }
       }
@@ -58,6 +59,16 @@ const MentionsInput = React.createClass({
      * instead of a textarea
      */
     singleLine: PropTypes.bool,
+    /**
+     * The minimum number of characters required to initiate a search.
+     */
+    minSearchLength: PropTypes.number,
+
+    /**
+     * The maximum number of results to suggest.
+     * Define as 0 to not have a limit.
+     */
+    maxResults: PropTypes.number,
 
     markup: PropTypes.string,
     value: PropTypes.string,
@@ -78,6 +89,8 @@ const MentionsInput = React.createClass({
     return {
       markup: "@[__display__](__id__)",
       singleLine: false,
+      minSearchLength: 0,
+      maxResults:0,
       displayTransform: function(id, display, type) {
         return display;
       },
@@ -506,7 +519,7 @@ const MentionsInput = React.createClass({
 
       var regex = _getTriggerRegex(child.props.trigger);
       var match = substring.match(regex);
-      if(match) {
+      if(match && match[2] >= that.props.minSearchLength) {
         var querySequenceStart = substring.indexOf(match[1], match.index);
         that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue);
       }
@@ -525,9 +538,12 @@ const MentionsInput = React.createClass({
 
   queryData: function(query, mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue) {
     var provideData = _getDataProvider(mentionDescriptor.props.data);
-    var snycResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue));
-    if(snycResult instanceof Array) {
-      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, snycResult);
+    var syncResult = provideData(query, this.updateSuggestions.bind(null, this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue));
+    if(syncResult instanceof Array) {
+      if (this.props.maxResults) {
+        syncResult = syncResult.splice(0,this.props.maxResults)
+      }
+      this.updateSuggestions(this._queryId, mentionDescriptor, query, querySequenceStart, querySequenceEnd, plainTextValue, syncResult);
     }
   },
 

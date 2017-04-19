@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { defaultStyle } from 'substyle';
 
 import utils from './utils';
@@ -126,7 +127,7 @@ class SuggestionsOverlay extends Component {
     this.props.onSelect(suggestion, descriptor);
   }
 
-};
+}
 
 const styled = defaultStyle(({ position }) => ({
   position: "absolute",

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes, Children } from 'react';
+import React, { Component, Children } from 'react';
+import PropTypes from 'prop-types';
 import { defaultStyle } from 'substyle';
 import isEqual from "lodash/isEqual";
 

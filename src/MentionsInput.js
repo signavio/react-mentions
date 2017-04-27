@@ -500,20 +500,19 @@ class MentionsInput extends React.Component {
     // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
     const substring = plainTextValue.substring(0, caretPosition);
 
-    const that = this;
-    React.Children.forEach(this.props.children, function(child) {
-      if(!child) {
-        return;
+    React.Children.forEach(this.props.children, child => {
+      if (!child) {
+        return
       }
 
-      const regex = _getTriggerRegex(child.props.trigger, that.props);
-      const match = substring.match(regex);
-      if(match) {
-        const querySequenceStart = substring.indexOf(match[1], match.index);
-        that.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue);
+      const regex = _getTriggerRegex(child.props.trigger, this.props)
+      const match = substring.match(regex)
+      if (match) {
+        const querySequenceStart = substring.indexOf(match[1], match.index)
+        this.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue)
       }
-    });
-  };
+    })
+  }
 
   clearSuggestions = () => {
     // Invalidate previous queries. Async results for previous queries will be neglected.

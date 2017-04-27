@@ -13,17 +13,18 @@ import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
 import Highlighter from './Highlighter';
 
-const _getTriggerRegex = function(trigger) {
-  if(trigger instanceof RegExp) {
-    return trigger;
+export const _getTriggerRegex = function(trigger, options={}) {
+  if (trigger instanceof RegExp) {
+    return trigger
   } else {
-    const escapedTriggerChar = utils.escapeRegex(trigger);
+    const { allowSpaceInQuery } = options
+    const escapedTriggerChar = utils.escapeRegex(trigger)
 
     // first capture group is the part to be replaced on completion
     // second capture group is for extracting the search query
-    return new RegExp("(?:^|\\s)(" + escapedTriggerChar + "([^\\s" + escapedTriggerChar + "]*))$");
+    return new RegExp(`(?:^|\\s)(${escapedTriggerChar}([^${allowSpaceInQuery ? '' : '\\s'}${escapedTriggerChar}]*))$`)
   }
-};
+}
 
 const _getDataProvider = function(data) {
   if(data instanceof Array) {
@@ -55,6 +56,11 @@ class MentionsInput extends React.Component {
      * instead of a textarea
      */
     singleLine: PropTypes.bool,
+
+    /**
+     * If set to `true` spaces will not interrupt matching suggestions
+     */
+    allowSpaceInQuery: PropTypes.bool,
 
     markup: PropTypes.string,
     value: PropTypes.string,
@@ -500,7 +506,7 @@ class MentionsInput extends React.Component {
         return;
       }
 
-      const regex = _getTriggerRegex(child.props.trigger);
+      const regex = _getTriggerRegex(child.props.trigger, that.props);
       const match = substring.match(regex);
       if(match) {
         const querySequenceStart = substring.indexOf(match[1], match.index);

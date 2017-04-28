@@ -75,6 +75,7 @@ Each data source is configured using a `Mention` component, which has the follow
 | renderSuggestion | function (entry, search, highlightedDisplay, index)              | `null`          | Allows customizing how mention suggestions are rendered (optional)         |
 | onAdd            | function (id, display) | empty function  | Callback invoked when a suggestion has been added (optional)                |
 | appendSpaceOnAdd | boolean                | false           | Append a space when a suggestion has been added (optional)                  |
+| allowSpaceInQuery | boolean               | false           | Keep suggestions open even if the user separates keywords with spaces. |
 
 If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)
 
@@ -83,7 +84,7 @@ If a function is passed as the `data` prop, that function will be called with th
 
 _react-mentions_ supports CSS and inline styles. It is shipped with only some essential inline style definitions and without any CSS. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js). If you want to use CSS, simply assign a `className` prop to `MentionsInput`.
 
-You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting. 
+You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting.
 
 
 ## Contributing

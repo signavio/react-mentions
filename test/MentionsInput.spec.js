@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { mount } from "enzyme";
 
 import { MentionsInput, Mention } from "../src";
+import { _getTriggerRegex } from "../src/MentionsInput";
 
 const data = [
     { id: "first", value: "First entry" },
@@ -15,7 +16,7 @@ describe("MentionsInput", () => {
 
     beforeEach(() => {
         node = mount(
-            <MentionsInput>
+            <MentionsInput value="">
                 <Mention
                     trigger="@"
                     data={ data } />
@@ -60,6 +61,23 @@ describe("MentionsInput", () => {
         })
 
         expect(wrapper.find('SuggestionsOverlay').find('Suggestion')).to.have.length(4)
+    })
+
+    describe("_getTriggerRegex", () => {
+        it("should return regular expressions", () => {
+            const trigger = /abc/
+            expect(_getTriggerRegex(trigger)).to.equal(trigger)
+        })
+
+        it("should escape and capture a string trigger", () => {
+            const result = _getTriggerRegex("trigger").toString()
+            expect(result).to.equal("/(?:^|\\s)(trigger([^\\strigger]*))$/")
+        })
+
+        it("should allow spaces in search", () => {
+            const result = _getTriggerRegex("trigger", {allowSpaceInQuery: true}).toString()
+            expect(result).to.equal("/(?:^|\\s)(trigger([^trigger]*))$/")
+        })
     })
 
 });

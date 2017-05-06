@@ -124,8 +124,6 @@ class MentionsInput extends React.Component {
       ...props,
       ...style("input"),
 
-      value: this.getPlainText(),
-
       ...(!readOnly && !disabled && {
         onChange: this.handleChange,
         onSelect: this.handleSelect,

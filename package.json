@@ -59,7 +59,7 @@
     "less-loader": "^2.2.0",
     "mocha": "^3.2.0",
     "mversion": "^1.10.0",
-    "radium": "^0.18.1",
+    "radium": "^0.19.1",
     "react": "^15.3.2",
     "react-addons-test-utils": "^15.3.2",
     "react-dom": "^15.3.2",
@@ -79,7 +79,7 @@
     "babel-runtime": "^6.22.0",
     "lodash": "^4.5.1",
     "prop-types": "^15.5.8",
-    "substyle": "^5.1.2"
+    "substyle": "^6.0.0"
   },
   "peerDependencies": {
     "react": ">=0.14.0",

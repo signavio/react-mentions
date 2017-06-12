@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "4.1"
+  - "8.1"
 before_install:
   # Repo for newer Node.js versions
   - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -

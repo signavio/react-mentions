@@ -22,7 +22,11 @@ module.exports = {
         exclude: /node_modules/,
         loaders: ['react-hot-loader/webpack', 'babel-loader'],
       },
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      {
+        test: /\.css$/,
+        exclude: /\.module\.css$/,
+        loader: 'style-loader!css-loader'
+      },
       {
         test: /\.less$/,
         loaders: ['style-loader', 'css-loader', 'less-loader'],

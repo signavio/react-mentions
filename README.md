@@ -19,7 +19,7 @@ Please [let us know](mailto:wolf.pack@signavio.com?subject=we're%20using%20react
 
 ## Getting started
 
-Install the _react-mentions_ package via NPM:
+Install the _react-mentions_ package via npm:
 
 ```
 npm install react-mentions --save
@@ -82,9 +82,13 @@ If a function is passed as the `data` prop, that function will be called with th
 
 ## Styling
 
-_react-mentions_ supports CSS and inline styles. It is shipped with only some essential inline style definitions and without any CSS. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js). If you want to use CSS, simply assign a `className` prop to `MentionsInput`.
+_react-mentions_ supports css, css modules, and inline styles. It is shipped with only some essential inline style definitions and without any css. Some example inline styles demonstrating how to customize the appearance of the `MentionsInput` can be found at [gh-pages/views/examples/defaultStyle.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/defaultStyle.js).
 
-You can also assign `className` and `style` props to the `Mention` components to define the mentions' highlighting.
+If you want to use css, simply assign a `className` prop to `MentionsInput`. All DOM nodes rendered by the component will then receive class name attributes that are derived from the base class name you provided.
+
+If you want to avoid global class names and use css modules instead, you can provide the automatically generated class names as `classNames` to the `MentionsInput`. See [gh-pages/views/examples/CssModules.js](https://github.com/effektif/react-mentions/tree/gh-pages/views/examples/CssModules.js) for an example of using _react-mentions_ with css modules.
+
+You can also assign `className` and `style` props to the `Mention` elements to define how to highlight the mentioned words.
 
 
 ## Contributing

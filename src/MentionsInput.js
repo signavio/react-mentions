@@ -550,8 +550,11 @@ class MentionsInput extends React.Component {
     // won't overwrite each other
     this.suggestions = utils.extend({}, this.suggestions, update)
 
+    const { focusIndex } = this.state
+    const suggestionsCount = utils.countSuggestions(this.suggestions);
     this.setState({
       suggestions: this.suggestions,
+      focusIndex: focusIndex >= suggestionsCount ? Math.max(suggestionsCount - 1, 0) : focusIndex,
     });
   };
 

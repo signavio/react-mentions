@@ -196,6 +196,7 @@ class MentionsInput extends React.Component {
     return (
       <Highlighter
         ref="highlighter"
+        containerEl={this.refs.container}
         style={ style("highlighter") }
         inputStyle={ inputStyle }
         value={ value }

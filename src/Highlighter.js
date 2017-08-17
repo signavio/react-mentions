@@ -7,7 +7,7 @@ import utils from './utils';
 import Mention from './Mention';
 
 const _generateComponentKey = (usedKeys, id) => {
-  if(!usedKeys.hasOwnProperty(id)) {
+  if (!usedKeys.hasOwnProperty(id)) {
     usedKeys[id] = 0;
   } else {
     usedKeys[id]++;
@@ -53,18 +53,21 @@ class Highlighter extends Component {
   notifyCaretPosition() {
     let { caret } = this.refs;
 
-    if(!caret) {
+    if (!caret) {
       return;
     }
 
+    const { containerEl } = this.props
+      , top = caret.offsetTop > containerEl.clientHeight ? containerEl.clientHeight-20 : caret.offsetTop;
+    //16->lineHeight+paddingBotton
     let position = {
       left: caret.offsetLeft,
-      top: caret.offsetTop
+      top
     };
 
     let { lastPosition } = this.state;
 
-    if(isEqual(lastPosition, position)) {
+    if (isEqual(lastPosition, position)) {
       return;
     }
 
@@ -80,7 +83,7 @@ class Highlighter extends Component {
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     var caretPositionInMarkup;
-    if(selection.start === selection.end) {
+    if (selection.start === selection.end) {
       caretPositionInMarkup = utils.mapPlainTextIndex(value, markup, selection.start, 'START', displayTransform);
     }
 
@@ -94,7 +97,7 @@ class Highlighter extends Component {
 
     var textIteratee = (substr, index, indexInPlainText) => {
       // check whether the caret element has to be inserted inside the current plain substring
-      if(utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
+      if (utils.isNumber(caretPositionInMarkup) && caretPositionInMarkup >= index && caretPositionInMarkup <= index + substr.length) {
         // if yes, split substr at the caret position and insert the caret component
         var splitIndex = caretPositionInMarkup - index;
         components.push(
@@ -102,7 +105,7 @@ class Highlighter extends Component {
         );
 
         // add all following substrings and mention components as children of the caret component
-        components = [ this.renderSubstring(substr.substring(splitIndex), substringComponentKey) ];
+        components = [this.renderSubstring(substr.substring(splitIndex), substringComponentKey)];
       } else {
         // otherwise just push the plain text substring
         components.push(
@@ -113,7 +116,7 @@ class Highlighter extends Component {
       substringComponentKey++;
     };
 
-    var mentionIteratee = function(markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
+    var mentionIteratee = function (markup, index, indexInPlainText, id, display, type, lastMentionEndIndex) {
       // generate a component key based on the id
       var key = _generateComponentKey(componentKeys, id);
       components.push(
@@ -125,7 +128,7 @@ class Highlighter extends Component {
     // append a span containing a space, to ensure the last text line has the correct height
     components.push(" ");
 
-    if(components !== resultComponents) {
+    if (components !== resultComponents) {
       // if a caret component is to be rendered, add all components that followed as its children
       resultComponents.push(
         this.renderHighlighterCaret(components)
@@ -140,7 +143,7 @@ class Highlighter extends Component {
           ...style.style
         }}>
 
-        { resultComponents }
+        {resultComponents}
       </div>
     );
   }
@@ -149,7 +152,7 @@ class Highlighter extends Component {
     // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
       <span { ...this.props.style("substring") } key={key}>
-        { string }
+        {string}
       </span>
     );
   }
@@ -159,8 +162,8 @@ class Highlighter extends Component {
     var childrenCount = Children.count(this.props.children);
     var props = { id, display, key };
 
-    if(childrenCount > 1) {
-      if(!type) {
+    if (childrenCount > 1) {
+      if (!type) {
         throw new Error(
           "Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder"
         );
@@ -169,11 +172,11 @@ class Highlighter extends Component {
       // detect the Mention child to be cloned
       var foundChild = null;
       Children.forEach(this.props.children, (child) => {
-        if(!child) {
+        if (!child) {
           return;
         }
 
-        if(child.props.type === type) {
+        if (child.props.type === type) {
           foundChild = child;
         }
       });
@@ -182,7 +185,7 @@ class Highlighter extends Component {
       return React.cloneElement(foundChild, props);
     }
 
-    if(childrenCount === 1) {
+    if (childrenCount === 1)  {
       // clone single Mention child
       var child = this.props.children.length ? this.props.children[0] : Children.only(this.props.children);
       return React.cloneElement(child, props);
@@ -196,7 +199,7 @@ class Highlighter extends Component {
   renderHighlighterCaret(children) {
     return (
       <span { ...this.props.style("caret") } ref="caret" key="caret">
-        { children }
+        {children}
       </span>
     );
   }

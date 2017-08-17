@@ -5,6 +5,7 @@ import Radium from 'radium'
 import MultipleTrigger from './MultipleTrigger'
 import SingleLine from './SingleLine'
 import Advanced from './Advanced'
+import FixedHeightAdvanced from './FixedHeightAdvanced'
 import CssModules from './CssModules'
 
 const users = [
@@ -53,6 +54,7 @@ export default function Examples() {
           </div>
           <div className="col-md-6">
             <Advanced data={ users } />
+            <FixedHeightAdvanced data={ users } />
           </div>
         </div>
         <div className="row">

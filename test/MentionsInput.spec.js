@@ -80,4 +80,43 @@ describe("MentionsInput", () => {
         })
     })
 
+    describe("spellCheck", () => {
+        it("should render when input is plain text", () => {
+            const wrapper = mount(
+                <MentionsInput value="@" value="Example text" markup="{{__id__}}">
+                    <Mention trigger="@" type="testentries" data={data} />
+                </MentionsInput>
+            )
+
+            expect(wrapper.find('textarea').prop('spellCheck')).to.equal(true);
+        });
+        it("should render when input is plain text", () => {
+            const wrapper = mount(
+                <MentionsInput value="@" value="Example text {{__29409189109__}} with id" markup="{{__id__}}">
+                    <Mention trigger="@" type="testentries" data={data} />
+                </MentionsInput>
+            )
+
+            expect(wrapper.find('textarea').prop('spellCheck')).to.equal(false);
+        });
+        it("should work with hard coded true", () => {
+            const wrapper = mount(
+                <MentionsInput value="@" value="Example text {{__29409189109__}} with id" markup="{{__id__}}" spellCheck={true}>
+                    <Mention trigger="@" type="testentries" data={data} />
+                </MentionsInput>
+            )
+
+            expect(wrapper.find('textarea').prop('spellCheck')).to.equal(true);
+        });
+
+        it("should work with hard coded false", () => {
+            const wrapper = mount(
+                <MentionsInput value="@" value="Example text" markup="{{__id__}}" spellCheck={false}>
+                    <Mention trigger="@" type="testentries" data={data} />
+                </MentionsInput>
+            )
+
+            expect(wrapper.find('textarea').prop('spellCheck')).to.equal(false);
+        });
+    })
 });

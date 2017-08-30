@@ -13,6 +13,8 @@ import utils from './utils';
 import SuggestionsOverlay from './SuggestionsOverlay';
 import Highlighter from './Highlighter';
 
+console.log('hi')
+
 export const _getTriggerRegex = function(trigger, options={}) {
   if (trigger instanceof RegExp) {
     return trigger
@@ -74,7 +76,9 @@ class MentionsInput extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.arrayOf(PropTypes.element),
-    ]).isRequired
+    ]).isRequired,
+
+    spellCheck: PropTypes.oneOf([true, false, 'PLAIN_TEXT']),
   };
 
   static defaultProps = {
@@ -85,7 +89,8 @@ class MentionsInput extends React.Component {
     },
     onKeyDown: () => null,
     onSelect: () => null,
-    onBlur: () => null
+    onBlur: () => null,
+    spellCheck: 'PLAIN_TEXT',
   };
 
   constructor(props) {
@@ -115,16 +120,20 @@ class MentionsInput extends React.Component {
   }
 
   getInputProps = (isTextarea) => {
-    let { readOnly, disabled, style } = this.props;
+    let { readOnly, disabled, style, spellCheck, value } = this.props;
 
     // pass all props that we don't use through to the input control
     let props = omit(this.props, 'style', keys(MentionsInput.propTypes));
+
+    let spellCheckProp = !!spellCheck;
+    if (spellCheck === 'PLAIN_TEXT') spellCheckProp = this.getPlainText() === value;
 
     return {
       ...props,
       ...style("input"),
 
       value: this.getPlainText(),
+      spellCheck: spellCheckProp,
 
       ...(!readOnly && !disabled && {
         onChange: this.handleChange,
@@ -133,7 +142,7 @@ class MentionsInput extends React.Component {
         onBlur: this.handleBlur,
         onCompositionStart: this.handleCompositionStart,
         onCompositionEnd: this.handleCompositionEnd,
-      })
+      }),
     };
   };
 

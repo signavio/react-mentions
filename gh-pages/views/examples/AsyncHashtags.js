@@ -12,9 +12,15 @@ function getHashtags(query, callback) {
   const getIndex = tag => tag.indexOf(query.toLowerCase());
   fetch('data/hashtags.json')
     .then(res => res.json())
+
+    // Note: the following two lines aren't needed if your data source already
+    // filters and/or sorts results
     .then(tags => tags.filter(tag =>  getIndex(tag) !== -1))
     .then(tags => tags.sort((a, b) => getIndex(a) - getIndex(b)))
+
+    // Transform the hashtags to what react-mentions expects
     .then(tags => tags.map(tag => ({ display: tag, id: tag })))
+
     .then(callback)
 }
 

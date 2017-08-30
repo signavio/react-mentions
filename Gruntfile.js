@@ -12,7 +12,8 @@ module.exports = function(grunt) {
         "*.js.map",
         "*.jsx",
         "views/**/*",
-        "css/*"
+        "css/*",
+        "data/*",
       ]
     },
 

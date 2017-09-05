@@ -223,7 +223,7 @@ module.exports = {
     var mentionStart = this.findStartOfMentionInPlainText(value, markup, indexInPlainText, displayTransform);
     return mentionStart !== undefined && mentionStart !== indexInPlainText
   },
-  
+
   // Applies a change from the plain text textarea to the underlying marked up value
   // guided by the textarea text selection ranges before and after the change
   applyChangeToValue: function(value, markup, plainTextValue, selectionStartBeforeChange, selectionEndBeforeChange, selectionEndAfterChange, displayTransform) {
@@ -290,7 +290,7 @@ module.exports = {
         newValue = this.spliceString(value, mappedSpliceStart, mappedSpliceEnd, insert);
       }
     }
-    
+
     return newValue;
   },
 
@@ -309,7 +309,7 @@ module.exports = {
     });
   },
 
-  getMentions: function (value, markup) {
+  getMentions: function (value, markup, displayTransform) {
     var mentions = [];
     this.iterateMentionsMarkup(value, markup, function (){}, function (match, index, plainTextIndex, id, display, type, start) {
       mentions.push({
@@ -319,8 +319,16 @@ module.exports = {
         index: index,
         plainTextIndex: plainTextIndex
       });
-    });
+    }, displayTransform);
     return mentions;
+  },
+
+  getEndOfLastMention: function (value, markup, displayTransform) {
+    const mentions = this.getMentions(value, markup, displayTransform);
+    const lastMention = mentions[mentions.length - 1];
+    return lastMention ?
+      lastMention.plainTextIndex + lastMention.display.length :
+      0;
   },
 
   makeMentionsMarkup: function(markup, id, display, type) {

@@ -10,7 +10,7 @@ A React component that let's you mention people in a textarea like you are used 
 ##### Used in production at:
 - [Signavio](https://signavio.com)
 - [State](https://state.com)
-- [Snips(]https://snips.ai)
+- [Snips](https://snips.ai)
 - [Swat.io](https://swat.io)
 - [GotDone](https://www.gotdone.me)
 - [Volinspire](https://volinspire.com)

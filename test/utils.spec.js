@@ -373,6 +373,31 @@ describe("utils", function() {
       ]);
     })
 
+    it('should take into account the displayTransform if passed', function () {
+      var mentions = utils.getMentions(value, defaultMarkup, displayTransform);
+      expect(mentions).to.deep.equal([
+        { id: "johndoe", display: "<--johndoe-->", type: "user", index: 3, plainTextIndex: 3 },
+        { id: "joe@smoe.com", display: "<--joe@smoe.com-->", type: "email", index: 42, plainTextIndex: 30 }
+      ]);
+    })
+
   });
+
+  describe('#getEndOfLastMention', () => {
+    it('should return the end index of the last mention in the plain text', () => {
+      var index = utils.getEndOfLastMention(value, defaultMarkup);
+      expect(index).to.equal(37);
+    })
+
+    it('should take into account the displayTransform', () => {
+      var index = utils.getEndOfLastMention(value, defaultMarkup, displayTransform);
+      expect(index).to.equal(48);
+    })
+
+    it('should return 0 if there is no mention', () => {
+      var index = utils.getEndOfLastMention('No mentions to be found here', defaultMarkup);
+      expect(index).to.equal(0);
+    })
+  })
 
 });

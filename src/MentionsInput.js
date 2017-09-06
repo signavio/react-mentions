@@ -489,17 +489,29 @@ class MentionsInput extends React.Component {
       suggestions: {}
     });
 
-    // If caret is inside of or directly behind of mention, do not query
     const value = this.props.value || "";
-    if( utils.isInsideOfMention(value, this.props.markup, caretPosition, this.props.displayTransform) ||
-        utils.isInsideOfMention(value, this.props.markup, caretPosition-1, this.props.displayTransform) ) {
+    const positionInValue = utils.mapPlainTextIndex(
+      value, this.props.markup, caretPosition, 'NULL', this.props.displayTransform
+    )
+
+    // If caret is inside of mention, do not query
+    if(positionInValue === null) {
       return;
     }
 
-    // Check if suggestions have to be shown:
-    // Match the trigger patterns of all Mention children the new plain text substring up to the current caret position
-    const substring = plainTextValue.substring(0, caretPosition);
+    // Extract substring in between the end of the previous mention and the caret
+    const substringStartIndex = utils.getEndOfLastMention(
+      value.substring(0, positionInValue),
+      this.props.markup,
+      this.props.displayTransform
+    );
+    const substring = plainTextValue.substring(
+      substringStartIndex,
+      caretPosition
+    );
 
+    // Check if suggestions have to be shown:
+    // Match the trigger patterns of all Mention children on the extracted substring
     React.Children.forEach(this.props.children, child => {
       if (!child) {
         return
@@ -508,8 +520,14 @@ class MentionsInput extends React.Component {
       const regex = _getTriggerRegex(child.props.trigger, this.props)
       const match = substring.match(regex)
       if (match) {
-        const querySequenceStart = substring.indexOf(match[1], match.index)
-        this.queryData(match[2], child, querySequenceStart, querySequenceStart+match[1].length, plainTextValue)
+        const querySequenceStart = substringStartIndex + substring.indexOf(match[1], match.index)
+        this.queryData(
+          match[2],
+          child,
+          querySequenceStart,
+          querySequenceStart + match[1].length,
+          plainTextValue
+        );
       }
     })
   }

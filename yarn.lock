@@ -5540,7 +5540,7 @@ react-deep-force-update@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-2.0.1.tgz#4f7f6c12c3e7de42f345992a3c518236fa1ecad3"
 
-react-dom@^15.6.2:
+react-dom@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.1.tgz#2cb0ed4191038e53c209eb3a79a23e2a4cf99470"
   dependencies:
@@ -5587,9 +5587,14 @@ react-router@^2.6.1:
     loose-envify "^1.2.0"
     warning "^3.0.0"
 
-react-shadow@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/react-shadow/-/react-shadow-2.1.0.tgz#b7e9116713ae6d378ce8455be62721cafb101d45"
+react-shadow-dom-retarget-events@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-shadow-dom-retarget-events/-/react-shadow-dom-retarget-events-1.0.4.tgz#c8f3ee05a76ec76195ad45926c25f49754238990"
+
+react-shadow@../../ReactShadow:
+  version "2.0.2"
+  dependencies:
+    react-shadow-dom-retarget-events "^1.0.4"
 
 react-test-renderer@^15.5.4:
   version "15.5.4"
@@ -5598,7 +5603,7 @@ react-test-renderer@^15.5.4:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
 
-react@^15.6.2:
+react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
   dependencies:

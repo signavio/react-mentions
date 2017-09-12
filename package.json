@@ -7,20 +7,22 @@
     "test": "npm run env NODE_ENV=test && mocha",
     "transpile": "npm run env NODE_ENV=production && babel src --out-dir lib",
     "clean": "rimraf lib",
-    "start":
-      "cd gh-pages && webpack-dev-server --config webpack.dev.config.js --port 9090 --d --hot --inline --progress --colors",
+    "start": "cd gh-pages && webpack-dev-server --config webpack.dev.config.js --port 9090 --d --hot --inline --progress --colors",
     "lint": "eslint src",
     "pretranspile": "npm run clean",
     "prepublish": "npm run transpile",
-    "prepages-publish":
-      "npm run env NODE_ENV=production && cd gh-pages && webpack",
+    "prepages-publish": "npm run env NODE_ENV=production && cd gh-pages && webpack",
     "pages-publish": "grunt publish"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/effektif/react-mentions.git"
   },
-  "keywords": ["react", "mentions", "react-component"],
+  "keywords": [
+    "react",
+    "mentions",
+    "react-component"
+  ],
   "author": "Jan-Felix Schwarz",
   "license": "BSD-3-Clause",
   "bugs": {
@@ -64,6 +66,7 @@
     "react-hot-loader": "^3.0.0-beta.6",
     "react-router": "^2.6.1",
     "react-shadow": "^2.1.0",
+    "react-shadow-dom-retarget-events": "^1.0.4",
     "react-test-renderer": "^15.5.4",
     "recompose": "^0.22.0",
     "redbox-react": "^1.2.2",
@@ -77,6 +80,7 @@
   "dependencies": {
     "babel-runtime": "^6.22.0",
     "lodash": "^4.5.1",
+    "prettier": "^1.6.1",
     "prop-types": "^15.5.8",
     "substyle": "^6.0.0"
   },

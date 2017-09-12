@@ -111,7 +111,7 @@ class MentionsInput extends React.Component {
 
   render() {
     return (
-      <div ref="container" {...this.props.style}>
+      <div ref={el => (this.container = el)} {...this.props.style}>
         {this.renderControl()}
         {this.renderSuggestionsOverlay()}
       </div>
@@ -159,11 +159,11 @@ class MentionsInput extends React.Component {
   }
 
   renderInput = props => {
-    return <input type="text" ref="input" {...props} />
+    return <input type="text" ref={el => (this.input = el)} {...props} />
   }
 
   renderTextarea = props => {
-    return <textarea ref="input" {...props} />
+    return <textarea ref={el => (this.input = el)} {...props} />
   }
 
   renderSuggestionsOverlay = () => {
@@ -177,7 +177,7 @@ class MentionsInput extends React.Component {
         position={this.state.suggestionsPosition}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
-        ref="suggestions"
+        ref={el => (this.suggestions = el)}
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
@@ -204,7 +204,7 @@ class MentionsInput extends React.Component {
 
     return (
       <Highlighter
-        ref="highlighter"
+        ref={el => (this.highlighter = el)}
         style={style('highlighter')}
         inputStyle={inputStyle}
         value={value}
@@ -340,7 +340,7 @@ class MentionsInput extends React.Component {
     })
 
     // refresh suggestions queries
-    const el = this.refs.input
+    const el = this.input
     if (ev.target.selectionStart === ev.target.selectionEnd) {
       this.updateMentionsQueries(el.value, ev.target.selectionStart)
     } else {
@@ -357,7 +357,7 @@ class MentionsInput extends React.Component {
     // do not intercept key events if the suggestions overlay is not shown
     const suggestionsCount = utils.countSuggestions(this.state.suggestions)
 
-    const suggestionsComp = this.refs.suggestions
+    const suggestionsComp = this.suggestions
     if (suggestionsCount === 0 || !suggestionsComp) {
       this.props.onKeyDown(ev)
 
@@ -443,14 +443,14 @@ class MentionsInput extends React.Component {
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
 
-    if (!caretPosition || !this.refs.suggestions) {
+    if (!caretPosition || !this.suggestions) {
       return
     }
 
-    let { container } = this.refs
+    let container = this.container
 
-    let suggestions = ReactDOM.findDOMNode(this.refs.suggestions)
-    let highlighter = ReactDOM.findDOMNode(this.refs.highlighter)
+    let suggestions = ReactDOM.findDOMNode(this.suggestions)
+    let highlighter = ReactDOM.findDOMNode(this.highlighter)
 
     if (!suggestions) {
       return
@@ -478,13 +478,13 @@ class MentionsInput extends React.Component {
   }
 
   updateHighlighterScroll = () => {
-    if (!this.refs.input || !this.refs.highlighter) {
+    if (!this.input || !this.highlighter) {
       // since the invocation of this function is deferred,
       // the whole component may have been unmounted in the meanwhile
       return
     }
-    const input = this.refs.input
-    const highlighter = ReactDOM.findDOMNode(this.refs.highlighter)
+    const input = this.input
+    const highlighter = ReactDOM.findDOMNode(this.highlighter)
     highlighter.scrollLeft = input.scrollLeft
   }
 
@@ -514,7 +514,7 @@ class MentionsInput extends React.Component {
   setSelection = (selectionStart, selectionEnd) => {
     if (selectionStart === null || selectionEnd === null) return
 
-    const el = this.refs.input
+    const el = this.input
     if (el.setSelectionRange) {
       el.setSelectionRange(selectionStart, selectionEnd)
     } else if (el.createTextRange) {
@@ -688,7 +688,7 @@ class MentionsInput extends React.Component {
     const newValue = utils.spliceString(value, start, end, insert)
 
     // Refocus input and set caret position to end of mention
-    this.refs.input.focus()
+    this.input.focus()
 
     let displayValue = this.props.displayTransform(
       suggestion.id,

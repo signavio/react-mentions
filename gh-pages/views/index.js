@@ -1,3 +1,2 @@
-import Application from './Application'
-
-export default Application
+export Application from './Application'
+export ShadowApplication from './ShadowApplication'

@@ -192,7 +192,7 @@ class Highlighter extends Component {
     return Mention(props);
   }
 
-  // Renders an component to be inserted in the highlighter at the current caret position
+  // Renders a component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
       <span { ...this.props.style("caret") } ref="caret" key="caret">

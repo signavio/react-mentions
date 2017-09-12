@@ -163,7 +163,7 @@ describe("utils", function() {
       expect(result).to.equal(value.indexOf("let's add"));
     });
 
-    it("should correctly calculate the index of a character in the plain text between mentions with display tranform", function() {
+    it("should correctly calculate the index of a character in the plain text between mentions with display transform", function() {
       var plainTextIndex = plainTextDisplayTransform.indexOf("let's add");
       var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex, 'START', displayTransform);
       expect(result).to.equal(value.indexOf("let's add"));

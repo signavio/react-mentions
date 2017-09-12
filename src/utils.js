@@ -118,7 +118,7 @@ module.exports = {
 
   },
 
-  // Finds all occurences of the markup in the value and iterates the plain text sub strings
+  // Finds all occurrences of the markup in the value and iterates the plain text sub strings
   // in between those markups using `textIteratee` and the markup occurrences using the
   // `markupIteratee`.
   iterateMentionsMarkup: function(value, markup, textIteratee, markupIteratee, displayTransform) {
@@ -131,7 +131,7 @@ module.exports = {
     var start = 0;
     var currentPlainTextIndex = 0;
 
-    // detect all mention markup occurences in the value and iterate the matches
+    // detect all mention markup occurrences in the value and iterate the matches
     while((match = regex.exec(value)) !== null) {
 
       var id = match[idPos+1];

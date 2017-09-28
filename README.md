@@ -66,6 +66,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | displayTransform | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention            |
 | onBlur           | function (event, clickedSuggestion)          | empty function             | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion       |
 | allowSpaceInQuery | boolean               | false           | Keep suggestions open even if the user separates keywords with spaces. |
+autoFocus | boolean | false | Set `autoFocus` in textarea (optional)
 
 Each data source is configured using a `Mention` component, which has the following props:
 

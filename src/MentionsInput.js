@@ -64,6 +64,7 @@ class MentionsInput extends React.Component {
 
     markup: PropTypes.string,
     value: PropTypes.string,
+    autoFocus: PropTypes.bool,
 
     displayTransform: PropTypes.func,
     onKeyDown: PropTypes.func,
@@ -83,6 +84,7 @@ class MentionsInput extends React.Component {
     displayTransform: function(id, display, type) {
       return display;
     },
+    autoFocus: false,
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null
@@ -115,7 +117,7 @@ class MentionsInput extends React.Component {
   }
 
   getInputProps = (isTextarea) => {
-    let { readOnly, disabled, style } = this.props;
+    let { readOnly, disabled, style, autoFocus } = this.props;
 
     // pass all props that we don't use through to the input control
     let props = omit(this.props, 'style', keys(MentionsInput.propTypes));
@@ -127,6 +129,7 @@ class MentionsInput extends React.Component {
       value: this.getPlainText(),
 
       ...(!readOnly && !disabled && {
+        autoFocus: autoFocus,
         onChange: this.handleChange,
         onSelect: this.handleSelect,
         onKeyDown: this.handleKeyDown,

@@ -15,6 +15,7 @@ A React component that let's you mention people in a textarea like you are used 
 - [GotDone](https://www.gotdone.me)
 - [Volinspire](https://volinspire.com)
 - [Marvin](https://amazingmarvin.com)
+- [Timely](https://timelyapp.com)
 
 Please [let us know](mailto:wolf.pack@signavio.com?subject=we're%20using%20react-mentions%20at%20...) if you are using react-mentions, we'd love to add you to this list.
 

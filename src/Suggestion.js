@@ -7,14 +7,14 @@ import keys from 'lodash/keys';
 class Suggestion extends Component {
 
   static propTypes = {
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     query: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
 
     suggestion: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.shape({
-        id: PropTypes.string.isRequired,
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         display: PropTypes.string
       }),
     ]).isRequired,

@@ -7,6 +7,7 @@ import SingleLine from './SingleLine'
 import Advanced from './Advanced'
 import CssModules from './CssModules'
 import AsyncHashtags from './AsyncHashtags'
+import InstantSearchMentions from './InstantSearchMentions'
 
 const users = [
   {
@@ -62,6 +63,9 @@ export default function Examples() {
           </div>
           <div className="col-md-6">
             <AsyncHashtags data={ users } />
+          </div>
+          <div className="col-md-6">
+            <InstantSearchMentions />
           </div>
         </div>
       </div>

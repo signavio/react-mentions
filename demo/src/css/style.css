@@ -1,0 +1,44 @@
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Roboto Slab";
+}
+.header {
+  margin-bottom: 100px;
+}
+.header .navbar {
+  background: #18AAB1;
+}
+.header .navbar h1 {
+  color: white;
+}
+.header .navbar h1 small {
+  display: block;
+  opacity: 0.7;
+  font-size: 14px;
+  color: white;
+}
+.header .navbar h1 small a {
+  color: white;
+  font-style: italic;
+}
+.header .nav a {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-border-radius: 0;
+  -khtml-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+}
+.header .nav a:hover,
+.header .nav a:focus,
+.header .nav a.active {
+  background: rgba(255, 255, 255, 0.3);
+}
+body {
+  font-family: "Source Sans Pro";
+}

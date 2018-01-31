@@ -374,6 +374,9 @@ class MentionsInput extends React.Component {
         this.selectFocused()
         return
       }
+      default: {
+        return
+      }
     }
   }
 

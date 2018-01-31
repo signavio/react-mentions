@@ -30,52 +30,49 @@ describe('utils', function() {
       '{{__display__}}': { display: 0, id: 0, type: null },
     }
 
-    for (var key in testData) {
-      if (!testData.hasOwnProperty(key)) continue
-      ;(function() {
-        var markup = key
-        var positions = testData[key]
+    Object.keys(testData).forEach(key => {
+      var markup = key
+      var positions = testData[key]
 
-        it(
-          'should return ' +
-            positions.display +
-            ' for the `display` position in markup `' +
-            markup +
-            '`',
-          function() {
-            expect(
-              utils.getPositionOfCapturingGroup(markup, 'display')
-            ).toEqual(positions.display)
-          }
-        )
+      it(
+        'should return ' +
+          positions.display +
+          ' for the `display` position in markup `' +
+          markup +
+          '`',
+        function() {
+          expect(utils.getPositionOfCapturingGroup(markup, 'display')).toEqual(
+            positions.display
+          )
+        }
+      )
 
-        it(
-          'should return ' +
-            positions.id +
-            ' for the `id` position in markup `' +
-            markup +
-            '`',
-          function() {
-            expect(utils.getPositionOfCapturingGroup(markup, 'id')).toEqual(
-              positions.id
-            )
-          }
-        )
+      it(
+        'should return ' +
+          positions.id +
+          ' for the `id` position in markup `' +
+          markup +
+          '`',
+        function() {
+          expect(utils.getPositionOfCapturingGroup(markup, 'id')).toEqual(
+            positions.id
+          )
+        }
+      )
 
-        it(
-          'should return ' +
-            positions.type +
-            ' for the `type` position in markup `' +
-            markup +
-            '`',
-          function() {
-            expect(utils.getPositionOfCapturingGroup(markup, 'type')).toEqual(
-              positions.type
-            )
-          }
-        )
-      })()
-    }
+      it(
+        'should return ' +
+          positions.type +
+          ' for the `type` position in markup `' +
+          markup +
+          '`',
+        function() {
+          expect(utils.getPositionOfCapturingGroup(markup, 'type')).toEqual(
+            positions.type
+          )
+        }
+      )
+    })
   })
 
   describe('#iterateMentionsMarkup', function() {
@@ -286,7 +283,6 @@ describe('utils', function() {
 
     it("should return `null` if `inMarkupCorrection` is set to 'NULL'", function() {
       // index of char inside the markup
-      var joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
       var plainTextIndex = plainText.indexOf('joe@smoe.com') + 3
       var result = utils.mapPlainTextIndex(
         value,

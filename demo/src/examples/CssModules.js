@@ -1,6 +1,4 @@
 import React from 'react'
-import { merge } from 'lodash'
-import { compose, withHandlers } from 'recompose'
 
 import { MentionsInput, Mention } from '../../../src'
 
@@ -20,4 +18,4 @@ function CssModules({ value, data, onChange }) {
   )
 }
 
-export default compose(provideExampleValue(''))(CssModules)
+export default provideExampleValue('')(CssModules)

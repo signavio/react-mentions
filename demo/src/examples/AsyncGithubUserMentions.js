@@ -1,5 +1,4 @@
 import React from 'react'
-import { merge } from 'lodash'
 
 import { MentionsInput, Mention } from '../../../src'
 

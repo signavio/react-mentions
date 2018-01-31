@@ -41,7 +41,7 @@ module.exports = {
   escapeHtml: createEscaper(escapeMap),
 
   escapeRegex: function(str) {
-    return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+    return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
   },
 
   markupToRegex: function(markup, matchAtEnd) {

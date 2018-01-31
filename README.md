@@ -1,8 +1,9 @@
 # [React Mentions](http://signavio.github.io/react-mentions)
 
-[![Build Status](https://travis-ci.org/signavio/react-mentions.svg?branch=master)](https://travis-ci.org/signavio/react-mentions)
-[![Dependency Status](https://david-dm.org/signavio/react-mentions.svg)](https://david-dm.org/signavio/react-mentions)
-[![npm version](https://badge.fury.io/js/react-mentions.svg)](http://badge.fury.io/js/react-mentions)
+[![CircleCI][build-badge]][build]
+[![Coveralls][coveralls-badge]][coveralls]
+[![npm package][npm-badge]][npm]
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
@@ -106,3 +107,10 @@ Update the examples page on Github Pages:
 ```
 npm run pages-publish
 ```
+
+[build-badge]: https://circleci.com/gh/signavio/react-mentions/tree/master.svg?style=shield&circle-token=:circle-token
+[build]: https://circleci.com/gh/signavio/react-mentions/tree/master
+[npm-badge]: https://img.shields.io/npm/v/react-mentions.png?style=flat-square
+[npm]: https://www.npmjs.org/package/react-mentions
+[coveralls-badge]: https://img.shields.io/coveralls/signavio/react-mentions/master.png?style=flat-square
+[coveralls]: https://coveralls.io/github/signavio/react-mentions

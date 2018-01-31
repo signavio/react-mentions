@@ -4,7 +4,11 @@
   "description": "React mentions input",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "files": ["es", "lib", "umd"],
+  "files": [
+    "es",
+    "lib",
+    "umd"
+  ],
   "scripts": {
     "build": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
@@ -18,7 +22,11 @@
     "type": "git",
     "url": "https://github.com/effektif/react-mentions.git"
   },
-  "keywords": ["react", "mentions", "react-component"],
+  "keywords": [
+    "react",
+    "mentions",
+    "react-component"
+  ],
   "author": "Jan-Felix Schwarz",
   "license": "BSD-3-Clause",
   "bugs": {
@@ -29,16 +37,16 @@
     "nwb": "0.21.x",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "recompose": "^0.26.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.22.0",
     "lodash": "^4.5.1",
     "prop-types": "^15.5.8",
     "substyle": "^6.0.0"
   },
   "peerDependencies": {
-    "react": ">=0.14.0",
-    "react-dom": ">=0.14.0"
+    "react": "16.x",
+    "react-dom": "16.x"
   }
 }

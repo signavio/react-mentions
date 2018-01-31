@@ -56,15 +56,6 @@ jobs:
           name: Lint
           command: yarn lint
 
-  flow:
-    <<: *defaults
-    steps:
-      - *attach_workspace
-      - *restore_cache
-      - run:
-          name: Flow
-          command: yarn flow
-
   test:
     <<: *defaults
     steps:
@@ -119,9 +110,6 @@ workflows:
     jobs:
       - install
       - lint:
-          requires:
-            - install
-      - flow:
           requires:
             - install
       - test:

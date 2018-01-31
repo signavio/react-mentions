@@ -15,6 +15,7 @@
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo/src",
     "start": "nwb serve-react-demo",
+    "semantic-release": "semantic-release",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server"
@@ -36,6 +37,7 @@
   "homepage": "https://github.com/signavio/react-mentions",
   "devDependencies": {
     "babel-eslint": "^7.2.3",
+    "condition-circle": "^2.0.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",
@@ -50,7 +52,8 @@
     "radium": "^0.21.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "recompose": "^0.26.0"
+    "recompose": "^0.26.0",
+    "semantic-release": "^12.4.1"
   },
   "dependencies": {
     "lodash": "^4.5.1",
@@ -60,5 +63,8 @@
   "peerDependencies": {
     "react": "16.x",
     "react-dom": "16.x"
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }

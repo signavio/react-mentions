@@ -37,6 +37,7 @@
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",
     "eslint-config-react-app": "^2.1.0",
     "eslint-plugin-flowtype": "^2.34.1",

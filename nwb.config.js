@@ -6,6 +6,7 @@ module.exports = {
   },
   karma: {
     browsers: ['ChromeHeadless'],
+    testContext: 'tests.webpack.js',
   },
   webpack: {
     rules: {

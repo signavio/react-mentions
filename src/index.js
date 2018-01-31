@@ -1,2 +1,2 @@
-export MentionsInput from './MentionsInput';
-export Mention from './Mention';
+export MentionsInput from './MentionsInput'
+export Mention from './Mention'

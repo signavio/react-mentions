@@ -45,23 +45,23 @@ export default function Examples() {
       <div className="examples">
         <div className="row">
           <div className="col-lg-12">
-            <MultipleTrigger data={ users } />
+            <MultipleTrigger data={users} />
           </div>
         </div>
         <div className="row">
           <div className="col-md-6">
-            <SingleLine data={ users } />
+            <SingleLine data={users} />
           </div>
           <div className="col-md-6">
-            <Advanced data={ users } />
+            <Advanced data={users} />
           </div>
         </div>
         <div className="row">
           <div className="col-md-6">
-            <CssModules data={ users } />
+            <CssModules data={users} />
           </div>
           <div className="col-md-6">
-            <AsyncHashtags data={ users } />
+            <AsyncHashtags data={users} />
           </div>
         </div>
       </div>

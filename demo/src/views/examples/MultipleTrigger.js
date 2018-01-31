@@ -18,32 +18,28 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
       <p>Mention people using '@' + username or type an email address</p>
 
       <MentionsInput
-        value={ value }
-        onChange={ onChange }
-        style={ defaultStyle }
+        value={value}
+        onChange={onChange}
+        style={defaultStyle}
         markup="@[__display__](__type__:__id__)"
         placeholder={"Mention people using '@'"}
       >
         <Mention
           type="user"
           trigger="@"
-          data={ data }
-          renderSuggestion={ (suggestion, search, highlightedDisplay) => (
-            <div className="user">
-              { highlightedDisplay }
-            </div>
+          data={data}
+          renderSuggestion={(suggestion, search, highlightedDisplay) => (
+            <div className="user">{highlightedDisplay}</div>
           )}
-          onAdd={ onAdd }
+          onAdd={onAdd}
           style={defaultMentionStyle}
         />
 
         <Mention
           type="email"
           trigger={emailRegex}
-          data={ (search) => [
-            { id: search, display: search },
-          ]}
-          onAdd={ onAdd }
+          data={search => [{ id: search, display: search }]}
+          onAdd={onAdd}
           style={{ backgroundColor: '#d1c4e9' }}
         />
       </MentionsInput>
@@ -51,6 +47,8 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
   )
 }
 
-const asExample = provideExampleValue('Hi @[John Doe](user:johndoe), \n\nlet\'s add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... ')
+const asExample = provideExampleValue(
+  "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
+)
 
 export default asExample(MultipleTriggers)

@@ -1,16 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { defaultStyle } from 'substyle';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { defaultStyle } from 'substyle'
 
 const styled = defaultStyle({
-  fontWeight: "inherit"
-});
+  fontWeight: 'inherit',
+})
 
 const Mention = styled(({ display, style }) => (
-  <strong {...style}>
-    { display }
-  </strong>
-));
+  <strong {...style}>{display}</strong>
+))
 
 Mention.propTypes = {
   /**
@@ -31,20 +29,20 @@ Mention.propTypes = {
 
   trigger: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.instanceOf(RegExp)
+    PropTypes.instanceOf(RegExp),
   ]),
 
   isLoading: PropTypes.bool,
-};
+}
 
 Mention.defaultProps = {
-  trigger: "@",
+  trigger: '@',
 
   onAdd: () => null,
   onRemove: () => null,
   renderSuggestion: null,
   isLoading: false,
-  appendSpaceOnAdd: false
-};
+  appendSpaceOnAdd: false,
+}
 
-export default Mention;
+export default Mention

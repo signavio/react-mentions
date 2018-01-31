@@ -8,23 +8,16 @@ import { provideExampleValue } from './higher-order'
 
 import classNames from 'style-loader!css-loader?modules!./example.module.css'
 
-
 function CssModules({ value, data, onChange }) {
   return (
     <div className="advanced">
       <h3>Styling with css modules</h3>
 
-      <MentionsInput
-        value={ value }
-        onChange={ onChange }
-        classNames={ classNames }
-      >
-        <Mention data={ data } className={classNames.mentions__mention} />
+      <MentionsInput value={value} onChange={onChange} classNames={classNames}>
+        <Mention data={data} className={classNames.mentions__mention} />
       </MentionsInput>
     </div>
   )
 }
 
-export default compose(
-  provideExampleValue(''),
-)(CssModules)
+export default compose(provideExampleValue(''))(CssModules)

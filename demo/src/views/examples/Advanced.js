@@ -26,18 +26,14 @@ function Advanced({ value, data, onChange, onBlur, onAdd }) {
       <h3>Advanced options</h3>
 
       <MentionsInput
-        value={ value }
-        onChange={ onChange }
-        onBlur={ onBlur }
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
         markup="{{__id__}}"
         style={style}
-        displayTransform={ (id) => `<-- ${id} -->` }
+        displayTransform={id => `<-- ${id} -->`}
       >
-        <Mention
-          data={ data }
-          onAdd={ onAdd }
-          style={ defaultMentionStyle }
-        />
+        <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>
     </div>
   )

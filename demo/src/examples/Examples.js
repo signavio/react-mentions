@@ -6,7 +6,7 @@ import MultipleTrigger from './MultipleTrigger'
 import SingleLine from './SingleLine'
 import Advanced from './Advanced'
 import CssModules from './CssModules'
-import AsyncHashtags from './AsyncHashtags'
+import AsyncGithubUserMentions from './AsyncGithubUserMentions'
 
 const users = [
   {
@@ -47,7 +47,7 @@ export default function Examples() {
         <SingleLine data={users} />
         <Advanced data={users} />
         <CssModules data={users} />
-        <AsyncHashtags data={users} />
+        <AsyncGithubUserMentions data={users} />
       </div>
     </EnhancerProvider>
   )

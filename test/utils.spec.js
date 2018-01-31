@@ -1,10 +1,5 @@
-var chai = require('chai')
-var sinon = require('sinon')
-var sinonChai = require('sinon-chai')
-var expect = chai.expect
-chai.use(sinonChai)
-
-var utils = require('../src/utils')
+import expect from 'expect'
+import * as utils from '../src/utils'
 
 describe('utils', function() {
   var defaultMarkup = '@[__display__](__type__:__id__)'

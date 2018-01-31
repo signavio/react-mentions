@@ -1,9 +1,3 @@
-import React from 'react'
-import { expect } from 'chai'
-import { mount } from 'enzyme'
-
-import SuggestionsOverlay from '../src/SuggestionsOverlay'
-
 describe('SuggestionsOverlay', () => {
   it('should render a list of all passed suggestions.')
   it('should be possible to style the list.')

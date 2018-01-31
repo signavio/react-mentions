@@ -1,5 +1,5 @@
+import expect from 'expect'
 import React from 'react'
-import { expect } from 'chai'
 import { mount } from 'enzyme'
 
 import { MentionsInput, Mention } from '../src'

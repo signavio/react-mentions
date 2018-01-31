@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/signavio/react-mentions",
   "devDependencies": {
+    "enzyme": "^3.3.0",
     "nwb": "0.21.x",
     "prettier": "^1.10.2",
     "radium": "^0.21.2",

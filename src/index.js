@@ -1,2 +1,2 @@
-export MentionsInput from './MentionsInput'
-export Mention from './Mention'
+export { default as MentionsInput } from './MentionsInput'
+export { default as Mention } from './Mention'

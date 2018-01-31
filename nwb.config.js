@@ -7,4 +7,14 @@ module.exports = {
   karma: {
     browsers: ['ChromeHeadless'],
   },
+  webpack: {
+    rules: {
+      css: {
+        modules: true,
+      },
+    },
+  },
+  devServer: {
+    port: '3033',
+  },
 }

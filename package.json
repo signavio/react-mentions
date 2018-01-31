@@ -36,6 +36,7 @@
   "devDependencies": {
     "nwb": "0.21.x",
     "prettier": "^1.10.2",
+    "radium": "^0.21.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "recompose": "^0.26.0"

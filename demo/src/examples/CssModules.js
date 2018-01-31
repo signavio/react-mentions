@@ -6,7 +6,7 @@ import { MentionsInput, Mention } from '../../../src'
 
 import { provideExampleValue } from './higher-order'
 
-import classNames from 'style-loader!css-loader?modules!./example.module.css'
+import classNames from './example.module.css'
 
 function CssModules({ value, data, onChange }) {
   return (

@@ -10,7 +10,8 @@
     "umd"
   ],
   "scripts": {
-    "build": "nwb build-react-component",
+    "build": "nwb build-react-component --no-demo",
+    "build-demo": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo/src",

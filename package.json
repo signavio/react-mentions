@@ -15,6 +15,7 @@
     "clean": "nwb clean-module && nwb clean-demo",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo/src",
+    "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
     "start": "nwb serve-react-demo",
     "semantic-release": "semantic-release",
     "test": "nwb test-react",

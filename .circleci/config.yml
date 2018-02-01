@@ -75,7 +75,7 @@ jobs:
       - *restore_cache
       - add_ssh_keys:
           fingerprints:
-            - "df:4b:a9:b9:c8:f3:65:7d:1a:64:0f:f8:a8:93:28:81"
+            - "21:90:d1:2d:be:19:c0:20:da:80:8a:6f:78:78:1f:91"
       - run:
           name: Fix host authenticity for github.com
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts

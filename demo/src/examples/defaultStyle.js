@@ -1,4 +1,4 @@
-export default ({
+export default {
   control: {
     backgroundColor: '#fff',
 
@@ -64,4 +64,4 @@ export default ({
       },
     },
   },
-})
+}

@@ -14,16 +14,12 @@ function SingleLine({ value, data, onChange, onAdd }) {
 
       <MentionsInput
         singleLine
-        value={ value }
-        onChange={ onChange }
-        style={ defaultStyle }
+        value={value}
+        onChange={onChange}
+        style={defaultStyle}
         placeholder={"Mention people using '@'"}
       >
-        <Mention
-          data={ data }
-          onAdd={ onAdd }
-          style={ defaultMentionStyle }
-        />
+        <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>
     </div>
   )

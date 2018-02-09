@@ -2,7 +2,6 @@
   margin: 1em 0;
 }
 
-
 .mentions--singleLine .mentions__control {
   display: inline-block;
   width: 130px;
@@ -18,6 +17,7 @@
 
 .mentions--multiLine .mentions__control {
   font-family: monospace;
+  font-size: 14pt;
   border: 1px solid silver;
 }
 .mentions--multiLine .mentions__highlighter {
@@ -32,13 +32,13 @@
 
 .mentions__suggestions__list {
   background-color: white;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   font-size: 10pt;
 }
 
 .mentions__suggestions__item {
   padding: 5px 15px;
-  border-bottom: 1px solid rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .mentions__suggestions__item--focused {

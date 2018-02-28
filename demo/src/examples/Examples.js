@@ -7,6 +7,7 @@ import SingleLine from './SingleLine'
 import Advanced from './Advanced'
 import CssModules from './CssModules'
 import AsyncGithubUserMentions from './AsyncGithubUserMentions'
+import Scrollable from './Scrollable'
 
 const users = [
   {
@@ -45,6 +46,7 @@ export default function Examples() {
       <div>
         <MultipleTrigger data={users} />
         <SingleLine data={users} />
+        <Scrollable data={users} />
         <Advanced data={users} />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />

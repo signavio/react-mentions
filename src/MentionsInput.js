@@ -138,6 +138,7 @@ class MentionsInput extends React.Component {
           onBlur: this.handleBlur,
           onCompositionStart: this.handleCompositionStart,
           onCompositionEnd: this.handleCompositionEnd,
+          onScroll: this.handleScroll,
         }),
     }
   }
@@ -482,6 +483,13 @@ class MentionsInput extends React.Component {
 
   handleCompositionEnd = () => {
     isComposing = false
+  }
+
+  handleScroll = ev => {
+    let scrollPosition = ev.target.scrollTop
+
+    let highlighter = ReactDOM.findDOMNode(this.refs.highlighter)
+    highlighter.scrollTop = scrollPosition
   }
 
   componentDidMount() {

@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { merge } from 'lodash'
 import { Mention, MentionsInput } from '../../../src'
 
 import { provideExampleValue } from './higher-order'
@@ -8,16 +8,16 @@ import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
 function Scrollable({ value, data, onChange, onAdd }) {
-  let style = Object.assign({}, defaultStyle, {
-    highlighter: Object.assign({}, defaultStyle.highlighter, {
+  let style = merge({}, defaultStyle, {
+    highlighter: {
       overflow: 'auto',
       height: 70,
-    }),
+    },
 
-    input: Object.assign({}, defaultStyle.input, {
+    input: {
       overflow: 'auto',
       height: 70,
-    }),
+    },
   })
 
   return (

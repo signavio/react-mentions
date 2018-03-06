@@ -9,11 +9,6 @@ import defaultMentionStyle from './defaultMentionStyle'
 
 function Scrollable({ value, data, onChange, onAdd }) {
   let style = merge({}, defaultStyle, {
-    highlighter: {
-      overflow: 'auto',
-      height: 70,
-    },
-
     input: {
       overflow: 'auto',
       height: 70,

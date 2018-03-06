@@ -6,6 +6,10 @@ export default {
     fontWeight: 'normal',
   },
 
+  highlighter: {
+    overflow: 'hidden',
+  },
+
   input: {
     margin: 0,
   },

@@ -118,11 +118,10 @@ workflows:
       - publish-demo:
           requires:
             - install
-      # - release:
-      #     requires:
-      #       - lint
-      #       - flow
-      #       - test
-      #     filters:
-      #       branches:
-      #         only: master
+      - release:
+          requires:
+            - lint
+            - test
+          filters:
+            branches:
+              only: master

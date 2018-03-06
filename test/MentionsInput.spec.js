@@ -11,28 +11,37 @@ const data = [
 ]
 
 describe('MentionsInput', () => {
-  let node
+  let wrapper, host
 
   beforeEach(() => {
-    node = mount(
+    // I don't know where enzmye mounts this, but apparently it is somewhere
+    // where our input cannot have a `scollHeight`/`offsetHeight`. Therefore, some tests would fail.
+    // By manually creating a wrapper in the DOM, we can work around that
+    host = document.createElement('div')
+    document.body.appendChild(host)
+
+    wrapper = mount(
       <MentionsInput value="">
         <Mention trigger="@" data={data} />
-      </MentionsInput>
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
     )
   })
 
   it('should render a textarea by default.', () => {
-    expect(node.find('textarea').length).toEqual(1)
-    expect(node.find('input').length).toEqual(0)
+    expect(wrapper.find('textarea').length).toEqual(1)
+    expect(wrapper.find('input').length).toEqual(0)
   })
 
   it('should render a regular input when singleLine is set to true.', () => {
-    node.setProps({
+    wrapper.setProps({
       singleLine: true,
     })
 
-    expect(node.find('textarea').length).toEqual(0)
-    expect(node.find('input').length).toEqual(1)
+    expect(wrapper.find('textarea').length).toEqual(0)
+    expect(wrapper.find('input').length).toEqual(1)
   })
 
   it('should show a list of suggestions once the trigger key has been entered.')
@@ -51,7 +60,10 @@ describe('MentionsInput', () => {
           type="testchars"
           data={[{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]}
         />
-      </MentionsInput>
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
     )
 
     wrapper.find('textarea').simulate('focus')
@@ -62,6 +74,31 @@ describe('MentionsInput', () => {
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
     ).toEqual(4)
+  })
+
+  it('should scroll the highlighter in sync with the textarea', () => {
+    const wrapper = mount(
+      <MentionsInput
+        style={{
+          input: {
+            overflow: 'auto',
+            height: 40,
+          },
+        }}
+        className="mi"
+        value={
+          'multiple lines causing \n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n the textarea to scroll'
+        }
+      >
+        <Mention trigger="@" type="testentries" data={data} />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+    wrapper.find('textarea').getDOMNode().scrollTop = 23
+    wrapper.find('textarea').simulate('scroll', { deltaY: 23 })
+    expect(wrapper.find('.mi__highlighter').getDOMNode().scrollTop).toBe(23)
   })
 
   describe('_getTriggerRegex', () => {

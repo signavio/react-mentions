@@ -1,7 +1,7 @@
 # [React Mentions](http://signavio.github.io/react-mentions)
 
 [![CircleCI][build-badge]][build]
-[![Coveralls][coveralls-badge]][coveralls]
+[![codecov][codecov-badge]][codecov]
 [![npm package][npm-badge]][npm]
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -112,5 +112,5 @@ npm run pages-publish
 [build]: https://circleci.com/gh/signavio/react-mentions/tree/master
 [npm-badge]: https://img.shields.io/npm/v/react-mentions.png?style=flat-square
 [npm]: https://www.npmjs.org/package/react-mentions
-[coveralls-badge]: https://img.shields.io/coveralls/signavio/react-mentions/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/signavio/react-mentions
+[codecov-badge]: https://img.shields.io/codecov/c/github/signavio/react-mentions.svg
+[codecov]: https://codecov.io/gh/signavio/react-mentions

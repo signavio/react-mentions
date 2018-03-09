@@ -53,33 +53,35 @@ const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40 }
 
 let isComposing = false
 
+const propTypes = {
+  /**
+   * If set to `true` a regular text input element will be rendered
+   * instead of a textarea
+   */
+  singleLine: PropTypes.bool,
+
+  /**
+   * If set to `true` spaces will not interrupt matching suggestions
+   */
+  allowSpaceInQuery: PropTypes.bool,
+
+  markup: PropTypes.string,
+  value: PropTypes.string,
+
+  displayTransform: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onSelect: PropTypes.func,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+  ]).isRequired,
+}
+
 class MentionsInput extends React.Component {
-  static propTypes = {
-    /**
-     * If set to `true` a regular text input element will be rendered
-     * instead of a textarea
-     */
-    singleLine: PropTypes.bool,
-
-    /**
-     * If set to `true` spaces will not interrupt matching suggestions
-     */
-    allowSpaceInQuery: PropTypes.bool,
-
-    markup: PropTypes.string,
-    value: PropTypes.string,
-
-    displayTransform: PropTypes.func,
-    onKeyDown: PropTypes.func,
-    onSelect: PropTypes.func,
-    onBlur: PropTypes.func,
-    onChange: PropTypes.func,
-
-    children: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.arrayOf(PropTypes.element),
-    ]).isRequired,
-  }
+  static propTypes = propTypes
 
   static defaultProps = {
     markup: '@[__display__](__id__)',
@@ -122,7 +124,7 @@ class MentionsInput extends React.Component {
     let { readOnly, disabled, style } = this.props
 
     // pass all props that we don't use through to the input control
-    let props = omit(this.props, 'style', keys(MentionsInput.propTypes))
+    let props = omit(this.props, 'style', keys(propTypes))
 
     return {
       ...props,

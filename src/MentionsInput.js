@@ -523,10 +523,11 @@ class MentionsInput extends React.Component {
     // Invalidate previous queries. Async results for previous queries will be neglected.
     this._queryId++
     this.suggestions = {}
-    this.setState({
-      suggestions: {},
-    })
-
+    if(plainTextValue === ''){
+        this.setState({
+            suggestions: {},
+        })
+    }
     const value = this.props.value || ''
     const positionInValue = utils.mapPlainTextIndex(
       value,

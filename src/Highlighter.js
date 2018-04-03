@@ -50,15 +50,13 @@ class Highlighter extends Component {
   }
 
   notifyCaretPosition() {
-    let { caret } = this.refs
-
-    if (!caret) {
+    if (!this.caretRef) {
       return
     }
 
     let position = {
-      left: caret.offsetLeft,
-      top: caret.offsetTop,
+      left: this.caretRef.offsetLeft,
+      top: this.caretRef.offsetTop,
     }
 
     let { lastPosition } = this.state
@@ -229,7 +227,13 @@ class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span {...this.props.style('caret')} ref="caret" key="caret">
+      <span
+        {...this.props.style('caret')}
+        ref={el => {
+          this.caretRef = el
+        }}
+        key="caret"
+      >
         {children}
       </span>
     )

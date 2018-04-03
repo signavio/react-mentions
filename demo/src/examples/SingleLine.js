@@ -3,7 +3,6 @@ import React from 'react'
 import { Mention, MentionsInput } from '../../../src'
 
 import { provideExampleValue } from './higher-order'
-
 import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 

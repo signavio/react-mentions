@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, StrictMode } from 'react'
 import { render } from 'react-dom'
 
 import Examples from './examples'
@@ -17,7 +17,9 @@ class Demo extends Component {
           </a>{' '}
           (MIT license)
         </p>
-        <Examples />
+        <StrictMode>
+          <Examples />
+        </StrictMode>
       </div>
     )
   }

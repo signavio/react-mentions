@@ -2,16 +2,16 @@ import expect, { createSpy } from 'expect'
 import * as utils from '../src/utils'
 
 describe('utils', function() {
-  var defaultMarkup = '@[__display__](__type__:__id__)'
-  var value =
+  const defaultMarkup = '@[__display__](__type__:__id__)'
+  const value =
     "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) to this conversation..."
-  var plainText =
+  const plainText =
     "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation..."
 
-  var displayTransform = function(id) {
+  const displayTransform = function(id) {
     return '<--' + id + '-->'
   }
-  var plainTextDisplayTransform =
+  const plainTextDisplayTransform =
     "Hi <--johndoe-->, \n\nlet's add <--joe@smoe.com--> to this conversation..."
 
   describe('#spliceString', function() {
@@ -21,7 +21,7 @@ describe('utils', function() {
   })
 
   describe('#getPositionOfCapturingGroup', function() {
-    var testData = {
+    const testData = {
       '@[__display__](__id__)': { display: 0, id: 1, type: null },
       '@[__display__](__type__:__id__)': { display: 0, id: 2, type: 1 },
       '@(__type__:__id__)': { display: 1, id: 1, type: 0 },
@@ -31,8 +31,8 @@ describe('utils', function() {
     }
 
     Object.keys(testData).forEach(key => {
-      var markup = key
-      var positions = testData[key]
+      const markup = key
+      const positions = testData[key]
 
       it(
         'should return ' +
@@ -77,7 +77,7 @@ describe('utils', function() {
 
   describe('#iterateMentionsMarkup', function() {
     it('should call the `markupIteratee` for every markup occurrence', function() {
-      var markupIteratee = createSpy()
+      const markupIteratee = createSpy()
       utils.iterateMentionsMarkup(
         value,
         defaultMarkup,
@@ -108,7 +108,7 @@ describe('utils', function() {
     })
 
     it('should call the `textIteratee` for all plain text sub string between markups', function() {
-      var textIteratee = createSpy()
+      const textIteratee = createSpy()
       utils.iterateMentionsMarkup(
         value,
         defaultMarkup,
@@ -131,7 +131,7 @@ describe('utils', function() {
     })
 
     it('should call the `markupIteratee` for every markup occurrence with display transform', function() {
-      var markupIteratee = createSpy()
+      const markupIteratee = createSpy()
       utils.iterateMentionsMarkup(
         value,
         defaultMarkup,
@@ -163,7 +163,7 @@ describe('utils', function() {
     })
 
     it('should call the `textIteratee` for all plain text sub string between markups with display transform', function() {
-      var textIteratee = createSpy()
+      const textIteratee = createSpy()
       utils.iterateMentionsMarkup(
         value,
         defaultMarkup,
@@ -189,14 +189,18 @@ describe('utils', function() {
 
   describe('#mapPlainTextIndex', function() {
     it('should correctly calculate the index of a character in the plain text between mentions', function() {
-      var plainTextIndex = plainText.indexOf("let's add")
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
+      const plainTextIndex = plainText.indexOf("let's add")
+      const result = utils.mapPlainTextIndex(
+        value,
+        defaultMarkup,
+        plainTextIndex
+      )
       expect(result).toEqual(value.indexOf("let's add"))
     })
 
     it('should correctly calculate the index of a character in the plain text between mentions with display tranform', function() {
-      var plainTextIndex = plainTextDisplayTransform.indexOf("let's add")
-      var result = utils.mapPlainTextIndex(
+      const plainTextIndex = plainTextDisplayTransform.indexOf("let's add")
+      const result = utils.mapPlainTextIndex(
         value,
         defaultMarkup,
         plainTextIndex,
@@ -207,35 +211,43 @@ describe('utils', function() {
     })
 
     it('should correctly calculate the indices of the character in the plain text before the first mention', function() {
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, 2)
+      const result = utils.mapPlainTextIndex(value, defaultMarkup, 2)
       expect(result).toEqual(2)
     })
 
     it('should correctly calculate the index of a character in the plain text after the last mention', function() {
-      var plainTextIndex = plainText.indexOf('...')
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
+      const plainTextIndex = plainText.indexOf('...')
+      const result = utils.mapPlainTextIndex(
+        value,
+        defaultMarkup,
+        plainTextIndex
+      )
       expect(result).toEqual(value.indexOf('...'))
     })
 
     it('should correctly calculate the index of the first plain text character after a mention', function() {
-      var plainTextIndex = plainText.indexOf(',') // first char after John Doe mention
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
+      const plainTextIndex = plainText.indexOf(',') // first char after John Doe mention
+      const result = utils.mapPlainTextIndex(
+        value,
+        defaultMarkup,
+        plainTextIndex
+      )
       expect(result).toEqual(value.indexOf(','))
     })
 
     it('should return the input index if there are no mentions', function() {
-      var result = utils.mapPlainTextIndex(plainText, defaultMarkup, 10)
+      const result = utils.mapPlainTextIndex(plainText, defaultMarkup, 10)
       expect(result).toEqual(10)
     })
 
     it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention", function() {
       // index for first char of markup
-      var plainTextIndex = plainText.indexOf('John Doe')
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
+      let plainTextIndex = plainText.indexOf('John Doe')
+      let result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
       expect(result).toEqual(value.indexOf('@[John Doe](user:johndoe)'))
 
       // index of char inside the markup
-      var joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
+      const joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
       plainTextIndex = plainText.indexOf('joe@smoe.com') + 3
       result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
       expect(result).toEqual(value.indexOf(joeMarkup))
@@ -249,8 +261,8 @@ describe('utils', function() {
 
     it("should return the index of the corresponding markup's last character if the plain text index lies inside a mention and the `inMarkupCorrection` is set to 'END'", function() {
       // index for first char of markup
-      var plainTextIndex = plainText.indexOf('John Doe')
-      var result = utils.mapPlainTextIndex(
+      let plainTextIndex = plainText.indexOf('John Doe')
+      let result = utils.mapPlainTextIndex(
         value,
         defaultMarkup,
         plainTextIndex,
@@ -259,7 +271,7 @@ describe('utils', function() {
       expect(result).toEqual(value.indexOf('@[John Doe](user:johndoe)'))
 
       // index of char inside the markup
-      var joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
+      const joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
       plainTextIndex = plainText.indexOf('joe@smoe.com') + 3
       result = utils.mapPlainTextIndex(
         value,
@@ -283,8 +295,8 @@ describe('utils', function() {
 
     it("should return `null` if `inMarkupCorrection` is set to 'NULL'", function() {
       // index of char inside the markup
-      var plainTextIndex = plainText.indexOf('joe@smoe.com') + 3
-      var result = utils.mapPlainTextIndex(
+      const plainTextIndex = plainText.indexOf('joe@smoe.com') + 3
+      const result = utils.mapPlainTextIndex(
         value,
         defaultMarkup,
         plainTextIndex,
@@ -295,16 +307,21 @@ describe('utils', function() {
 
     it("should return the index of the corresponding markup's first character if the plain text index lies inside a mention with display transform", function() {
       // index of char inside the markup
-      var joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
-      var plainTextIndex = plainTextDisplayTransform.indexOf('joe@smoe.com') + 3
-      var result = utils.mapPlainTextIndex(value, defaultMarkup, plainTextIndex)
+      const joeMarkup = '@[joe@smoe.com](email:joe@smoe.com)'
+      const plainTextIndex =
+        plainTextDisplayTransform.indexOf('joe@smoe.com') + 3
+      const result = utils.mapPlainTextIndex(
+        value,
+        defaultMarkup,
+        plainTextIndex
+      )
       expect(result).toEqual(value.indexOf(joeMarkup))
     })
 
     it('should return the correctly mapped caret position at the end of the string after a mention', function() {
-      var value = 'Hi @[John Doe](user:johndoe)'
-      var plainText = 'Hi John Doe'
-      var result = utils.mapPlainTextIndex(
+      const value = 'Hi @[John Doe](user:johndoe)'
+      const plainText = 'Hi John Doe'
+      const result = utils.mapPlainTextIndex(
         value,
         defaultMarkup,
         plainText.length,
@@ -316,7 +333,7 @@ describe('utils', function() {
 
   describe('#findStartOfMentionInPlainText', function() {
     it("should return the index of the mention's first char in the plain text if the passed index lies inside a mention", function() {
-      var result = utils.findStartOfMentionInPlainText(
+      const result = utils.findStartOfMentionInPlainText(
         value,
         defaultMarkup,
         plainText.indexOf('Doe')
@@ -325,7 +342,7 @@ describe('utils', function() {
     })
 
     it('should return `undefined`, if it does not lie inside a mention', function() {
-      var result = utils.findStartOfMentionInPlainText(
+      const result = utils.findStartOfMentionInPlainText(
         value,
         defaultMarkup,
         plainText.indexOf('add')
@@ -334,7 +351,7 @@ describe('utils', function() {
     })
 
     it("should return the index of the mention's first char if that one is the probe value", function() {
-      var result = utils.findStartOfMentionInPlainText(
+      const result = utils.findStartOfMentionInPlainText(
         value,
         defaultMarkup,
         plainText.indexOf('John')
@@ -345,8 +362,8 @@ describe('utils', function() {
 
   describe('#applyChangeToValue', function() {
     it('should correctly add a character at the end, beginning, and in the middle of text', function() {
-      var changed = 'S' + plainText
-      var result = utils.applyChangeToValue(
+      let changed = 'S' + plainText
+      let result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -384,9 +401,9 @@ describe('utils', function() {
 
     it('should correctly delete single characters and ranges of selected text', function() {
       // delete "i"
-      var changed =
+      let changed =
         "H John Doe, \n\nlet's add joe@smoe.com to this conversation..."
-      var result = utils.applyChangeToValue(
+      let result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -415,8 +432,8 @@ describe('utils', function() {
 
     it('should correctly add ranges of pasted text and replace the selected range with the new range', function() {
       // add range
-      var changed = plainText.replace('add', 'add add')
-      var result = utils.applyChangeToValue(
+      let changed = plainText.replace('add', 'add add')
+      let result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -441,9 +458,9 @@ describe('utils', function() {
 
     it('should remove mentions markup contained in deleted text ranges', function() {
       // delete without a range selection
-      var changed =
+      let changed =
         "Hi John Do, \n\nlet's add joe@smoe.com to this conversation..."
-      var result = utils.applyChangeToValue(
+      let result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -479,10 +496,10 @@ describe('utils', function() {
     })
 
     it('should correctly add a new character after a mention at the end of the string', function() {
-      var value = 'Hi @[John Doe](user:johndoe)'
-      var changed = 'Hi John Doe,'
+      const value = 'Hi @[John Doe](user:johndoe)'
+      const changed = 'Hi John Doe,'
 
-      var result = utils.applyChangeToValue(
+      const result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -494,9 +511,9 @@ describe('utils', function() {
     })
 
     it('should support deletion of whole words (Alt + Backspace) and whole lines (Cmd + Backspace)', function() {
-      var changed = plainText.replace('add', '')
+      const changed = plainText.replace('add', '')
 
-      var result = utils.applyChangeToValue(
+      const result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -510,9 +527,9 @@ describe('utils', function() {
     })
 
     it('should support deletion to the right using Del key', function() {
-      var changed = plainText.replace('add', 'dd')
+      const changed = plainText.replace('add', 'dd')
 
-      var result = utils.applyChangeToValue(
+      const result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -526,8 +543,8 @@ describe('utils', function() {
     })
 
     it('should support deletion to the right using Del key when using the displayTransform option', function() {
-      var changed = plainTextDisplayTransform.replace('add', 'dd')
-      var result = utils.applyChangeToValue(
+      const changed = plainTextDisplayTransform.replace('add', 'dd')
+      const result = utils.applyChangeToValue(
         value,
         defaultMarkup,
         changed,
@@ -542,7 +559,7 @@ describe('utils', function() {
     })
 
     it('should correctly handle text auto-correction', function() {
-      var result = utils.applyChangeToValue(
+      const result = utils.applyChangeToValue(
         'ill',
         defaultMarkup,
         "I'll",
@@ -556,7 +573,7 @@ describe('utils', function() {
 
   describe('#getMentions', function() {
     it('should return an array of all mentions in the provided value', function() {
-      var mentions = utils.getMentions(value, defaultMarkup)
+      const mentions = utils.getMentions(value, defaultMarkup)
       expect(mentions).toEqual([
         {
           id: 'johndoe',
@@ -576,7 +593,7 @@ describe('utils', function() {
     })
 
     it('should take into account the displayTransform if passed', function() {
-      var mentions = utils.getMentions(value, defaultMarkup, displayTransform)
+      const mentions = utils.getMentions(value, defaultMarkup, displayTransform)
       expect(mentions).toEqual([
         {
           id: 'johndoe',
@@ -598,12 +615,12 @@ describe('utils', function() {
 
   describe('#getEndOfLastMention', () => {
     it('should return the end index of the last mention in the plain text', () => {
-      var index = utils.getEndOfLastMention(value, defaultMarkup)
+      const index = utils.getEndOfLastMention(value, defaultMarkup)
       expect(index).toEqual(37)
     })
 
     it('should take into account the displayTransform', () => {
-      var index = utils.getEndOfLastMention(
+      const index = utils.getEndOfLastMention(
         value,
         defaultMarkup,
         displayTransform
@@ -612,7 +629,7 @@ describe('utils', function() {
     })
 
     it('should return 0 if there is no mention', () => {
-      var index = utils.getEndOfLastMention(
+      const index = utils.getEndOfLastMention(
         'No mentions to be found here',
         defaultMarkup
       )

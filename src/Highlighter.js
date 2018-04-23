@@ -2,8 +2,9 @@ import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 import isEqual from 'lodash/isEqual'
+import isNumber from 'lodash/isNumber'
 
-import utils from './utils'
+import { iterateMentionsMarkup, mapPlainTextIndex } from './utils'
 import Mention from './Mention'
 
 const _generateComponentKey = (usedKeys, id) => {
@@ -50,15 +51,13 @@ class Highlighter extends Component {
   }
 
   notifyCaretPosition() {
-    let { caret } = this.refs
-
-    if (!caret) {
+    if (!this.caretRef) {
       return
     }
 
     let position = {
-      left: caret.offsetLeft,
-      top: caret.offsetTop,
+      left: this.caretRef.offsetLeft,
+      top: this.caretRef.offsetTop,
     }
 
     let { lastPosition } = this.state
@@ -85,9 +84,9 @@ class Highlighter extends Component {
     } = this.props
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
-    var caretPositionInMarkup
+    let caretPositionInMarkup
     if (selection.start === selection.end) {
-      caretPositionInMarkup = utils.mapPlainTextIndex(
+      caretPositionInMarkup = mapPlainTextIndex(
         value,
         markup,
         selection.start,
@@ -96,23 +95,23 @@ class Highlighter extends Component {
       )
     }
 
-    var resultComponents = []
-    var componentKeys = {}
+    const resultComponents = []
+    const componentKeys = {}
 
     // start by appending directly to the resultComponents
-    var components = resultComponents
+    let components = resultComponents
 
-    var substringComponentKey = 0
+    let substringComponentKey = 0
 
-    var textIteratee = (substr, index, indexInPlainText) => {
+    const textIteratee = (substr, index, indexInPlainText) => {
       // check whether the caret element has to be inserted inside the current plain substring
       if (
-        utils.isNumber(caretPositionInMarkup) &&
+        isNumber(caretPositionInMarkup) &&
         caretPositionInMarkup >= index &&
         caretPositionInMarkup <= index + substr.length
       ) {
         // if yes, split substr at the caret position and insert the caret component
-        var splitIndex = caretPositionInMarkup - index
+        const splitIndex = caretPositionInMarkup - index
         components.push(
           this.renderSubstring(
             substr.substring(0, splitIndex),
@@ -135,7 +134,7 @@ class Highlighter extends Component {
       substringComponentKey++
     }
 
-    var mentionIteratee = function(
+    const mentionIteratee = (
       markup,
       index,
       indexInPlainText,
@@ -143,12 +142,13 @@ class Highlighter extends Component {
       display,
       type,
       lastMentionEndIndex
-    ) {
+    ) => {
       // generate a component key based on the id
-      var key = _generateComponentKey(componentKeys, id)
+      const key = _generateComponentKey(componentKeys, id)
       components.push(this.getMentionComponentForMatch(id, display, type, key))
-    }.bind(this)
-    utils.iterateMentionsMarkup(
+    }
+
+    iterateMentionsMarkup(
       value,
       markup,
       textIteratee,
@@ -188,8 +188,8 @@ class Highlighter extends Component {
 
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
   getMentionComponentForMatch(id, display, type, key) {
-    var childrenCount = Children.count(this.props.children)
-    var props = { id, display, key }
+    const childrenCount = Children.count(this.props.children)
+    const props = { id, display, key }
 
     if (childrenCount > 1) {
       if (!type) {
@@ -199,7 +199,7 @@ class Highlighter extends Component {
       }
 
       // detect the Mention child to be cloned
-      var foundChild = null
+      let foundChild = null
       Children.forEach(this.props.children, child => {
         if (!child) {
           return
@@ -216,7 +216,7 @@ class Highlighter extends Component {
 
     if (childrenCount === 1) {
       // clone single Mention child
-      var child = this.props.children.length
+      const child = this.props.children.length
         ? this.props.children[0]
         : Children.only(this.props.children)
       return React.cloneElement(child, props)
@@ -229,7 +229,13 @@ class Highlighter extends Component {
   // Renders an component to be inserted in the highlighter at the current caret position
   renderHighlighterCaret(children) {
     return (
-      <span {...this.props.style('caret')} ref="caret" key="caret">
+      <span
+        {...this.props.style('caret')}
+        ref={el => {
+          this.caretRef = el
+        }}
+        key="caret"
+      >
         {children}
       </span>
     )

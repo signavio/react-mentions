@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 
-import utils from './utils'
-
+import { countSuggestions, getSuggestions } from './utils'
 import Suggestion from './Suggestion'
 import LoadingIndicator from './LoadingIndicator'
 
@@ -22,27 +21,26 @@ class SuggestionsOverlay extends Component {
   }
 
   componentDidUpdate() {
-    const { suggestions } = this.refs
     if (
-      !suggestions ||
-      suggestions.offsetHeight >= suggestions.scrollHeight ||
+      !this.suggestionsRef ||
+      this.suggestionsRef.offsetHeight >= this.suggestionsRef.scrollHeight ||
       !this.props.scrollFocusedIntoView
     ) {
       return
     }
 
-    const scrollTop = suggestions.scrollTop
-    let { top, bottom } = suggestions.children[
+    const scrollTop = this.suggestionsRef.scrollTop
+    let { top, bottom } = this.suggestionsRef.children[
       this.props.focusIndex
     ].getBoundingClientRect()
-    const { top: topContainer } = suggestions.getBoundingClientRect()
+    const { top: topContainer } = this.suggestionsRef.getBoundingClientRect()
     top = top - topContainer + scrollTop
     bottom = bottom - topContainer + scrollTop
 
     if (top < scrollTop) {
-      suggestions.scrollTop = top
-    } else if (bottom > suggestions.offsetHeight) {
-      suggestions.scrollTop = bottom - suggestions.offsetHeight
+      this.suggestionsRef.scrollTop = top
+    } else if (bottom > this.suggestionsRef.offsetHeight) {
+      this.suggestionsRef.scrollTop = bottom - this.suggestionsRef.offsetHeight
     }
   }
 
@@ -50,13 +48,18 @@ class SuggestionsOverlay extends Component {
     const { suggestions, isLoading, style, onMouseDown } = this.props
 
     // do not show suggestions until there is some data
-    if (utils.countSuggestions(suggestions) === 0 && !isLoading) {
+    if (countSuggestions(suggestions) === 0 && !isLoading) {
       return null
     }
 
     return (
       <div {...style} onMouseDown={onMouseDown}>
-        <ul ref="suggestions" {...style('list')}>
+        <ul
+          ref={el => {
+            this.suggestionsRef = el
+          }}
+          {...style('list')}
+        >
           {this.renderSuggestions()}
         </ul>
 
@@ -66,18 +69,16 @@ class SuggestionsOverlay extends Component {
   }
 
   renderSuggestions() {
-    return utils
-      .getSuggestions(this.props.suggestions)
-      .reduce(
-        (result, { suggestions, descriptor }) => [
-          ...result,
+    return getSuggestions(this.props.suggestions).reduce(
+      (result, { suggestions, descriptor }) => [
+        ...result,
 
-          ...suggestions.map((suggestion, index) =>
-            this.renderSuggestion(suggestion, descriptor, result.length + index)
-          ),
-        ],
-        []
-      )
+        ...suggestions.map((suggestion, index) =>
+          this.renderSuggestion(suggestion, descriptor, result.length + index)
+        ),
+      ],
+      []
+    )
   }
 
   renderSuggestion(suggestion, descriptor, index) {
@@ -91,7 +92,6 @@ class SuggestionsOverlay extends Component {
         style={this.props.style('item')}
         key={id}
         id={id}
-        ref={isFocused ? 'focused' : null}
         query={query}
         index={index}
         descriptor={mentionDescriptor}

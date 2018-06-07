@@ -1,7 +1,7 @@
-.grunt
-node_modules/
-gh-pages/lib
-gh-pages/css
-react-mentions.sublime-workspace
-coverage/
-results/
+/coverage
+/demo/dist
+/es
+/lib
+/node_modules
+/umd
+npm-debug.log*

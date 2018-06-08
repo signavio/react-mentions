@@ -81,6 +81,7 @@ class Highlighter extends Component {
       displayTransform,
       style,
       inputStyle,
+      regex
     } = this.props
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
@@ -91,7 +92,8 @@ class Highlighter extends Component {
         markup,
         selection.start,
         'START',
-        displayTransform
+        displayTransform,
+        regex
       )
     }
 
@@ -153,7 +155,8 @@ class Highlighter extends Component {
       markup,
       textIteratee,
       mentionIteratee,
-      displayTransform
+      displayTransform,
+      regex
     )
 
     // append a span containing a space, to ensure the last text line has the correct height

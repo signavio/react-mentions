@@ -15,15 +15,17 @@ const numericComparator = function(a, b) {
 
 export const escapeRegex = str => str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 
-const markupToRegex = (markup, matchAtEnd) => {
+
+const countCapturingGroups = regex => {
+  return (new RegExp(regex.toString() + '|')).exec('').length - 1
+}
+
+const markupToRegex = (markup) => {
   let markupPattern = escapeRegex(markup)
   markupPattern = markupPattern.replace(PLACEHOLDERS.display, '(.+?)')
   markupPattern = markupPattern.replace(PLACEHOLDERS.id, '(.+?)')
   markupPattern = markupPattern.replace(PLACEHOLDERS.type, '(.+?)')
-  if (matchAtEnd) {
-    // append a $ to match at the end of the string
-    markupPattern = markupPattern + '$'
-  }
+
   return new RegExp(markupPattern, 'g')
 }
 
@@ -34,7 +36,7 @@ export const spliceString = (str, start, end, insert) =>
  * parameterName: "id", "display", or "type"
  * TODO: This is currently only exported for testing
  */
-export const getPositionOfCapturingGroup = (markup, parameterName) => {
+export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
   if (
     parameterName !== 'id' &&
     parameterName !== 'display' &&
@@ -77,10 +79,17 @@ export const getPositionOfCapturingGroup = (markup, parameterName) => {
   if (indexDisplay === null) indexDisplay = indexId
   if (indexId === null) indexId = indexDisplay
 
-  if (parameterName === 'id') return sortedIndices.indexOf(indexId)
-  if (parameterName === 'display') return sortedIndices.indexOf(indexDisplay)
-  if (parameterName === 'type')
-    return indexType === null ? null : sortedIndices.indexOf(indexType)
+
+  if(regex && this.countCapturingGroups(regex) === 0) {
+    // custom regex does not use any capturing groups, so use the full match for ID and display
+    return parameterName === "type" ? null : 0;
+  }
+
+  let argOffset = 1; // first argument always is the full match
+  if(parameterName === "id") return sortedIndices.indexOf(indexId) + argOffset;
+  if(parameterName === "display") return sortedIndices.indexOf(indexDisplay) + argOffset;
+  if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType) + argOffset;
+
 }
 
 // Finds all occurences of the markup in the value and iterates the plain text sub strings
@@ -91,12 +100,13 @@ export const iterateMentionsMarkup = (
   markup,
   textIteratee,
   markupIteratee,
-  displayTransform
+  displayTransform,
+  regex
 ) => {
-  let regex = markupToRegex(markup)
-  let displayPos = getPositionOfCapturingGroup(markup, 'display')
-  let idPos = getPositionOfCapturingGroup(markup, 'id')
-  let typePos = getPositionOfCapturingGroup(markup, 'type')
+  regex = regex || markupToRegex(markup)
+  let displayPos = getPositionOfCapturingGroup(markup, 'display', regex)
+  let idPos = getPositionOfCapturingGroup(markup, 'id', regex)
+  let typePos = getPositionOfCapturingGroup(markup, 'type', regex)
 
   let match
   let start = 0
@@ -104,9 +114,10 @@ export const iterateMentionsMarkup = (
 
   // detect all mention markup occurences in the value and iterate the matches
   while ((match = regex.exec(value)) !== null) {
-    let id = match[idPos + 1]
-    let display = match[displayPos + 1]
-    let type = typePos !== null ? match[typePos + 1] : null
+
+    let id = match[idPos]
+    let display = match[displayPos]
+    let type = typePos ? match[typePos] : null
 
     if (displayTransform) display = displayTransform(id, display, type)
 
@@ -203,7 +214,8 @@ export const findStartOfMentionInPlainText = (
   value,
   markup,
   indexInPlainText,
-  displayTransform
+  displayTransform,
+  regex
 ) => {
   let result = indexInPlainText
   let foundMention = false
@@ -230,7 +242,8 @@ export const findStartOfMentionInPlainText = (
     markup,
     function() {},
     markupIteratee,
-    displayTransform
+    displayTransform,
+    regex
   )
 
   if (foundMention) {
@@ -247,9 +260,10 @@ export const applyChangeToValue = (
   selectionStartBeforeChange,
   selectionEndBeforeChange,
   selectionEndAfterChange,
-  displayTransform
+  displayTransform,
+  regex
 ) => {
-  let oldPlainTextValue = getPlainText(value, markup, displayTransform)
+  let oldPlainTextValue = getPlainText(value, markup, displayTransform, regex)
 
   let lengthDelta = oldPlainTextValue.length - plainTextValue.length
   if (selectionStartBeforeChange === 'undefined') {
@@ -295,14 +309,16 @@ export const applyChangeToValue = (
     markup,
     spliceStart,
     'START',
-    displayTransform
+    displayTransform,
+    regex
   )
   let mappedSpliceEnd = mapPlainTextIndex(
     value,
     markup,
     spliceEnd,
     'END',
-    displayTransform
+    displayTransform,
+    regex
   )
 
   let controlSpliceStart = mapPlainTextIndex(
@@ -310,14 +326,16 @@ export const applyChangeToValue = (
     markup,
     spliceStart,
     'NULL',
-    displayTransform
+    displayTransform,
+    regex
   )
   let controlSpliceEnd = mapPlainTextIndex(
     value,
     markup,
     spliceEnd,
     'NULL',
-    displayTransform
+    displayTransform,
+    regex
   )
   let willRemoveMention =
     controlSpliceStart === null || controlSpliceEnd === null
@@ -326,7 +344,7 @@ export const applyChangeToValue = (
 
   if (!willRemoveMention) {
     // test for auto-completion changes
-    let controlPlainTextValue = getPlainText(newValue, markup, displayTransform)
+    let controlPlainTextValue = getPlainText(newValue, markup, displayTransform, regex)
     if (controlPlainTextValue !== plainTextValue) {
       // some auto-correction is going on
 
@@ -349,14 +367,16 @@ export const applyChangeToValue = (
         markup,
         spliceStart,
         'START',
-        displayTransform
+        displayTransform,
+        regex
       )
       mappedSpliceEnd = mapPlainTextIndex(
         value,
         markup,
         spliceEnd,
         'END',
-        displayTransform
+        displayTransform,
+        regex
       )
       newValue = spliceString(value, mappedSpliceStart, mappedSpliceEnd, insert)
     }
@@ -365,22 +385,22 @@ export const applyChangeToValue = (
   return newValue
 }
 
-export const getPlainText = (value, markup, displayTransform) => {
-  let regex = markupToRegex(markup)
-  let idPos = getPositionOfCapturingGroup(markup, 'id')
-  let displayPos = getPositionOfCapturingGroup(markup, 'display')
-  let typePos = getPositionOfCapturingGroup(markup, 'type')
+export const getPlainText = (value, markup, displayTransform, regex) => {
+  regex = regex || markupToRegex(markup)
+  let idPos = getPositionOfCapturingGroup(markup, 'id', regex)
+  let displayPos = getPositionOfCapturingGroup(markup, 'display', regex)
+  let typePos = getPositionOfCapturingGroup(markup, 'type', regex)
   return value.replace(regex, function() {
     // first argument is the whole match, capturing groups are following
-    let id = arguments[idPos + 1]
-    let display = arguments[displayPos + 1]
-    let type = arguments[typePos + 1]
+    let id = arguments[idPos]
+    let display = arguments[displayPos]
+    let type = arguments[typePos]
     if (displayTransform) display = displayTransform(id, display, type)
     return display
   })
 }
 
-export const getMentions = (value, markup, displayTransform) => {
+export const getMentions = (value, markup, displayTransform, regex) => {
   let mentions = []
   iterateMentionsMarkup(
     value,
@@ -395,13 +415,14 @@ export const getMentions = (value, markup, displayTransform) => {
         plainTextIndex: plainTextIndex,
       })
     },
-    displayTransform
+    displayTransform,
+    regex
   )
   return mentions
 }
 
-export const getEndOfLastMention = (value, markup, displayTransform) => {
-  const mentions = getMentions(value, markup, displayTransform)
+export const getEndOfLastMention = (value, markup, displayTransform, regex) => {
+  const mentions = getMentions(value, markup, displayTransform, regex)
   const lastMention = mentions[mentions.length - 1]
   return lastMention
     ? lastMention.plainTextIndex + lastMention.display.length

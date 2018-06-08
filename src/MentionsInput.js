@@ -237,6 +237,7 @@ class MentionsInput extends React.Component {
       children,
       value,
       style,
+      regex,
     } = this.props
 
     return (
@@ -257,6 +258,7 @@ class MentionsInput extends React.Component {
         onCaretPositionChange={position =>
           this.setState({ caretPosition: position })
         }
+        regex={regex}
       >
         {children}
       </Highlighter>
@@ -268,7 +270,8 @@ class MentionsInput extends React.Component {
     return getPlainText(
       this.props.value || '',
       this.props.markup,
-      this.props.displayTransform
+      this.props.displayTransform,
+      this.props.regex
     )
   }
 
@@ -294,7 +297,7 @@ class MentionsInput extends React.Component {
     }
 
     const value = this.props.value || ''
-    const { markup, displayTransform } = this.props
+    const { markup, displayTransform, regex } = this.props
 
     let newPlainTextValue = ev.target.value
 
@@ -306,11 +309,12 @@ class MentionsInput extends React.Component {
       this.state.selectionStart,
       this.state.selectionEnd,
       ev.target.selectionEnd,
-      displayTransform
+      displayTransform,
+      regex
     )
 
     // In case a mention is deleted, also adjust the new plain text value
-    newPlainTextValue = getPlainText(newValue, markup, displayTransform)
+    newPlainTextValue = getPlainText(newValue, markup, displayTransform, regex)
 
     // Save current selection after change to be able to restore caret position after rerendering
     let selectionStart = ev.target.selectionStart
@@ -323,7 +327,8 @@ class MentionsInput extends React.Component {
       value,
       markup,
       selectionStart,
-      displayTransform
+      displayTransform,
+      regex
     )
 
     if (
@@ -342,7 +347,7 @@ class MentionsInput extends React.Component {
       setSelectionAfterMentionChange: setSelectionAfterMentionChange,
     })
 
-    let mentions = getMentions(newValue, markup, displayTransform)
+    let mentions = getMentions(newValue, markup, displayTransform, regex)
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;
@@ -558,13 +563,14 @@ class MentionsInput extends React.Component {
     })
 
     const value = this.props.value || ''
-    const { markup, displayTransform, children } = this.props
+    const { markup, displayTransform, children, regex } = this.props
     const positionInValue = mapPlainTextIndex(
       value,
       markup,
       caretPosition,
       'NULL',
-      displayTransform
+      displayTransform,
+      regex
     )
 
     // If caret is inside of mention, do not query
@@ -576,7 +582,8 @@ class MentionsInput extends React.Component {
     const substringStartIndex = getEndOfLastMention(
       value.substring(0, positionInValue),
       markup,
-      displayTransform
+      displayTransform,
+      regex
     )
     const substring = plainTextValue.substring(
       substringStartIndex,
@@ -692,13 +699,14 @@ class MentionsInput extends React.Component {
   ) => {
     // Insert mention in the marked up value at the correct position
     const value = this.props.value || ''
-    const { markup, displayTransform } = this.props
+    const { markup, displayTransform, regex} = this.props
     const start = mapPlainTextIndex(
       value,
       markup,
       querySequenceStart,
       'START',
-      displayTransform
+      displayTransform,
+      regex
     )
     const end = start + querySequenceEnd - querySequenceStart
     let insert = makeMentionsMarkup(
@@ -732,7 +740,7 @@ class MentionsInput extends React.Component {
 
     // Propagate change
     const eventMock = { target: { value: newValue } }
-    const mentions = getMentions(newValue, markup, displayTransform)
+    const mentions = getMentions(newValue, markup, displayTransform, regex)
     const newPlainTextValue = spliceString(
       plainTextValue,
       querySequenceStart,

@@ -224,7 +224,6 @@ class Highlighter extends Component {
         : Children.only(this.props.children)
       return React.cloneElement(child, props)
     }
-
     // no children, use default configuration
     return Mention(props)
   }

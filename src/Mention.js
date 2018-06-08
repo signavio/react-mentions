@@ -6,9 +6,12 @@ const styled = defaultStyle({
   fontWeight: 'inherit',
 })
 
-const Mention = styled(({ display, style }) => (
-  <strong {...style}>{display}</strong>
-))
+class Mention extends React.Component {
+  render() {
+    let { display, style } = this.props
+    return <strong {...style}>{display}</strong>
+  }
+}
 
 Mention.propTypes = {
   /**
@@ -45,4 +48,4 @@ Mention.defaultProps = {
   appendSpaceOnAdd: false,
 }
 
-export default Mention
+export default styled(Mention)

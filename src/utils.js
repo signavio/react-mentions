@@ -80,7 +80,7 @@ export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
   if (indexId === null) indexId = indexDisplay
 
 
-  if(regex && this.countCapturingGroups(regex) === 0) {
+  if(regex && countCapturingGroups(regex) === 0) {
     // custom regex does not use any capturing groups, so use the full match for ID and display
     return parameterName === "type" ? null : 0;
   }
@@ -156,7 +156,8 @@ export const mapPlainTextIndex = (
   markup,
   indexInPlainText,
   inMarkupCorrection = 'START',
-  displayTransform
+  displayTransform,
+  regex
 ) => {
   if (!isNumber(indexInPlainText)) {
     return indexInPlainText
@@ -199,7 +200,8 @@ export const mapPlainTextIndex = (
     markup,
     textIteratee,
     markupIteratee,
-    displayTransform
+    displayTransform,
+    regex
   )
 
   // when a mention is at the end of the value and we want to get the caret position

@@ -699,7 +699,7 @@ class MentionsInput extends React.Component {
   ) => {
     // Insert mention in the marked up value at the correct position
     const value = this.props.value || ''
-    const { markup, displayTransform, regex} = this.props
+    const { markup, displayTransform, regex } = this.props
     const start = mapPlainTextIndex(
       value,
       markup,

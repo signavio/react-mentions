@@ -116,7 +116,7 @@ export const iterateMentionsMarkup = (
     // first argument is the whole match, capturing groups are following
     let id = match[idPos + 1]
     let display = match[displayPos + 1]
-    let type = typePos ? match[typePos + 1] : null
+    let type = typePos !== null ? match[typePos + 1] : null
 
     if (displayTransform) display = displayTransform(id, display, type)
 
@@ -395,7 +395,7 @@ export const getPlainText = (value, markup, displayTransform, regex) => {
     // first argument is the whole match, capturing groups are following
     let id = arguments[idPos + 1]
     let display = arguments[displayPos + 1]
-    let type = arguments[typePos + 1]
+    let type = typePos !== null ? arguments[typePos + 1] : null
     if (displayTransform) display = displayTransform(id, display, type)
     return display
   })

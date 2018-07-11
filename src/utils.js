@@ -85,10 +85,9 @@ export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
     return parameterName === "type" ? null : 0;
   }
 
-  let argOffset = 1; // first argument always is the full match
-  if(parameterName === "id") return sortedIndices.indexOf(indexId) + argOffset;
-  if(parameterName === "display") return sortedIndices.indexOf(indexDisplay) + argOffset;
-  if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType) + argOffset;
+  if(parameterName === "id") return sortedIndices.indexOf(indexId);
+  if(parameterName === "display") return sortedIndices.indexOf(indexDisplay);
+  if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
 
 }
 
@@ -114,10 +113,10 @@ export const iterateMentionsMarkup = (
 
   // detect all mention markup occurences in the value and iterate the matches
   while ((match = regex.exec(value)) !== null) {
-
-    let id = match[idPos]
-    let display = match[displayPos]
-    let type = typePos ? match[typePos] : null
+    // first argument is the whole match, capturing groups are following
+    let id = match[idPos + 1]
+    let display = match[displayPos + 1]
+    let type = typePos ? match[typePos + 1] : null
 
     if (displayTransform) display = displayTransform(id, display, type)
 
@@ -394,9 +393,9 @@ export const getPlainText = (value, markup, displayTransform, regex) => {
   let typePos = getPositionOfCapturingGroup(markup, 'type', regex)
   return value.replace(regex, function() {
     // first argument is the whole match, capturing groups are following
-    let id = arguments[idPos]
-    let display = arguments[displayPos]
-    let type = arguments[typePos]
+    let id = arguments[idPos + 1]
+    let display = arguments[displayPos + 1]
+    let type = arguments[typePos + 1]
     if (displayTransform) display = displayTransform(id, display, type)
     return display
   })

@@ -101,6 +101,30 @@ describe('MentionsInput', () => {
     expect(wrapper.find('.mi__highlighter').getDOMNode().scrollTop).toBe(23)
   })
 
+  it('should accept a custom regex attribute', () => {
+    const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
+    const wrapper = mount(
+      <MentionsInput
+        value=":aaaa and :bbbb and :invalidId"
+        markup=":__id__"
+        regex={/:(\S+)/g}
+        displayTransform={id => {
+          let mention = data.find(item => item.id === id)
+          return mention ? mention.display : `:${id}`
+        }}
+      >
+        <Mention trigger="@" data={data} />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+    wrapper.find('textarea').simulate('focus')
+    expect(wrapper.find('textarea').getDOMNode().value).toEqual(
+      '@A and @B and :invalidId'
+    )
+  })
+
   describe('_getTriggerRegex', () => {
     it('should return regular expressions', () => {
       const trigger = /abc/

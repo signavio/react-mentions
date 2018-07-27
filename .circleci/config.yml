@@ -28,12 +28,8 @@ jobs:
       - *restore_cache
       - run:
           name: Install Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          name: Save yarn cache
-          key: v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - .cache/yarn
+          command: yarn install
+
       - save_cache:
           name: Save node_modules cache
           key: v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -42,6 +38,7 @@ jobs:
       - run:
           name: Remove node_modules to cleanup workspace
           command: rm -r node_modules/
+
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -63,7 +60,7 @@ jobs:
       - *restore_cache
       - run:
           name: Test
-          command: yarn test:coverage
+          command: yarn test --coverage
       - run:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)

@@ -8247,9 +8247,9 @@ subarg@^1.0.0:
   dependencies:
     minimist "^1.1.0"
 
-substyle@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/substyle/-/substyle-6.1.1.tgz#6bf0a9514160aaf9dde69daa2c15dc6f4fe6a027"
+substyle@^6.1.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-6.2.1.tgz#5ac9d809dcddb0f9d287929e9dd46e6d596e31f3"
   dependencies:
     hoist-non-react-statics "^1.2.0"
     invariant "^2.2.0"

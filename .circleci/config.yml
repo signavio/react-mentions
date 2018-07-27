@@ -116,6 +116,7 @@ workflows:
           requires:
             - install
       - release:
+          context: NPM
           requires:
             - lint
             - test

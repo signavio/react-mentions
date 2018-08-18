@@ -86,6 +86,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  suggestionsPortalSelector: PropTypes.string,
 
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -205,7 +206,7 @@ class MentionsInput extends React.Component {
       // do not show suggestions when the input does not have the focus
       return null
     }
-    return (
+    const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
         position={this.state.suggestionsPosition}
@@ -226,6 +227,11 @@ class MentionsInput extends React.Component {
         isLoading={this.isLoading()}
       />
     )
+    if (this.state.suggestionsPortalNode) {
+      return ReactDOM.createPortal(suggestionsNode, this.state.suggestionsPortalNode)
+    } else {
+      return suggestionsNode
+    }
   }
 
   renderHighlighter = inputStyle => {
@@ -482,17 +488,41 @@ class MentionsInput extends React.Component {
       return
     }
 
-    let left = caretPosition.left - highlighter.scrollLeft
     let position = {}
 
-    // guard for mentions suggestions list clipped by right edge of window
-    if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
-      position.right = 0
+    // if suggestions menu is in a portal, update position to be releative to screen
+    if (this.state.suggestionsPortalNode) {
+      // first get viewport-relative position (highlighter is offsetParent of caret):
+      console.log('caretPosition:', caretPosition)
+      const caretOffsetParentRect = highlighter.getBoundingClientRect()
+      const viewportRelative = {
+        left: caretOffsetParentRect.left + caretPosition.left,
+        top: caretOffsetParentRect.top + caretPosition.top
+      }
+      console.log('viewport relative:', viewportRelative)
+      // translate viewportRelative => suggestionsParent relative
+      let suggestionsOffsetParentNode = suggestions.offsetParent
+      const suggestionsParentPos = suggestionsOffsetParentNode.getBoundingClientRect()
+      const left = viewportRelative.left - suggestionsParentPos.left
+      // guard for mentions suggestions list clipped by right edge of window
+      if (left + suggestions.offsetWidth > suggestionsOffsetParentNode.offsetWidth) {
+        position.right = 0
+      } else {
+        position.left = left + 8
+      }
+      position.top = viewportRelative.top - suggestionsParentPos.top + 8
+      // TODO: take into account scrollLeft and scrollTop (if input is scrolling)
+      console.log('portal parent relative:', position)
     } else {
-      position.left = left
+      let left = caretPosition.left - highlighter.scrollLeft
+      // guard for mentions suggestions list clipped by right edge of window
+      if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
+        position.right = 0
+      } else {
+        position.left = left
+      }
+      position.top = caretPosition.top - highlighter.scrollTop
     }
-
-    position.top = caretPosition.top - highlighter.scrollTop
 
     if (isEqual(position, this.state.suggestionsPosition)) {
       return
@@ -526,9 +556,10 @@ class MentionsInput extends React.Component {
 
   componentDidMount() {
     this.updateSuggestionsPosition()
+    this.resolvePortals();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.updateSuggestionsPosition()
 
     // maintain selection in case a mention is added/removed causing
@@ -537,6 +568,19 @@ class MentionsInput extends React.Component {
       this.setState({ setSelectionAfterMentionChange: false })
       this.setSelection(this.state.selectionStart, this.state.selectionEnd)
     }
+    if (prevProps.suggestionsPortalSelector !== this.props.suggestionsPortalSelector) {
+      this.resolvePortals();
+    }
+  }
+
+  resolvePortals = () => {
+    let suggestionsPortalNode = null;
+    if (typeof this.props.suggestionsPortalSelector === 'string') {
+      suggestionsPortalNode = document.querySelector(this.props.suggestionsPortalSelector)
+    }
+    this.setState({
+      suggestionsPortalNode,
+    })
   }
 
   setSelection = (selectionStart, selectionEnd) => {

@@ -493,13 +493,21 @@ class MentionsInput extends React.Component {
     // if suggestions menu is in a portal, update position to be releative to screen
     if (this.state.suggestionsPortalNode) {
       // first get viewport-relative position (highlighter is offsetParent of caret):
-      console.log('caretPosition:', caretPosition)
       const caretOffsetParentRect = highlighter.getBoundingClientRect()
-      const viewportRelative = {
-        left: caretOffsetParentRect.left + caretPosition.left,
-        top: caretOffsetParentRect.top + caretPosition.top
+      // note according to spec and testing, we should always be able to count on this coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
+      const caretOffsetParentPadding = {
+        left: parseFloat(window.getComputedStyle(highlighter, null).getPropertyValue("padding-left")),
+        top: parseFloat(window.getComputedStyle(highlighter, null).getPropertyValue("padding-top"))
       }
-      console.log('viewport relative:', viewportRelative)
+      /* caretHeight should really be based on the line-height but I don't see a way to compute that. The non-portal code path uses
+       * a default 14px margin on the suggestion to get to this so we grab that value here.
+       * This isn't accurately getting to the bottom of the caret for different font sizes, but it perfectly matches the non-portal code path.
+       */
+      const caretHeight = parseFloat(window.getComputedStyle(suggestions, null).getPropertyValue("margin-top"))
+      const viewportRelative = {
+        left: caretOffsetParentRect.left + caretPosition.left + caretOffsetParentPadding.left,
+        top: caretOffsetParentRect.top + caretPosition.top + caretOffsetParentPadding.top + caretHeight
+      }
       // translate viewportRelative => suggestionsParent relative
       let suggestionsOffsetParentNode = suggestions.offsetParent
       const suggestionsParentPos = suggestionsOffsetParentNode.getBoundingClientRect()
@@ -508,11 +516,12 @@ class MentionsInput extends React.Component {
       if (left + suggestions.offsetWidth > suggestionsOffsetParentNode.offsetWidth) {
         position.right = 0
       } else {
-        position.left = left + 8
+        position.left = left
       }
-      position.top = viewportRelative.top - suggestionsParentPos.top + 8
-      // TODO: take into account scrollLeft and scrollTop (if input is scrolling)
-      console.log('portal parent relative:', position)
+      position.top = viewportRelative.top - suggestionsParentPos.top
+      // take into account scrolling:
+      position.top -= highlighter.scrollTop
+      position.left -= highlighter.scrollLeft
     } else {
       let left = caretPosition.left - highlighter.scrollLeft
       // guard for mentions suggestions list clipped by right edge of window

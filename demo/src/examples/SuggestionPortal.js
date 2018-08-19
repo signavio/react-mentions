@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { merge } from 'lodash'
 import { Mention, MentionsInput } from '../../../src'
 
 import { provideExampleValue } from './higher-order'
@@ -7,12 +7,16 @@ import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
 function SuggestionPortal({ value, data, onChange, onAdd }) {
+  let scrollableStyle = merge({}, defaultStyle, {
+    input: {
+      overflow: 'auto',
+      height: 70,
+    },
+  })
   return (
     <div id="suggestionPortal"
       style={{
         height: "400px",
-        border: "1px dotted gray",
-        marginLeft: "60px"
       }}>
       <h3>Suggestion portal example</h3>
       <p>
@@ -20,7 +24,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
       </p>
       <div style={{
         position: "absolute",
-        height: "100px",
+        height: "150px",
         width: "400px",
         overflow: "auto",
         border: "1px solid green",
@@ -35,11 +39,24 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
         >
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>
+
+        <p>
+          The input below is also scrollable.
+        </p>
+        <MentionsInput
+          value={value}
+          onChange={onChange}
+          style={scrollableStyle}
+          placeholder={"Mention people using '@'"}
+          suggestionsPortalSelector={'#suggestionPortal'}
+        >
+          <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
+        </MentionsInput>
       </div>
     </div>
   )
 }
 
-const asExample = provideExampleValue('hi @')
+const asExample = provideExampleValue('')
 
 export default asExample(SuggestionPortal)

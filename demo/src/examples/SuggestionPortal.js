@@ -5,6 +5,7 @@ import { Mention, MentionsInput } from '../../../src'
 import { provideExampleValue } from './higher-order'
 import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
+let container
 
 function SuggestionPortal({ value, data, onChange, onAdd }) {
   let scrollableStyle = merge({}, defaultStyle, {
@@ -17,7 +18,11 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
     <div id="suggestionPortal"
       style={{
         height: "400px",
+      }}
+      ref={el => {
+        container = el
       }}>
+      >
       <h3>Suggestion portal example</h3>
       <p>
         Note that the suggestions menu is outside of the its parent element (in green) which is absolutely positioned and scrollable.
@@ -35,7 +40,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
           onChange={onChange}
           style={defaultStyle}
           placeholder={"Mention people using '@'"}
-          suggestionsPortalSelector={'#suggestionPortal'}
+          suggestionsPortalNode={container}
         >
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>
@@ -48,7 +53,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
           onChange={onChange}
           style={scrollableStyle}
           placeholder={"Mention people using '@'"}
-          suggestionsPortalSelector={'#suggestionPortal'}
+          suggestionsPortalNode={container}
         >
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>

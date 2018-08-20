@@ -86,7 +86,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
-  suggestionsPortalSelector: PropTypes.string,
+  suggestionsPortalNode: PropTypes.node,
 
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -227,8 +227,8 @@ class MentionsInput extends React.Component {
         isLoading={this.isLoading()}
       />
     )
-    if (this.state.suggestionsPortalNode) {
-      return ReactDOM.createPortal(suggestionsNode, this.state.suggestionsPortalNode)
+    if (this.props.suggestionsPortalNode) {
+      return ReactDOM.createPortal(suggestionsNode, this.props.suggestionsPortalNode)
     } else {
       return suggestionsNode
     }
@@ -491,7 +491,7 @@ class MentionsInput extends React.Component {
     let position = {}
 
     // if suggestions menu is in a portal, update position to be releative to screen
-    if (this.state.suggestionsPortalNode) {
+    if (this.props.suggestionsPortalNode) {
       // first get viewport-relative position (highlighter is offsetParent of caret):
       const caretOffsetParentRect = highlighter.getBoundingClientRect()
       // note according to spec and testing, we should always be able to count on this coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
@@ -565,7 +565,6 @@ class MentionsInput extends React.Component {
 
   componentDidMount() {
     this.updateSuggestionsPosition()
-    this.resolvePortals();
   }
 
   componentDidUpdate(prevProps) {
@@ -577,19 +576,6 @@ class MentionsInput extends React.Component {
       this.setState({ setSelectionAfterMentionChange: false })
       this.setSelection(this.state.selectionStart, this.state.selectionEnd)
     }
-    if (prevProps.suggestionsPortalSelector !== this.props.suggestionsPortalSelector) {
-      this.resolvePortals();
-    }
-  }
-
-  resolvePortals = () => {
-    let suggestionsPortalNode = null;
-    if (typeof this.props.suggestionsPortalSelector === 'string') {
-      suggestionsPortalNode = document.querySelector(this.props.suggestionsPortalSelector)
-    }
-    this.setState({
-      suggestionsPortalNode,
-    })
   }
 
   setSelection = (selectionStart, selectionEnd) => {

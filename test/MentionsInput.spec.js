@@ -102,7 +102,7 @@ describe('MentionsInput', () => {
   })
 
   it('should place suggestions in suggestionsPortalHost', () => {
-    let portalNode;
+    let portalNode
     const rootWrapper = mount(
       <div id="root">
         <div

@@ -229,7 +229,10 @@ class MentionsInput extends React.Component {
       />
     )
     if (this.props.suggestionsPortalHost) {
-      return ReactDOM.createPortal(suggestionsNode, this.props.suggestionsPortalHost)
+      return ReactDOM.createPortal(
+        suggestionsNode,
+        this.props.suggestionsPortalHost
+      )
     } else {
       return suggestionsNode
     }
@@ -495,10 +498,6 @@ class MentionsInput extends React.Component {
     if (this.props.suggestionsPortalHost) {
       // first get viewport-relative position (highlighter is offsetParent of caret):
       const caretOffsetParentRect = highlighter.getBoundingClientRect()
-      const caretOffsetParentPadding = {
-        left: getComputedStyleLengthProp(highlighter, 'padding-left'),
-        top: getComputedStyleLengthProp(highlighter, 'padding-top')
-      }
       const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
       const viewportRelative = {
         left: caretOffsetParentRect.left + caretPosition.left,
@@ -514,7 +513,10 @@ class MentionsInput extends React.Component {
       left -= highlighter.scrollLeft
       position.top -= highlighter.scrollTop
       // guard for mentions suggestions list clipped by right edge of window
-      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const viewportWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0
+      )
       if (left + suggestions.offsetWidth > viewportWidth) {
         position.left = Math.max(0, viewportWidth - suggestions.offsetWidth)
       } else {

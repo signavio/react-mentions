@@ -15,25 +15,30 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
     },
   })
   return (
-    <div id="suggestionPortal"
+    <div
+      id="suggestionPortal"
       style={{
-        height: "400px",
+        height: '400px',
       }}
       ref={el => {
         container = el
-      }}>
+      }}
+    >
       <h3>Suggestion portal example</h3>
       <p>
-        Note that the suggestions menu is outside of the its parent element (in green) which is absolutely positioned and scrollable.
+        Note that the suggestions menu is outside of the its parent element (in
+        green) which is absolutely positioned and scrollable.
       </p>
-      <div style={{
-        position: "absolute",
-        height: "150px",
-        width: "400px",
-        overflow: "auto",
-        border: "1px solid green",
-        padding: "8px",
-      }}>
+      <div
+        style={{
+          position: 'absolute',
+          height: '150px',
+          width: '400px',
+          overflow: 'auto',
+          border: '1px solid green',
+          padding: '8px',
+        }}
+      >
         <MentionsInput
           value={value}
           onChange={onChange}
@@ -44,9 +49,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>
 
-        <p>
-          The input below is also scrollable.
-        </p>
+        <p>The input below is also scrollable.</p>
         <MentionsInput
           value={value}
           onChange={onChange}

@@ -503,8 +503,6 @@ class MentionsInput extends React.Component {
       const viewportRelative = {
         left: caretOffsetParentRect.left + caretPosition.left,
         top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
-        width: 100,
-        height: 100
       }
       position.position = 'fixed'
       let left = viewportRelative.left

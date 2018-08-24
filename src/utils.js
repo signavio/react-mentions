@@ -1,4 +1,5 @@
 import isNumber from 'lodash/isNumber'
+import isFinite from 'lodash/isFinite'
 import keys from 'lodash/keys'
 
 const PLACEHOLDERS = {
@@ -36,7 +37,10 @@ export const spliceString = (str, start, end, insert) =>
  * Returns the computed length property value for the provided element.
  * Note: According to spec and testing, can count on length values coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
  */
-export const getComputedStyleLengthProp = (forElement, propertyName) => parseFloat(window.getComputedStyle(forElement, null).getPropertyValue(propertyName))
+export const getComputedStyleLengthProp = (forElement, propertyName) => {
+  const length = parseFloat(window.getComputedStyle(forElement, null).getPropertyValue(propertyName))
+  return isFinite(length) ? length : 0;
+}
 
 /**
  * parameterName: "id", "display", or "type"

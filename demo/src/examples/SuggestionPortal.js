@@ -22,7 +22,6 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
       ref={el => {
         container = el
       }}>
-      >
       <h3>Suggestion portal example</h3>
       <p>
         Note that the suggestions menu is outside of the its parent element (in green) which is absolutely positioned and scrollable.
@@ -40,7 +39,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
           onChange={onChange}
           style={defaultStyle}
           placeholder={"Mention people using '@'"}
-          suggestionsPortalNode={container}
+          suggestionsPortalHost={container}
         >
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>
@@ -53,7 +52,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
           onChange={onChange}
           style={scrollableStyle}
           placeholder={"Mention people using '@'"}
-          suggestionsPortalNode={container}
+          suggestionsPortalHost={container}
         >
           <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
         </MentionsInput>

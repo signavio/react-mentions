@@ -15,6 +15,7 @@ import {
   getPlainText,
   applyChangeToValue,
   findStartOfMentionInPlainText,
+  getComputedStyleLengthProp,
   getMentions,
   countSuggestions,
   getSuggestion,
@@ -86,7 +87,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
-  suggestionsPortalNode: PropTypes.node,
+  suggestionsPortalHost: PropTypes.any,
 
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -227,8 +228,8 @@ class MentionsInput extends React.Component {
         isLoading={this.isLoading()}
       />
     )
-    if (this.props.suggestionsPortalNode) {
-      return ReactDOM.createPortal(suggestionsNode, this.props.suggestionsPortalNode)
+    if (this.props.suggestionsPortalHost) {
+      return ReactDOM.createPortal(suggestionsNode, this.props.suggestionsPortalHost)
     } else {
       return suggestionsNode
     }
@@ -490,38 +491,37 @@ class MentionsInput extends React.Component {
 
     let position = {}
 
-    // if suggestions menu is in a portal, update position to be releative to screen
-    if (this.props.suggestionsPortalNode) {
+    // if suggestions menu is in a portal, update position to be releative to its portal node
+    if (this.props.suggestionsPortalHost) {
       // first get viewport-relative position (highlighter is offsetParent of caret):
       const caretOffsetParentRect = highlighter.getBoundingClientRect()
-      // note according to spec and testing, we should always be able to count on this coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
       const caretOffsetParentPadding = {
-        left: parseFloat(window.getComputedStyle(highlighter, null).getPropertyValue("padding-left")),
-        top: parseFloat(window.getComputedStyle(highlighter, null).getPropertyValue("padding-top"))
+        left: getComputedStyleLengthProp(highlighter, 'padding-left'),
+        top: getComputedStyleLengthProp(highlighter, 'padding-top')
       }
-      /* caretHeight should really be based on the line-height but I don't see a way to compute that. The non-portal code path uses
-       * a default 14px margin on the suggestion to get to this so we grab that value here.
-       * This isn't accurately getting to the bottom of the caret for different font sizes, but it perfectly matches the non-portal code path.
-       */
-      const caretHeight = parseFloat(window.getComputedStyle(suggestions, null).getPropertyValue("margin-top"))
+      const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
       const viewportRelative = {
-        left: caretOffsetParentRect.left + caretPosition.left + caretOffsetParentPadding.left,
-        top: caretOffsetParentRect.top + caretPosition.top + caretOffsetParentPadding.top + caretHeight
+        left: caretOffsetParentRect.left + caretPosition.left,
+        top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
+        width: 100,
+        height: 100
       }
-      // translate viewportRelative => suggestionsParent relative
-      let suggestionsOffsetParentNode = suggestions.offsetParent
-      const suggestionsParentPos = suggestionsOffsetParentNode.getBoundingClientRect()
-      const left = viewportRelative.left - suggestionsParentPos.left
+      position.position = 'fixed'
+      let left = viewportRelative.left
+      position.top = viewportRelative.top
+      // absolute/fixed positioned elements are positioned according to their entire box including margins; so we remove margins here:
+      left -= getComputedStyleLengthProp(suggestions, 'margin-left')
+      position.top -= getComputedStyleLengthProp(suggestions, 'margin-top')
+      // take into account highlighter/textinput scrolling:
+      left -= highlighter.scrollLeft
+      position.top -= highlighter.scrollTop
       // guard for mentions suggestions list clipped by right edge of window
-      if (left + suggestions.offsetWidth > suggestionsOffsetParentNode.offsetWidth) {
-        position.right = 0
+      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      if (left + suggestions.offsetWidth > viewportWidth) {
+        position.left = Math.max(0, viewportWidth - suggestions.offsetWidth)
       } else {
         position.left = left
       }
-      position.top = viewportRelative.top - suggestionsParentPos.top
-      // take into account scrolling:
-      position.top -= highlighter.scrollTop
-      position.left -= highlighter.scrollLeft
     } else {
       let left = caretPosition.left - highlighter.scrollLeft
       // guard for mentions suggestions list clipped by right edge of window

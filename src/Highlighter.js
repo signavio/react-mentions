@@ -81,7 +81,7 @@ class Highlighter extends Component {
       displayTransform,
       style,
       inputStyle,
-      regex
+      regex,
     } = this.props
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value

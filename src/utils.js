@@ -15,12 +15,11 @@ const numericComparator = function(a, b) {
 
 export const escapeRegex = str => str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 
-
 const countCapturingGroups = regex => {
-  return (new RegExp(regex.toString() + '|')).exec('').length - 1
+  return new RegExp(regex.toString() + '|').exec('').length - 1
 }
 
-const markupToRegex = (markup) => {
+const markupToRegex = markup => {
   let markupPattern = escapeRegex(markup)
   markupPattern = markupPattern.replace(PLACEHOLDERS.display, '(.+?)')
   markupPattern = markupPattern.replace(PLACEHOLDERS.id, '(.+?)')
@@ -79,16 +78,15 @@ export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
   if (indexDisplay === null) indexDisplay = indexId
   if (indexId === null) indexId = indexDisplay
 
-
-  if(regex && countCapturingGroups(regex) === 0) {
+  if (regex && countCapturingGroups(regex) === 0) {
     // custom regex does not use any capturing groups, so use the full match for ID and display
-    return parameterName === "type" ? null : 0;
+    return parameterName === 'type' ? null : 0
   }
 
-  if(parameterName === "id") return sortedIndices.indexOf(indexId);
-  if(parameterName === "display") return sortedIndices.indexOf(indexDisplay);
-  if(parameterName === "type") return indexType === null ? null : sortedIndices.indexOf(indexType);
-
+  if (parameterName === 'id') return sortedIndices.indexOf(indexId)
+  if (parameterName === 'display') return sortedIndices.indexOf(indexDisplay)
+  if (parameterName === 'type')
+    return indexType === null ? null : sortedIndices.indexOf(indexType)
 }
 
 // Finds all occurences of the markup in the value and iterates the plain text sub strings
@@ -345,7 +343,12 @@ export const applyChangeToValue = (
 
   if (!willRemoveMention) {
     // test for auto-completion changes
-    let controlPlainTextValue = getPlainText(newValue, markup, displayTransform, regex)
+    let controlPlainTextValue = getPlainText(
+      newValue,
+      markup,
+      displayTransform,
+      regex
+    )
     if (controlPlainTextValue !== plainTextValue) {
       // some auto-correction is going on
 

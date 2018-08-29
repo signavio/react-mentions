@@ -87,10 +87,12 @@ class SuggestionsOverlay extends Component {
 
     let { mentionDescriptor, query } = descriptor
 
+    const type = mentionDescriptor.props.type
+
     return (
       <Suggestion
         style={this.props.style('item')}
-        key={id}
+        key={`${type}-${id}`}
         id={id}
         query={query}
         index={index}

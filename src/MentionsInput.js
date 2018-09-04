@@ -533,13 +533,13 @@ class MentionsInput extends React.Component {
 
       // guard for mentions suggestions list clipped by bottom edge of window
       const tooltipBottom =
-        _this3.containerRef.getBoundingClientRect().top +
+        this.containerRef.getBoundingClientRect().top +
         caretPosition.top +
         suggestions.offsetHeight;
         const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
       if (tooltipBottom > viewportHeight) {
-        position.bottom = _this3.containerRef.offsetHeight - caretPosition.top;
+        position.bottom = this.containerRef.offsetHeight - caretPosition.top;
       } else {
         position.top = caretPosition.top - highlighter.scrollTop;
       }

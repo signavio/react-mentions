@@ -15,6 +15,7 @@ import {
   getPlainText,
   applyChangeToValue,
   findStartOfMentionInPlainText,
+  getComputedStyleLengthProp,
   getMentions,
   countSuggestions,
   getSuggestion,
@@ -86,6 +87,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  suggestionsPortalHost: PropTypes.any,
 
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -205,7 +207,7 @@ class MentionsInput extends React.Component {
       // do not show suggestions when the input does not have the focus
       return null
     }
-    return (
+    const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
         position={this.state.suggestionsPosition}
@@ -226,6 +228,14 @@ class MentionsInput extends React.Component {
         isLoading={this.isLoading()}
       />
     )
+    if (this.props.suggestionsPortalHost) {
+      return ReactDOM.createPortal(
+        suggestionsNode,
+        this.props.suggestionsPortalHost
+      )
+    } else {
+      return suggestionsNode
+    }
   }
 
   renderHighlighter = inputStyle => {
@@ -482,17 +492,46 @@ class MentionsInput extends React.Component {
       return
     }
 
-    let left = caretPosition.left - highlighter.scrollLeft
     let position = {}
 
-    // guard for mentions suggestions list clipped by right edge of window
-    if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
-      position.right = 0
+    // if suggestions menu is in a portal, update position to be releative to its portal node
+    if (this.props.suggestionsPortalHost) {
+      // first get viewport-relative position (highlighter is offsetParent of caret):
+      const caretOffsetParentRect = highlighter.getBoundingClientRect()
+      const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
+      const viewportRelative = {
+        left: caretOffsetParentRect.left + caretPosition.left,
+        top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
+      }
+      position.position = 'fixed'
+      let left = viewportRelative.left
+      position.top = viewportRelative.top
+      // absolute/fixed positioned elements are positioned according to their entire box including margins; so we remove margins here:
+      left -= getComputedStyleLengthProp(suggestions, 'margin-left')
+      position.top -= getComputedStyleLengthProp(suggestions, 'margin-top')
+      // take into account highlighter/textinput scrolling:
+      left -= highlighter.scrollLeft
+      position.top -= highlighter.scrollTop
+      // guard for mentions suggestions list clipped by right edge of window
+      const viewportWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0
+      )
+      if (left + suggestions.offsetWidth > viewportWidth) {
+        position.left = Math.max(0, viewportWidth - suggestions.offsetWidth)
+      } else {
+        position.left = left
+      }
     } else {
-      position.left = left
+      let left = caretPosition.left - highlighter.scrollLeft
+      // guard for mentions suggestions list clipped by right edge of window
+      if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
+        position.right = 0
+      } else {
+        position.left = left
+      }
+      position.top = caretPosition.top - highlighter.scrollTop
     }
-
-    position.top = caretPosition.top - highlighter.scrollTop
 
     if (isEqual(position, this.state.suggestionsPosition)) {
       return
@@ -528,7 +567,7 @@ class MentionsInput extends React.Component {
     this.updateSuggestionsPosition()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.updateSuggestionsPosition()
 
     // maintain selection in case a mention is added/removed causing

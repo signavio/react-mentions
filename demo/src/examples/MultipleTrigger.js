@@ -28,8 +28,16 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
           type="user"
           trigger="@"
           data={data}
-          renderSuggestion={(suggestion, search, highlightedDisplay) => (
-            <div className="user">{highlightedDisplay}</div>
+          renderSuggestion={(
+            suggestion,
+            search,
+            highlightedDisplay,
+            index,
+            focused
+          ) => (
+            <div className={`user ${focused ? 'focused' : ''}`}>
+              {highlightedDisplay}
+            </div>
           )}
           onAdd={onAdd}
           style={defaultMentionStyle}

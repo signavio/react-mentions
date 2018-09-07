@@ -34,7 +34,7 @@ class Suggestion extends Component {
   }
 
   renderContent() {
-    let { query, descriptor, suggestion, index } = this.props
+    let { query, descriptor, suggestion, index, focused } = this.props
 
     let display = this.getDisplay()
     let highlightedDisplay = this.renderHighlightedDisplay(display, query)
@@ -44,7 +44,8 @@ class Suggestion extends Component {
         suggestion,
         query,
         highlightedDisplay,
-        index
+        index,
+        focused
       )
     }
 

@@ -525,18 +525,18 @@ class MentionsInput extends React.Component {
     } else {
       let left = caretPosition.left - highlighter.scrollLeft
       // guard for mentions suggestions list clipped by right edge of window
-      if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
+      if (this.containerRef && (left + suggestions.offsetWidth > this.containerRef.offsetWidth)) {
         position.right = 0
       } else {
         position.left = left
       }
 
       // guard for mentions suggestions list clipped by bottom edge of window
-      const tooltipBottom =
+      const tooltipBottom = this.containerRef ?
         this.containerRef.getBoundingClientRect().top +
         caretPosition.top +
-        suggestions.offsetHeight;
-        const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        suggestions.offsetHeight : 0;
+      const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
       if (tooltipBottom > viewportHeight) {
         position.bottom = this.containerRef.offsetHeight - caretPosition.top;

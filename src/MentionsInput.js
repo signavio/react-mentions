@@ -368,14 +368,14 @@ class MentionsInput extends React.Component {
 
   // Handle input element's select event
   handleSelect = ev => {
-    // do nothing while a IME composition session is active
-    if (isComposing) return
-
     // keep track of selection range / caret position
     this.setState({
       selectionStart: ev.target.selectionStart,
       selectionEnd: ev.target.selectionEnd,
     })
+
+    // do nothing while a IME composition session is active
+    if (isComposing) return
 
     // refresh suggestions queries
     const el = this.inputRef

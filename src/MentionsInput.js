@@ -87,7 +87,11 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
-  suggestionsPortalHost: PropTypes.any,
+  suggestionsPortalHost: PropTypes.PropTypes.instanceOf(Element),
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
 
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -180,26 +184,21 @@ class MentionsInput extends React.Component {
   }
 
   renderInput = props => {
-    return (
-      <input
-        type="text"
-        ref={el => {
-          this.inputRef = el
-        }}
-        {...props}
-      />
-    )
+    return <input type="text" ref={this.setInputRef} {...props} />
   }
 
   renderTextarea = props => {
-    return (
-      <textarea
-        ref={el => {
-          this.inputRef = el
-        }}
-        {...props}
-      />
-    )
+    return <textarea ref={this.setInputRef} {...props} />
+  }
+
+  setInputRef = el => {
+    this.inputRef = el
+    const { inputRef } = this.props
+    if (typeof inputRef === 'function') {
+      inputRef(el)
+    } else if (inputRef) {
+      inputRef.current = el
+    }
   }
 
   renderSuggestionsOverlay = () => {

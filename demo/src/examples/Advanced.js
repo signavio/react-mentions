@@ -21,6 +21,7 @@ const style = merge({}, defaultStyle, {
 })
 
 function Advanced({ value, data, onChange, onBlur, onAdd }) {
+  let inputEl = React.createRef()
   return (
     <div className="advanced">
       <h3>Advanced options</h3>
@@ -32,9 +33,18 @@ function Advanced({ value, data, onChange, onBlur, onAdd }) {
         markup="{{__id__}}"
         style={style}
         displayTransform={id => `<-- ${id} -->`}
+        inputRef={inputEl}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>
+
+      <button
+        onClick={() => {
+          inputEl.current.focus()
+        }}
+      >
+        focus programmatically
+      </button>
     </div>
   )
 }

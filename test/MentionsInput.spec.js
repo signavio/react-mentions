@@ -1,4 +1,4 @@
-import expect from 'expect'
+import expect, { createSpy } from 'expect'
 import React from 'react'
 import { mount } from 'enzyme'
 
@@ -163,6 +163,35 @@ describe('MentionsInput', () => {
     expect(wrapper.find('textarea').getDOMNode().value).toEqual(
       '@A and @B and :invalidId'
     )
+  })
+
+  it('should forward the `inputRef` prop to become the `ref` of the input', () => {
+    const inputRef = React.createRef()
+    const wrapper = mount(
+      <MentionsInput value="test" inputRef={inputRef}>
+        <Mention trigger="@" data={data} />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+    const el = wrapper.find('textarea').getDOMNode()
+    expect(inputRef.current).toBeTruthy()
+    expect(inputRef.current).toEqual(el)
+  })
+
+  it('should forward the `inputRef` prop to become the `ref` of the input (callback ref)', () => {
+    const inputRef = createSpy()
+    const wrapper = mount(
+      <MentionsInput value="test" inputRef={inputRef}>
+        <Mention trigger="@" data={data} />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+    const el = wrapper.find('textarea').getDOMNode()
+    expect(inputRef).toHaveBeenCalledWith(el)
   })
 
   describe('_getTriggerRegex', () => {

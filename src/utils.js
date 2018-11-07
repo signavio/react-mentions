@@ -37,8 +37,10 @@ export const spliceString = (str, start, end, insert) =>
  * Note: According to spec and testing, can count on length values coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
  */
 export const getComputedStyleLengthProp = (forElement, propertyName) => {
-  const length = parseFloat(window.getComputedStyle(forElement, null).getPropertyValue(propertyName))
-  return isFinite(length) ? length : 0;
+  const length = parseFloat(
+    window.getComputedStyle(forElement, null).getPropertyValue(propertyName)
+  )
+  return isFinite(length) ? length : 0
 }
 
 /**

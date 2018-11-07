@@ -738,6 +738,13 @@ class MentionsInput extends React.Component {
     // Insert mention in the marked up value at the correct position
     const value = this.props.value || ''
     const { markup, displayTransform, regex } = this.props
+
+    let displayValue = displayTransform(
+      suggestion.id,
+      suggestion.display,
+      mentionDescriptor.props.type
+    )
+
     const start = mapPlainTextIndex(
       value,
       markup,
@@ -747,12 +754,14 @@ class MentionsInput extends React.Component {
       regex
     )
     const end = start + querySequenceEnd - querySequenceStart
-    let insert = makeMentionsMarkup(
-      markup,
-      suggestion.id,
-      suggestion.display,
-      mentionDescriptor.props.type
-    )
+    let insert = mentionDescriptor.props.insertDisplayWithoutMarkup
+      ? displayValue
+      : makeMentionsMarkup(
+          markup,
+          suggestion.id,
+          suggestion.display,
+          mentionDescriptor.props.type
+        )
     if (mentionDescriptor.props.appendSpaceOnAdd) {
       insert = insert + ' '
     }
@@ -761,11 +770,6 @@ class MentionsInput extends React.Component {
     // Refocus input and set caret position to end of mention
     this.inputRef.focus()
 
-    let displayValue = displayTransform(
-      suggestion.id,
-      suggestion.display,
-      mentionDescriptor.props.type
-    )
     if (mentionDescriptor.props.appendSpaceOnAdd) {
       displayValue = displayValue + ' '
     }

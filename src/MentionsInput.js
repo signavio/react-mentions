@@ -112,9 +112,7 @@ class MentionsInput extends React.Component {
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
-    onRemove: function(mentions) {
-      return null
-    },
+    onRemove: (mentions) => null,
   }
 
   constructor(props) {
@@ -365,18 +363,18 @@ class MentionsInput extends React.Component {
 
     // Check for removed mentions
     var removed = this.state.mentions.filter(mention => {
-      return !Boolean(mentions.find(newMention => newMention.id === mention.id && newMention.display == mention.display))
+      return !Boolean(mentions.find(newMention => newMention.id === mention.id && newMention.display === mention.display))
     })
 
     // Call onRemove
-    if (removed.length > 0) {
+    if (removed.length > 0 && this.props.onRemove) {
       if (this.props.onRemove) {
         this.props.onRemove(removed)
       }
     }
 
     // Update state with removed mentions
-    this.setState({ mentions: mentions })
+    this.setState({ mentions })
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;

@@ -6,6 +6,7 @@ export default function provideExampleValue(value) {
     withHandlers({
       onChange: ({ setValue }) => (ev, newValue) => setValue(newValue),
       onAdd: () => (...args) => console.log('added a new mention', ...args),
+      onRemove: () => (...args) => console.log('removed mention(s)', ...args),
     })
   )
 }

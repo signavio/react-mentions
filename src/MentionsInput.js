@@ -87,6 +87,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  onRemove: PropTypes.func,
   suggestionsPortalHost: typeof Element === 'undefined' ? PropTypes.any : PropTypes.PropTypes.instanceOf(Element),
   inputRef: PropTypes.oneOfType([
     PropTypes.func,
@@ -111,6 +112,9 @@ class MentionsInput extends React.Component {
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
+    onRemove: function(mentions) {
+      return null
+    },
   }
 
   constructor(props) {
@@ -127,6 +131,7 @@ class MentionsInput extends React.Component {
 
       caretPosition: null,
       suggestionsPosition: null,
+      mentions: [],
     }
   }
 
@@ -357,6 +362,21 @@ class MentionsInput extends React.Component {
     })
 
     let mentions = getMentions(newValue, markup, displayTransform, regex)
+
+    // Check for removed mentions
+    var removed = this.state.mentions.filter(mention => {
+      return !Boolean(mentions.find(newMention => newMention.id === mention.id && newMention.display == mention.display))
+    })
+
+    // Call onRemove
+    if (removed.length > 0) {
+      if (this.props.onRemove) {
+        this.props.onRemove(removed)
+      }
+    }
+
+    // Update state with removed mentions
+    this.setState({ mentions: mentions })
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;

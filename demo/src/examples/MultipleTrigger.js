@@ -11,7 +11,7 @@ import defaultMentionStyle from './defaultMentionStyle'
 // and second/inner capture group to extract search string from the match
 const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/
 
-function MultipleTriggers({ value, data, onChange, onAdd }) {
+function MultipleTriggers({ value, data, onChange, onAdd, onRemove }) {
   return (
     <div className="multiple-triggers">
       <h3>Multiple trigger patterns</h3>
@@ -23,6 +23,7 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
         style={defaultStyle}
         markup="@[__display__](__type__:__id__)"
         placeholder={"Mention people using '@'"}
+        onRemove={onRemove}
       >
         <Mention
           type="user"

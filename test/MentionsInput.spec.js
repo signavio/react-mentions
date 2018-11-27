@@ -212,4 +212,35 @@ describe('MentionsInput', () => {
       expect(result).toEqual('/(?:^|\\s)(trigger([^trigger]*))$/')
     })
   })
+
+  it('should call onRemove on erasing a mention', () => {
+    const removed = (mentions) => {
+      expect(mentions[0].id).toBe('a')
+      expect(mentions[0].display).toBe('A')
+    }
+
+    const wrapper = mount(
+      <MentionsInput value="@[A](testchars:a)" markup="@[__display__](__type__:__id__)" onRemove={removed}>
+        <Mention trigger="@" type="testentries" data={data} />
+        <Mention
+          trigger="@"
+          type="testchars"
+          data={[{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]}
+        />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+
+    wrapper.find('textarea').getDOMNode().focus()
+    wrapper.find('textarea').simulate('select', {
+      target: { selectionStart: 0, selectionEnd: 0 },
+    })
+    wrapper.find('textarea').getDOMNode().value = ''
+    wrapper.find('textarea').simulate('change', {
+      target: wrapper.find('textarea').getDOMNode()
+    })
+  })
+
 })

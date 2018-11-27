@@ -73,7 +73,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | allowSpaceInQuery     | boolean                                                 | false                      | Keep suggestions open even if the user separates keywords with spaces.                 |
 | suggestionsPortalHost | DOM Element                                             | undefined                  | Render suggestions into the DOM in the supplied host element.                          |
 | inputRef              | React ref                                               | undefined                  | Accepts a React ref to forward to the underlying input element                         |
-| onRemove              | function (Array.<id, display>)                          | `null`                     | Callback invoked when a mention has been removed (optional)                            |
+| onRemove              | function (Array.Object.<id, display>})                  | `null`                     | Callback invoked when a mention has been removed (optional)                            |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

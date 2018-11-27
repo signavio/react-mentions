@@ -129,7 +129,6 @@ class MentionsInput extends React.Component {
 
       caretPosition: null,
       suggestionsPosition: null,
-      mentions: [],
     }
   }
 
@@ -359,22 +358,20 @@ class MentionsInput extends React.Component {
       setSelectionAfterMentionChange: setSelectionAfterMentionChange,
     })
 
+    let prevMentions = getMentions(value, markup, displayTransform, regex)
     let mentions = getMentions(newValue, markup, displayTransform, regex)
 
     // Check for removed mentions
-    var removed = this.state.mentions.filter(mention => {
+    var removed = prevMentions.filter(mention => {
       return !Boolean(mentions.find(newMention => newMention.id === mention.id && newMention.display === mention.display))
+    }).map(mention => {
+      return {id: mention.id, display: mention.display}
     })
 
     // Call onRemove
     if (removed.length > 0 && this.props.onRemove) {
-      if (this.props.onRemove) {
-        this.props.onRemove(removed)
-      }
+      this.props.onRemove(removed)
     }
-
-    // Update state with removed mentions
-    this.setState({ mentions })
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;

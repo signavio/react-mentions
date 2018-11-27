@@ -358,7 +358,7 @@ class MentionsInput extends React.Component {
       setSelectionAfterMentionChange: setSelectionAfterMentionChange,
     })
 
-    let prevMentions = getMentions(value, markup, displayTransform, regex)
+    let prevMentions = getMentions(this.props.value, markup, displayTransform, regex)
     let mentions = getMentions(newValue, markup, displayTransform, regex)
 
     // Check for removed mentions

@@ -214,10 +214,7 @@ describe('MentionsInput', () => {
   })
 
   it('should call onRemove on erasing a mention', () => {
-    const removed = (mentions) => {
-      expect(mentions[0].id).toBe('a')
-      expect(mentions[0].display).toBe('A')
-    }
+    const removed = createSpy()
 
     const wrapper = mount(
       <MentionsInput value="@[A](testchars:a)" markup="@[__display__](__type__:__id__)" onRemove={removed}>
@@ -241,6 +238,6 @@ describe('MentionsInput', () => {
     wrapper.find('textarea').simulate('change', {
       target: wrapper.find('textarea').getDOMNode()
     })
+    expect(removed).toHaveBeenCalledWith([{id: 'a', display: 'A'}])
   })
-
 })

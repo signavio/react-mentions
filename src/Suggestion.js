@@ -61,7 +61,7 @@ class Suggestion extends Component {
 
     let { id, display } = suggestion
 
-    if (!id || !display) {
+    if (id === undefined || !display) {
       return id
     }
 

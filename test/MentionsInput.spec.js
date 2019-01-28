@@ -166,10 +166,10 @@ describe('MentionsInput', () => {
   })
   
   it('should handle a custom regex attribute with the trigger', () => {
-    const data = [{ id: 'one', display: '@Brian' }, { id: 'two', display: '@Bryn' }]
+    const data = [{ id: 'brian', display: 'brian' }, { id: 'bryn', display: 'bryn' }]
     const wrapper = mount(
       <MentionsInput
-        value="@Brian and @Bryn"
+        value="@brian and @bryn"
         markup="@__id__"
         regex={/@(\S+)/g}
         displayTransform={id => `@${id}`}
@@ -182,7 +182,7 @@ describe('MentionsInput', () => {
     )
     wrapper.find('textarea').simulate('focus')
     expect(wrapper.find('textarea').getDOMNode().value).toEqual(
-      '@one and @two'
+      '@brian and @bryn'
     )
   })
 

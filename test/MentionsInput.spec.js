@@ -164,6 +164,27 @@ describe('MentionsInput', () => {
       '@A and @B and :invalidId'
     )
   })
+  
+  it('should handle a custom regex attribute with the trigger', () => {
+    const data = [{ id: 'one', display: '@Brian' }, { id: 'two', display: '@Bryn' }]
+    const wrapper = mount(
+      <MentionsInput
+        value="@Brian and @Bryn"
+        markup="@__id__"
+        regex={/@(\S+)/g}
+        displayTransform={id => `@${id}`}
+      >
+        <Mention trigger="@" data={data} />
+      </MentionsInput>,
+      {
+        attachTo: host,
+      }
+    )
+    wrapper.find('textarea').simulate('focus')
+    expect(wrapper.find('textarea').getDOMNode().value).toEqual(
+      '@one and @two'
+    )
+  })
 
   it('should forward the `inputRef` prop to become the `ref` of the input', () => {
     const inputRef = React.createRef()

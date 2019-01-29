@@ -3,34 +3,13 @@ import isFinite from 'lodash/isFinite'
 import keys from 'lodash/keys'
 import { Children } from 'react'
 
-import combineRegExps from './combineRegExps'
+import PLACEHOLDERS from './placeholders'
+import iterateMentionsMarkup from './iterateMentionsMarkup'
+import findPositionOfCapturingGroup from './findPositionOfCapturingGroup'
+import countPlaceholders from './countPlaceholders'
+import markupToRegex from './markupToRegex'
 
-const PLACEHOLDERS = {
-  id: '__id__',
-  display: '__display__',
-  type: '__type__',
-}
-
-const numericComparator = function(a, b) {
-  a = a === null ? Number.MAX_VALUE : a
-  b = b === null ? Number.MAX_VALUE : b
-  return a - b
-}
-
-export const escapeRegex = str => str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
-
-const countCapturingGroups = regex => {
-  return new RegExp(regex.toString() + '|').exec('').length - 1
-}
-
-const markupToRegex = markup => {
-  let markupPattern = escapeRegex(markup)
-  markupPattern = markupPattern.replace(PLACEHOLDERS.display, '(.+?)')
-  markupPattern = markupPattern.replace(PLACEHOLDERS.id, '(.+?)')
-  markupPattern = markupPattern.replace(PLACEHOLDERS.type, '(.+?)')
-
-  return new RegExp(markupPattern, 'g')
-}
+export { iterateMentionsMarkup }
 
 export const spliceString = (str, start, end, insert) =>
   str.substring(0, start) + insert + str.substring(end)
@@ -46,122 +25,28 @@ export const getComputedStyleLengthProp = (forElement, propertyName) => {
   return isFinite(length) ? length : 0
 }
 
-/**
- * parameterName: "id", "display", or "type"
- * TODO: This is currently only exported for testing
- */
-export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
-  if (
-    parameterName !== 'id' &&
-    parameterName !== 'display' &&
-    parameterName !== 'type'
-  ) {
-    throw new Error("parameterName must be 'id', 'display', or 'type'")
-  }
-
-  // calculate positions of placeholders in the markup
-  let indexDisplay = markup.indexOf(PLACEHOLDERS.display)
-  let indexId = markup.indexOf(PLACEHOLDERS.id)
-  let indexType = markup.indexOf(PLACEHOLDERS.type)
-
-  // set indices to null if not found
-  if (indexDisplay < 0) indexDisplay = null
-  if (indexId < 0) indexId = null
-  if (indexType < 0) indexType = null
-
-  if (indexDisplay === null && indexId === null) {
-    // markup contains none of the mandatory placeholders
+// make sure that the custom regex defines the correct number of capturing groups
+const coerceCapturingGroups = (regex, markup) => {
+  const numberOfGroups = new RegExp(regex.toString() + '|').exec('').length - 1
+  if (numberOfGroups !== countPlaceholders(markup)) {
     throw new Error(
-      'The markup `' +
-        markup +
-        '` must contain at least one of the placeholders `__id__` or `__display__`'
+      `Number of capturing groups in RegExp ${regex.toString()} (${numberOfGroups}) does not match the number of placeholders in the markup '${markup}' (${numberOfPlaceholders})`
     )
   }
 
-  if (indexType === null && parameterName === 'type') {
-    // markup does not contain optional __type__ placeholder
-    return null
-  }
-
-  // sort indices in ascending order (null values will always be at the end)
-  const sortedIndices = [indexDisplay, indexId, indexType].sort(
-    numericComparator
-  )
-
-  // If only one the placeholders __id__ and __display__ is present,
-  // use the captured string for both parameters, id and display
-  if (indexDisplay === null) indexDisplay = indexId
-  if (indexId === null) indexId = indexDisplay
-
-  if (regex && countCapturingGroups(regex) === 0) {
-    // custom regex does not use any capturing groups, so use the full match for ID and display
-    return parameterName === 'type' ? null : 0
-  }
-
-  if (parameterName === 'id') return sortedIndices.indexOf(indexId)
-  if (parameterName === 'display') return sortedIndices.indexOf(indexDisplay)
-  if (parameterName === 'type')
-    return indexType === null ? null : sortedIndices.indexOf(indexType)
+  return regex
 }
 
 export const readConfigFromChildren = children =>
   Children.toArray(children).map(
     ({ props: { markup, regex, displayTransform } }) => ({
       markup,
-      regex: regex || markupToRegex(markup),
-      displayTransform,
+      regex: regex
+        ? coerceCapturingGroups(regex, markup)
+        : markupToRegex(markup),
+      displayTransform: displayTransform || ((id, display) => display),
     })
   )
-
-// Finds all occurences of the markup in the value and iterates the plain text sub strings
-// in between those markups using `textIteratee` and the markup occurrences using the
-// `markupIteratee`.
-export const iterateMentionsMarkup = (
-  value,
-  config,
-  textIteratee,
-  markupIteratee
-) => {
-  const regex = combineRegExps(config.map(c => c.regex))
-
-  let displayPos = getPositionOfCapturingGroup(markup, 'display', regex)
-  let idPos = getPositionOfCapturingGroup(markup, 'id', regex)
-
-  let match
-  let start = 0
-  let currentPlainTextIndex = 0
-
-  // detect all mention markup occurences in the value and iterate the matches
-  while ((match = regex.exec(value)) !== null) {
-    // first argument is the whole match, capturing groups are following
-    let id = match[idPos + 1]
-    let display = match[displayPos + 1]
-    let type = typePos !== null ? match[typePos + 1] : null
-
-    if (displayTransform) display = displayTransform(id, display, type)
-
-    let substr = value.substring(start, match.index)
-    textIteratee(substr, start, currentPlainTextIndex)
-    currentPlainTextIndex += substr.length
-
-    markupIteratee(
-      match[0],
-      match.index,
-      currentPlainTextIndex,
-      id,
-      display,
-      type,
-      start
-    )
-    currentPlainTextIndex += display.length
-
-    start = regex.lastIndex
-  }
-
-  if (start < value.length) {
-    textIteratee(value.substring(start), start, currentPlainTextIndex)
-  }
-}
 
 // For the passed character index in the plain text string, returns the corresponding index
 // in the marked up value string.
@@ -212,14 +97,7 @@ export const mapPlainTextIndex = (
     }
   }
 
-  iterateMentionsMarkup(
-    value,
-    markup,
-    textIteratee,
-    markupIteratee,
-    displayTransform,
-    regex
-  )
+  iterateMentionsMarkup(value, config, textIteratee, markupIteratee)
 
   // when a mention is at the end of the value and we want to get the caret position
   // at the end of the string, result is undefined
@@ -411,9 +289,9 @@ export const applyChangeToValue = (
 
 export const getPlainText = (value, markup, displayTransform, regex) => {
   regex = regex || markupToRegex(markup)
-  let idPos = getPositionOfCapturingGroup(markup, 'id', regex)
-  let displayPos = getPositionOfCapturingGroup(markup, 'display', regex)
-  let typePos = getPositionOfCapturingGroup(markup, 'type', regex)
+  let idPos = findPositionOfCapturingGroup(markup, 'id', regex)
+  let displayPos = findPositionOfCapturingGroup(markup, 'display', regex)
+  let typePos = findPositionOfCapturingGroup(markup, 'type', regex)
   return value.replace(regex, function() {
     // first argument is the whole match, capturing groups are following
     let id = arguments[idPos + 1]
@@ -454,10 +332,9 @@ export const getEndOfLastMention = (value, markup, displayTransform, regex) => {
 }
 
 export const makeMentionsMarkup = (markup, id, display, type) => {
-  let result = markup.replace(PLACEHOLDERS.id, id)
-  result = result.replace(PLACEHOLDERS.display, display)
-  result = result.replace(PLACEHOLDERS.type, type)
-  return result
+  return markup
+    .replace(PLACEHOLDERS.id, id)
+    .replace(PLACEHOLDERS.display, display)
 }
 
 export const countSuggestions = suggestions =>

@@ -7,7 +7,7 @@ const combineRegExps = regExps => {
           regex.toString()
         )
 
-        if (regexFlags.length > 0) {
+        if (regexFlags) {
           throw new Error(
             `RegExp flags are not supported. Change /${regexString}/${regexFlags} into /${regexString}/`
           )

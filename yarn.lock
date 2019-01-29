@@ -3316,10 +3316,20 @@ emoji-regex@^6.1.0:
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-6.5.1.tgz#9baea929b155565c11ea41c6626eaa65cef992c2"
   integrity sha512-PAHp6TxrCy7MGMFidro8uikr+zlJJKJ/Q6mm2ExZ7HwkyR9lSVFfE3kt36qcwa24BQL7y0G9axycGjK1A/0uNQ==
 
+emojis-keywords@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/emojis-keywords/-/emojis-keywords-2.0.0.tgz#9d42a916cec88710dab231cddf784c7d1a1e3409"
+  integrity sha1-nUKpFs7IhxDasjHN33hMfRoeNAk=
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
   integrity sha1-TapNnbAPmBmIDHn6RXrlsJof04k=
+
+emojis-unicode@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/emojis-unicode/-/emojis-unicode-1.0.1.tgz#ef3dabe7382149f8d798d7d448f6437806b6cf6b"
+  integrity sha1-7z2r5zghSfjXmNfUSPZDeAa2z2s=
 
 encodeurl@~1.0.1:
   version "1.0.1"

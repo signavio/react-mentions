@@ -1,6 +1,9 @@
 import isNumber from 'lodash/isNumber'
 import isFinite from 'lodash/isFinite'
 import keys from 'lodash/keys'
+import { Children } from 'react'
+
+import combineRegExps from './combineRegExps'
 
 const PLACEHOLDERS = {
   id: '__id__',
@@ -37,8 +40,10 @@ export const spliceString = (str, start, end, insert) =>
  * Note: According to spec and testing, can count on length values coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
  */
 export const getComputedStyleLengthProp = (forElement, propertyName) => {
-  const length = parseFloat(window.getComputedStyle(forElement, null).getPropertyValue(propertyName))
-  return isFinite(length) ? length : 0;
+  const length = parseFloat(
+    window.getComputedStyle(forElement, null).getPropertyValue(propertyName)
+  )
+  return isFinite(length) ? length : 0
 }
 
 /**
@@ -99,21 +104,28 @@ export const getPositionOfCapturingGroup = (markup, parameterName, regex) => {
     return indexType === null ? null : sortedIndices.indexOf(indexType)
 }
 
+export const readConfigFromChildren = children =>
+  Children.toArray(children).map(
+    ({ props: { markup, regex, displayTransform } }) => ({
+      markup,
+      regex: regex || markupToRegex(markup),
+      displayTransform,
+    })
+  )
+
 // Finds all occurences of the markup in the value and iterates the plain text sub strings
 // in between those markups using `textIteratee` and the markup occurrences using the
 // `markupIteratee`.
 export const iterateMentionsMarkup = (
   value,
-  markup,
+  config,
   textIteratee,
-  markupIteratee,
-  displayTransform,
-  regex
+  markupIteratee
 ) => {
-  regex = regex || markupToRegex(markup)
+  const regex = combineRegExps(config.map(c => c.regex))
+
   let displayPos = getPositionOfCapturingGroup(markup, 'display', regex)
   let idPos = getPositionOfCapturingGroup(markup, 'id', regex)
-  let typePos = getPositionOfCapturingGroup(markup, 'type', regex)
 
   let match
   let start = 0
@@ -160,11 +172,9 @@ export const iterateMentionsMarkup = (
 //   - 'NULL' to return null
 export const mapPlainTextIndex = (
   value,
-  markup,
+  config,
   indexInPlainText,
-  inMarkupCorrection = 'START',
-  displayTransform,
-  regex
+  inMarkupCorrection = 'START'
 ) => {
   if (!isNumber(indexInPlainText)) {
     return indexInPlainText

@@ -31,13 +31,22 @@ Mention.propTypes = {
     PropTypes.string,
     PropTypes.instanceOf(RegExp),
   ]),
+  markup: PropTypes.string,
+  displayTransform: PropTypes.func,
+  /**
+   * If set to `true` spaces will not interrupt matching suggestions
+   */
+  allowSpaceInQuery: PropTypes.bool,
 
   isLoading: PropTypes.bool,
 }
 
 Mention.defaultProps = {
   trigger: '@',
-
+  markup: '@[__display__](__id__)',
+  displayTransform: function(id, display, type) {
+    return display
+  },
   onAdd: () => null,
   onRemove: () => null,
   renderSuggestion: null,

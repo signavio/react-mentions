@@ -2,8 +2,8 @@ import expect, { createSpy } from 'expect'
 import React from 'react'
 import { mount } from 'enzyme'
 
-import { MentionsInput, Mention } from '../src'
-import { _getTriggerRegex } from '../src/MentionsInput'
+import { MentionsInput, Mention } from './index'
+import { _getTriggerRegex } from './MentionsInput'
 
 const data = [
   { id: 'first', value: 'First entry' },

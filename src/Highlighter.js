@@ -4,7 +4,11 @@ import { defaultStyle } from 'substyle'
 import isEqual from 'lodash/isEqual'
 import isNumber from 'lodash/isNumber'
 
-import { iterateMentionsMarkup, mapPlainTextIndex } from './utils'
+import {
+  iterateMentionsMarkup,
+  mapPlainTextIndex,
+  readConfigFromChildren,
+} from './utils'
 import Mention from './Mention'
 
 const _generateComponentKey = (usedKeys, id) => {
@@ -22,13 +26,14 @@ class Highlighter extends Component {
       start: PropTypes.number,
       end: PropTypes.number,
     }).isRequired,
-
-    markup: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-
-    displayTransform: PropTypes.func.isRequired,
     onCaretPositionChange: PropTypes.func.isRequired,
     inputStyle: PropTypes.object,
+
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired,
   }
 
   static defaultProps = {
@@ -74,22 +79,14 @@ class Highlighter extends Component {
   }
 
   render() {
-    let {
-      selection,
-      value,
-      markup,
-      displayTransform,
-      style,
-      inputStyle,
-      regex,
-    } = this.props
+    let { selection, value, style, inputStyle, children } = this.props
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     let caretPositionInMarkup
     if (selection.start === selection.end) {
       caretPositionInMarkup = mapPlainTextIndex(
         value,
-        markup,
+        readConfigFromChildren(children),
         selection.start,
         'START',
         displayTransform,

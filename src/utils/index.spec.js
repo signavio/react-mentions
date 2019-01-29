@@ -1,5 +1,5 @@
 import expect, { createSpy } from 'expect'
-import * as utils from '../src/utils'
+import * as utils from './index'
 
 describe('utils', () => {
   const defaultMarkup = '@[__display__](__type__:__id__)'

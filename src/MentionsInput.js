@@ -74,23 +74,23 @@ const propTypes = {
    */
   singleLine: PropTypes.bool,
 
-  /**
-   * If set to `true` spaces will not interrupt matching suggestions
-   */
-  allowSpaceInQuery: PropTypes.bool,
-
-  markup: PropTypes.string,
   value: PropTypes.string,
-
-  displayTransform: PropTypes.func,
   onKeyDown: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
-  suggestionsPortalHost: typeof Element === 'undefined' ? PropTypes.any : PropTypes.PropTypes.instanceOf(Element),
+  suggestionsPortalHost:
+    typeof Element === 'undefined'
+      ? PropTypes.any
+      : PropTypes.PropTypes.instanceOf(Element),
   inputRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: typeof Element === 'undefined' ? PropTypes.any : PropTypes.instanceOf(Element) }),
+    PropTypes.shape({
+      current:
+        typeof Element === 'undefined'
+          ? PropTypes.any
+          : PropTypes.instanceOf(Element),
+    }),
   ]),
 
   children: PropTypes.oneOfType([
@@ -103,11 +103,7 @@ class MentionsInput extends React.Component {
   static propTypes = propTypes
 
   static defaultProps = {
-    markup: '@[__display__](__id__)',
     singleLine: false,
-    displayTransform: function(id, display, type) {
-      return display
-    },
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
@@ -239,15 +235,7 @@ class MentionsInput extends React.Component {
 
   renderHighlighter = inputStyle => {
     const { selectionStart, selectionEnd } = this.state
-    const {
-      markup,
-      displayTransform,
-      singleLine,
-      children,
-      value,
-      style,
-      regex,
-    } = this.props
+    const { singleLine, children, value, style } = this.props
 
     return (
       <Highlighter
@@ -257,8 +245,6 @@ class MentionsInput extends React.Component {
         style={style('highlighter')}
         inputStyle={inputStyle}
         value={value}
-        markup={markup}
-        displayTransform={displayTransform}
         singleLine={singleLine}
         selection={{
           start: selectionStart,
@@ -267,7 +253,6 @@ class MentionsInput extends React.Component {
         onCaretPositionChange={position =>
           this.setState({ caretPosition: position })
         }
-        regex={regex}
       >
         {children}
       </Highlighter>

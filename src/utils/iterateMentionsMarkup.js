@@ -22,10 +22,9 @@ const iterateMentionsMarkup = (value, config, textIteratee, markupIteratee) => {
 
   // detect all mention markup occurrences in the value and iterate the matches
   while ((match = regex.exec(value)) !== null) {
-    console.log('MATCH', match)
     const offset = captureGroupOffsets.find(o => !!match[o])
-    const mentionsChildIndex = captureGroupOffsets.indexOf(offset)
-    const { markup, displayTransform } = config[mentionsChildIndex]
+    const mentionChildIndex = captureGroupOffsets.indexOf(offset)
+    const { markup, displayTransform } = config[mentionChildIndex]
     const idPos = offset + findPositionOfCapturingGroup(markup, 'id')
     const displayPos = offset + findPositionOfCapturingGroup(markup, 'display')
 
@@ -35,22 +34,14 @@ const iterateMentionsMarkup = (value, config, textIteratee, markupIteratee) => {
     let substr = value.substring(start, match.index)
     textIteratee(substr, start, currentPlainTextIndex)
     currentPlainTextIndex += substr.length
-    console.log(
-      match[0],
-      match.index,
-      currentPlainTextIndex,
-      id,
-      display,
-      mentionsChildIndex,
-      start
-    )
+
     markupIteratee(
       match[0],
       match.index,
       currentPlainTextIndex,
       id,
       display,
-      mentionsChildIndex,
+      mentionChildIndex,
       start
     )
     currentPlainTextIndex += display.length

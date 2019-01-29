@@ -15,7 +15,6 @@ import {
   getPlainText,
   applyChangeToValue,
   findStartOfMentionInPlainText,
-  getComputedStyleLengthProp,
   getMentions,
   countSuggestions,
   getSuggestion,
@@ -27,7 +26,7 @@ import {
 import SuggestionsOverlay from './SuggestionsOverlay'
 import Highlighter from './Highlighter'
 
-export const _getTriggerRegex = function(trigger, options = {}) {
+export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
     return trigger
   } else {
@@ -44,7 +43,7 @@ export const _getTriggerRegex = function(trigger, options = {}) {
   }
 }
 
-const _getDataProvider = function(data) {
+const getDataProvider = function(data) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
     return function(query, callback) {
@@ -620,7 +619,7 @@ class MentionsInput extends React.Component {
         return
       }
 
-      const regex = _getTriggerRegex(child.props.trigger, this.props)
+      const regex = makeTriggerRegex(child.props.trigger, this.props)
       const match = substring.match(regex)
       if (match) {
         const querySequenceStart =
@@ -653,7 +652,7 @@ class MentionsInput extends React.Component {
     querySequenceEnd,
     plainTextValue
   ) => {
-    const provideData = _getDataProvider(mentionDescriptor.props.data)
+    const provideData = getDataProvider(mentionDescriptor.props.data)
     const snycResult = provideData(
       query,
       this.updateSuggestions.bind(
@@ -791,6 +790,17 @@ class MentionsInput extends React.Component {
   }
 
   _queryId = 0
+}
+
+/**
+ * Returns the computed length property value for the provided element.
+ * Note: According to spec and testing, can count on length values coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
+ */
+const getComputedStyleLengthProp = (forElement, propertyName) => {
+  const length = parseFloat(
+    window.getComputedStyle(forElement, null).getPropertyValue(propertyName)
+  )
+  return isFinite(length) ? length : 0
 }
 
 const isMobileSafari =

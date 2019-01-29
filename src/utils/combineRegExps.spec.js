@@ -1,3 +1,4 @@
+import expect from 'expect'
 import combineRegExps from './combineRegExps'
 
 describe('combineRegExps', () => {

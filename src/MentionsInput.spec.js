@@ -3,7 +3,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import { MentionsInput, Mention } from './index'
-import { _getTriggerRegex } from './MentionsInput'
+import { makeTriggerRegex } from './MentionsInput'
 
 const data = [
   { id: 'first', value: 'First entry' },
@@ -194,19 +194,19 @@ describe('MentionsInput', () => {
     expect(inputRef).toHaveBeenCalledWith(el)
   })
 
-  describe('_getTriggerRegex', () => {
+  describe('makeTriggerRegex', () => {
     it('should return regular expressions', () => {
       const trigger = /abc/
-      expect(_getTriggerRegex(trigger)).toEqual(trigger)
+      expect(makeTriggerRegex(trigger)).toEqual(trigger)
     })
 
     it('should escape and capture a string trigger', () => {
-      const result = _getTriggerRegex('trigger').toString()
+      const result = makeTriggerRegex('trigger').toString()
       expect(result).toEqual('/(?:^|\\s)(trigger([^\\strigger]*))$/')
     })
 
     it('should allow spaces in search', () => {
-      const result = _getTriggerRegex('trigger', {
+      const result = makeTriggerRegex('trigger', {
         allowSpaceInQuery: true,
       }).toString()
       expect(result).toEqual('/(?:^|\\s)(trigger([^trigger]*))$/')

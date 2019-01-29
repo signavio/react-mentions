@@ -24,9 +24,7 @@ describe('#iterateMentionsMarkup', () => {
   const plainText =
     "Hi John Doe, \n\nlet's add joe@smoe.com to this conversation..."
 
-  const displayTransform = function(id) {
-    return '<--' + id + '-->'
-  }
+  const displayTransform = id => `<--${id}-->`
   const plainTextDisplayTransform =
     "Hi <--johndoe-->, \n\nlet's add <--joe@smoe.com--> to this conversation..."
 

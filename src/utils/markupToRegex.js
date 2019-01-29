@@ -1,6 +1,5 @@
 import PLACEHOLDERS from './placeholders'
-
-const escapeRegex = str => str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+import escapeRegex from './escapeRegex'
 
 const markupToRegex = markup => {
   const markupPattern = escapeRegex(markup)

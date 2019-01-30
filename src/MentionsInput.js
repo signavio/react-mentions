@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Children } from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 
@@ -20,11 +20,13 @@ import {
   getSuggestion,
   getEndOfLastMention,
   mapPlainTextIndex,
+  readConfigFromChildren,
   spliceString,
   makeMentionsMarkup,
 } from './utils'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import Highlighter from './Highlighter'
+import { read } from 'fs'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -201,6 +203,7 @@ class MentionsInput extends React.Component {
       // do not show suggestions when the input does not have the focus
       return null
     }
+
     const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
@@ -220,7 +223,9 @@ class MentionsInput extends React.Component {
           })
         }
         isLoading={this.isLoading()}
-      />
+      >
+        {this.props.children}
+      </SuggestionsOverlay>
     )
     if (this.props.suggestionsPortalHost) {
       return ReactDOM.createPortal(
@@ -262,9 +267,7 @@ class MentionsInput extends React.Component {
   getPlainText = () => {
     return getPlainText(
       this.props.value || '',
-      this.props.markup,
-      this.props.displayTransform,
-      this.props.regex
+      readConfigFromChildren(this.props.children)
     )
   }
 
@@ -290,24 +293,22 @@ class MentionsInput extends React.Component {
     }
 
     const value = this.props.value || ''
-    const { markup, displayTransform, regex } = this.props
+    const config = readConfigFromChildren(this.props.children)
 
     let newPlainTextValue = ev.target.value
 
     // Derive the new value to set by applying the local change in the textarea's plain text
     let newValue = applyChangeToValue(
       value,
-      markup,
+      config,
       newPlainTextValue,
       this.state.selectionStart,
       this.state.selectionEnd,
-      ev.target.selectionEnd,
-      displayTransform,
-      regex
+      ev.target.selectionEnd
     )
 
     // In case a mention is deleted, also adjust the new plain text value
-    newPlainTextValue = getPlainText(newValue, markup, displayTransform, regex)
+    newPlainTextValue = getPlainText(newValue, config)
 
     // Save current selection after change to be able to restore caret position after rerendering
     let selectionStart = ev.target.selectionStart
@@ -318,10 +319,8 @@ class MentionsInput extends React.Component {
     // selection range that are automatically deleted
     let startOfMention = findStartOfMentionInPlainText(
       value,
-      markup,
-      selectionStart,
-      displayTransform,
-      regex
+      config,
+      selectionStart
     )
 
     if (
@@ -340,7 +339,7 @@ class MentionsInput extends React.Component {
       setSelectionAfterMentionChange: setSelectionAfterMentionChange,
     })
 
-    let mentions = getMentions(newValue, markup, displayTransform, regex)
+    let mentions = getMentions(newValue, config)
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;
@@ -427,10 +426,8 @@ class MentionsInput extends React.Component {
   }
 
   selectFocused = () => {
-    let { suggestions, focusIndex } = this.state
-    let { suggestion, descriptor } = getSuggestion(suggestions, focusIndex)
-
-    this.addMention(suggestion, descriptor)
+    const { suggestions, focusIndex } = this.state
+    this.addMention(getSuggestion(suggestions, focusIndex))
 
     this.setState({
       focusIndex: 0,
@@ -585,14 +582,14 @@ class MentionsInput extends React.Component {
     })
 
     const value = this.props.value || ''
-    const { markup, displayTransform, children, regex } = this.props
+    const { children } = this.props
+    const config = readConfigFromChildren(children)
+
     const positionInValue = mapPlainTextIndex(
       value,
-      markup,
+      config,
       caretPosition,
-      'NULL',
-      displayTransform,
-      regex
+      'NULL'
     )
 
     // If caret is inside of mention, do not query
@@ -603,9 +600,7 @@ class MentionsInput extends React.Component {
     // Extract substring in between the end of the previous mention and the caret
     const substringStartIndex = getEndOfLastMention(
       value.substring(0, positionInValue),
-      markup,
-      displayTransform,
-      regex
+      config
     )
     const substring = plainTextValue.substring(
       substringStartIndex,
@@ -614,7 +609,7 @@ class MentionsInput extends React.Component {
 
     // Check if suggestions have to be shown:
     // Match the trigger patterns of all Mention children on the extracted substring
-    React.Children.forEach(children, child => {
+    React.Children.forEach(children, (child, childIndex) => {
       if (!child) {
         return
       }
@@ -626,7 +621,7 @@ class MentionsInput extends React.Component {
           substringStartIndex + substring.indexOf(match[1], match.index)
         this.queryData(
           match[2],
-          child,
+          childIndex,
           querySequenceStart,
           querySequenceStart + match[1].length,
           plainTextValue
@@ -647,45 +642,46 @@ class MentionsInput extends React.Component {
 
   queryData = (
     query,
-    mentionDescriptor,
+    childIndex,
     querySequenceStart,
     querySequenceEnd,
     plainTextValue
   ) => {
-    const provideData = getDataProvider(mentionDescriptor.props.data)
-    const snycResult = provideData(
+    const mentionChild = Children.toArray(this.props.children)[childIndex]
+    const provideData = getDataProvider(mentionChild.props.data)
+    const syncResult = provideData(
       query,
       this.updateSuggestions.bind(
         null,
         this._queryId,
-        mentionDescriptor,
+        childIndex,
         query,
         querySequenceStart,
         querySequenceEnd,
         plainTextValue
       )
     )
-    if (snycResult instanceof Array) {
+    if (syncResult instanceof Array) {
       this.updateSuggestions(
         this._queryId,
-        mentionDescriptor,
+        childIndex,
         query,
         querySequenceStart,
         querySequenceEnd,
         plainTextValue,
-        snycResult
+        syncResult
       )
     }
   }
 
   updateSuggestions = (
     queryId,
-    mentionDescriptor,
+    childIndex,
     query,
     querySequenceStart,
     querySequenceEnd,
     plainTextValue,
-    suggestions
+    results
   ) => {
     // neglect async results from previous queries
     if (queryId !== this._queryId) return
@@ -694,12 +690,12 @@ class MentionsInput extends React.Component {
     // won't overwrite each other
     this.suggestions = {
       ...this.suggestions,
-      [mentionDescriptor.props.type]: {
+      [childIndex]: {
+        childIndex,
         query: query,
-        mentionDescriptor: mentionDescriptor,
         querySequenceStart: querySequenceStart,
         querySequenceEnd: querySequenceEnd,
-        results: suggestions,
+        results,
         plainTextValue: plainTextValue,
       },
     }
@@ -717,41 +713,35 @@ class MentionsInput extends React.Component {
 
   addMention = (
     suggestion,
-    { mentionDescriptor, querySequenceStart, querySequenceEnd, plainTextValue }
+    { querySequenceStart, querySequenceEnd, plainTextValue }
   ) => {
     // Insert mention in the marked up value at the correct position
     const value = this.props.value || ''
-    const { markup, displayTransform, regex } = this.props
-    const start = mapPlainTextIndex(
-      value,
+    const config = readConfigFromChildren(this.props.children)
+    const mentionsChild = Children.toArray(this.props.children)[
+      suggestion.childIndex
+    ]
+    const {
       markup,
-      querySequenceStart,
-      'START',
       displayTransform,
-      regex
-    )
+      appendSpaceOnAdd,
+      onAdd,
+    } = mentionsChild.props
+
+    const start = mapPlainTextIndex(value, config, querySequenceStart, 'START')
     const end = start + querySequenceEnd - querySequenceStart
-    let insert = makeMentionsMarkup(
-      markup,
-      suggestion.id,
-      suggestion.display,
-      mentionDescriptor.props.type
-    )
-    if (mentionDescriptor.props.appendSpaceOnAdd) {
-      insert = insert + ' '
+    let insert = makeMentionsMarkup(markup, suggestion.id, suggestion.display)
+    if (appendSpaceOnAdd) {
+      insert += ' '
     }
     const newValue = spliceString(value, start, end, insert)
 
     // Refocus input and set caret position to end of mention
     this.inputRef.focus()
 
-    let displayValue = displayTransform(
-      suggestion.id,
-      suggestion.display,
-      mentionDescriptor.props.type
-    )
-    if (mentionDescriptor.props.appendSpaceOnAdd) {
-      displayValue = displayValue + ' '
+    let displayValue = displayTransform(suggestion.id, suggestion.display)
+    if (appendSpaceOnAdd) {
+      displayValue += ' '
     }
     const newCaretPosition = querySequenceStart + displayValue.length
     this.setState({
@@ -762,7 +752,7 @@ class MentionsInput extends React.Component {
 
     // Propagate change
     const eventMock = { target: { value: newValue } }
-    const mentions = getMentions(newValue, markup, displayTransform, regex)
+    const mentions = getMentions(newValue, config)
     const newPlainTextValue = spliceString(
       plainTextValue,
       querySequenceStart,
@@ -772,7 +762,6 @@ class MentionsInput extends React.Component {
 
     this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
 
-    const onAdd = mentionDescriptor.props.onAdd
     if (onAdd) {
       onAdd(suggestion.id, suggestion.display)
     }

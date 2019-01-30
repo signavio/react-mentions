@@ -1,10 +1,10 @@
 const getSuggestions = suggestions =>
   Object.keys(suggestions).reduce(
-    (acc, mentionType) => [
+    (acc, childIndex) => [
       ...acc,
       {
-        suggestions: suggestions[mentionType].results,
-        descriptor: suggestions[mentionType],
+        suggestions: suggestions[childIndex].results,
+        descriptor: suggestions[childIndex],
       },
     ],
     []

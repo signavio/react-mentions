@@ -54,10 +54,9 @@ describe('MentionsInput', () => {
   it('should be able to handle sync responses from multiple mentions sources', () => {
     const wrapper = mount(
       <MentionsInput value="@">
-        <Mention trigger="@" type="testentries" data={data} />
+        <Mention trigger="@" data={data} />
         <Mention
           trigger="@"
-          type="testchars"
           data={[{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]}
         />
       </MentionsInput>,
@@ -90,7 +89,7 @@ describe('MentionsInput', () => {
           'multiple lines causing \n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n the textarea to scroll'
         }
       >
-        <Mention trigger="@" type="testentries" data={data} />
+        <Mention trigger="@" data={data} />
       </MentionsInput>,
       {
         attachTo: host,
@@ -144,16 +143,17 @@ describe('MentionsInput', () => {
   it('should accept a custom regex attribute', () => {
     const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
     const wrapper = mount(
-      <MentionsInput
-        value=":aaaa and :bbbb and :invalidId"
-        markup=":__id__"
-        regex={/:(\S+)/g}
-        displayTransform={id => {
-          let mention = data.find(item => item.id === id)
-          return mention ? mention.display : `:${id}`
-        }}
-      >
-        <Mention trigger="@" data={data} />
+      <MentionsInput value=":aaaa and :bbbb and :invalidId">
+        <Mention
+          trigger="@"
+          data={data}
+          markup=":__id__"
+          regex={/:(\S+)/}
+          displayTransform={id => {
+            let mention = data.find(item => item.id === id)
+            return mention ? mention.display : `:${id}`
+          }}
+        />
       </MentionsInput>,
       {
         attachTo: host,

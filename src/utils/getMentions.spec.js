@@ -30,14 +30,14 @@ describe('#getMentions', () => {
       {
         id: 'johndoe',
         display: 'John Doe',
-        type: 'user',
+        childIndex: 0,
         index: 3,
         plainTextIndex: 3,
       },
       {
         id: 'joe@smoe.com',
         display: 'joe@smoe.com',
-        type: 'email',
+        childIndex: 1,
         index: 42,
         plainTextIndex: 25,
       },
@@ -53,14 +53,14 @@ describe('#getMentions', () => {
       {
         id: 'johndoe',
         display: '<--johndoe-->',
-        type: 'user',
+        childIndex: 0,
         index: 3,
         plainTextIndex: 3,
       },
       {
         id: 'joe@smoe.com',
         display: '<--joe@smoe.com-->',
-        type: 'email',
+        childIndex: 1,
         index: 42,
         plainTextIndex: 30,
       },

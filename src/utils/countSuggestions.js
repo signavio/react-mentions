@@ -1,6 +1,6 @@
 const countSuggestions = suggestions =>
-  Object.keys(suggestions).reduce(
-    (acc, prop) => acc + suggestions[prop].results.length,
+  Object.values(suggestions).reduce(
+    (acc, { results }) => acc + results.length,
     0
   )
 

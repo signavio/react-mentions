@@ -6,7 +6,6 @@ export {
 } from './findStartOfMentionInPlainText'
 export { default as getMentions } from './getMentions'
 export { default as countSuggestions } from './countSuggestions'
-export { default as getSuggestion } from './getSuggestion'
 export { default as getEndOfLastMention } from './getEndOfLastMention'
 export { default as mapPlainTextIndex } from './mapPlainTextIndex'
 export { default as readConfigFromChildren } from './readConfigFromChildren'

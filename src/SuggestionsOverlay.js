@@ -75,25 +75,20 @@ class SuggestionsOverlay extends Component {
 
   renderSuggestions() {
     return Object.values(this.props.suggestions).reduce(
-      (accResults, { childIndex, results, query }) => [
+      (accResults, { results, queryInfo }) => [
         ...accResults,
         ...results.map((result, index) =>
-          this.renderSuggestion(
-            result,
-            childIndex,
-            query,
-            accResults.length + index
-          )
+          this.renderSuggestion(result, queryInfo, accResults.length + index)
         ),
       ],
       []
     )
   }
 
-  renderSuggestion(result, childIndex, query, index) {
+  renderSuggestion(result, queryInfo, index) {
     const id = this.getID(result)
     const isFocused = index === this.props.focusIndex
-
+    const { childIndex, query } = queryInfo
     const { renderSuggestion } = Children.toArray(this.props.children)[
       childIndex
     ].props
@@ -108,7 +103,7 @@ class SuggestionsOverlay extends Component {
         renderSuggestion={renderSuggestion}
         suggestion={result}
         focused={isFocused}
-        onClick={() => this.select(result)}
+        onClick={() => this.select(result, queryInfo)}
         onMouseEnter={() => this.handleMouseEnter(index)}
       />
     )
@@ -136,8 +131,8 @@ class SuggestionsOverlay extends Component {
     }
   }
 
-  select(suggestion) {
-    this.props.onSelect(suggestion)
+  select(suggestion, queryInfo) {
+    this.props.onSelect(suggestion, queryInfo)
   }
 }
 

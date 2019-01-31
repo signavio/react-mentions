@@ -31,7 +31,7 @@ function Emojis({ value, data, onChange, onAdd }) {
           displayTransform={username => `@${username}`}
           markup="@__id__"
           data={data}
-          regex={/@(\S+)/g}
+          regex={/@(\S+)/}
           appendSpaceOnAdd={true}
           style={defaultMentionStyle}
         />

@@ -27,11 +27,10 @@ function Scrollable({ value, data, onChange, onAdd }) {
         value={value}
         onChange={onChange}
         style={style}
-        markup="@[__display__](__type__:__id__)"
         placeholder={"Mention people using '@'"}
       >
         <Mention
-          type="user"
+          markup="@[__display__](user:__id__)"
           trigger="@"
           data={data}
           renderSuggestion={(suggestion, search, highlightedDisplay) => (

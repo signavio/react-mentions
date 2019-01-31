@@ -21,11 +21,10 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
         value={value}
         onChange={onChange}
         style={defaultStyle}
-        markup="@[__display__](__type__:__id__)"
         placeholder={"Mention people using '@'"}
       >
         <Mention
-          type="user"
+          markup="@[__display__](user:__id__)"
           trigger="@"
           data={data}
           renderSuggestion={(
@@ -44,7 +43,7 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
         />
 
         <Mention
-          type="email"
+          markup="@[__display__](email:__id__)"
           trigger={emailRegex}
           data={search => [{ id: search, display: search }]}
           onAdd={onAdd}

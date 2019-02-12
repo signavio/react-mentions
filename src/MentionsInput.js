@@ -311,16 +311,17 @@ class MentionsInput extends React.Component {
     let newPlainTextValue = ev.target.value
 
     // Derive the new value to set by applying the local change in the textarea's plain text
-    let newValue = applyChangeToValue(
-      value,
-      markup,
-      newPlainTextValue,
-      this.state.selectionStart,
-      this.state.selectionEnd,
-      ev.target.selectionEnd,
-      displayTransform,
-      regex
-    )
+    let newValue = newPlainTextValue === '@' ?
+      applyChangeToValue(
+        value,
+        markup,
+        newPlainTextValue,
+        this.state.selectionStart,
+        this.state.selectionEnd,
+        ev.target.selectionEnd,
+        displayTransform,
+        regex
+      ) : newPlainTextValue
 
     // In case a mention is deleted, also adjust the new plain text value
     newPlainTextValue = getPlainText(newValue, markup, displayTransform, regex)

@@ -566,8 +566,12 @@ class MentionsInput extends React.Component {
     this.updateSuggestionsPosition()
   }
 
-  componentDidUpdate(prevProps) {
-    this.updateSuggestionsPosition()
+  componentDidUpdate(prevProps, prevState) {
+    // Update position of suggestions unless this componentDidUpdate was
+    // triggered by an update to suggestionsPosition.
+    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
+      this.updateSuggestionsPosition()
+    }
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end

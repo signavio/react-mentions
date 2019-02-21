@@ -9,7 +9,6 @@ import {
   mapPlainTextIndex,
   readConfigFromChildren,
 } from './utils'
-import Mention from './Mention'
 
 const _generateComponentKey = (usedKeys, id) => {
   if (!usedKeys.hasOwnProperty(id)) {

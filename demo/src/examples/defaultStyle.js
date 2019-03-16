@@ -2,7 +2,7 @@ export default {
   control: {
     backgroundColor: '#fff',
 
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'normal',
   },
 
@@ -56,7 +56,7 @@ export default {
     list: {
       backgroundColor: 'white',
       border: '1px solid rgba(0,0,0,0.15)',
-      fontSize: 10,
+      fontSize: 14,
     },
 
     item: {

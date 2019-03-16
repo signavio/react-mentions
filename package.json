@@ -39,8 +39,6 @@
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "condition-circle": "^2.0.1",
-    "emojis-keywords": "^2.0.0",
-    "emojis-unicode": "^1.0.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",

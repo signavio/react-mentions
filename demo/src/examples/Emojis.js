@@ -1,19 +1,18 @@
 import React from 'react'
-import emojisUnicode from 'emojis-unicode'
-import emojisKeywords from 'emojis-keywords'
 
 import { Mention, MentionsInput } from '../../../src'
 
 import { provideExampleValue } from './higher-order'
-import defaultStyle from './defaultStyle'
+import emojiExampleStyle from './emojiExampleStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
-const emojis = emojisUnicode.map((charCode, index) => ({
-  id: emojisKeywords[index].substring(1, emojisKeywords[index].length - 1),
-  display: `${String.fromCodePoint(parseInt(charCode, 16))} ${
-    emojisKeywords[index]
-  }`,
-}))
+const queryEmojis = async (query, callback) => {
+  const url = new URL('https://emoji.getdango.com/api/emoji')
+  url.searchParams.append('q', query)
+  const { results } = await fetch(url).then(res => res.json())
+  callback(results.map(({ text }) => ({ id: text })))
+}
+const neverMatchingRegex = /($a)/
 
 function Emojis({ value, data, onChange, onAdd }) {
   return (
@@ -23,7 +22,7 @@ function Emojis({ value, data, onChange, onAdd }) {
       <MentionsInput
         value={value}
         onChange={onChange}
-        style={defaultStyle}
+        style={emojiExampleStyle}
         placeholder={"Press ':' for emojis, mention people using '@'"}
       >
         <Mention
@@ -32,18 +31,14 @@ function Emojis({ value, data, onChange, onAdd }) {
           markup="@__id__"
           data={data}
           regex={/@(\S+)/}
-          appendSpaceOnAdd={true}
           style={defaultMentionStyle}
+          appendSpaceOnAdd
         />
         <Mention
           trigger=":"
-          // displayTransform={id => {
-          //   const emoji = emojis.find(emoji => emoji.id === id)
-          //   return emoji ? emoji.char : `:${id}:`
-          // }}
           markup=":__id__:"
-          data={emojis}
-          appendSpaceOnAdd={true}
+          regex={neverMatchingRegex}
+          data={queryEmojis}
           // renderSuggestion={renderEmojiSuggestion}
         />
       </MentionsInput>

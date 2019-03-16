@@ -9,7 +9,7 @@ const readConfigFromChildren = children =>
       regex: regex
         ? coerceCapturingGroups(regex, markup)
         : markupToRegex(markup),
-      displayTransform: displayTransform || ((id, display) => display),
+      displayTransform: displayTransform || ((id, display) => display || id),
     })
   )
 

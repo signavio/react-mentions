@@ -44,8 +44,8 @@ Mention.propTypes = {
 Mention.defaultProps = {
   trigger: '@',
   markup: '@[__display__](__id__)',
-  displayTransform: function(id, display, type) {
-    return display
+  displayTransform: function(id, display) {
+    return display || id
   },
   onAdd: () => null,
   onRemove: () => null,

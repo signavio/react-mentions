@@ -7,21 +7,7 @@
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
-##### Used in production at:
-
-* [Signavio](https://signavio.com)
-* [State](https://state.com)
-* [Snips](https://snips.ai)
-* [Swat.io](https://swat.io)
-* [GotDone](https://www.gotdone.me)
-* [Volinspire](https://volinspire.com)
-* [Marvin](https://amazingmarvin.com)
-* [Timely](https://timelyapp.com)
-* [GuideFitter](https://www.guidefitter.com/)
-* [Evite](https://www.evite.com/)
-* [Publer](https://publer.me/)
-
-Please [let us know](mailto:wolf.pack@signavio.com?subject=we're%20using%20react-mentions%20at%20...) if you are using react-mentions, we'd love to add you to this list.
+Used in production at [Signavio](https://signavio.com), [State](https://state.com), [Snips](https://snips.ai), [Swat.io](https://swat.io), [GotDone](https://www.gotdone.me), [Volinspire](https://volinspire.com), [Marvin](https://amazingmarvin.com), [Timely](https://timelyapp.com), [GuideFitter](https://www.guidefitter.com/), [Evite](https://www.evite.com/), [Publer](https://publer.me/), and [you?](https://github.com/signavio/react-mentions/edit/master/README.md)
 
 ## Getting started
 
@@ -31,7 +17,13 @@ Install the _react-mentions_ package via npm:
 npm install react-mentions --save
 ```
 
-Require the _react-mentions_ package, which exports the two relevant React components for rendering the mentions textarea:
+Or yarn:
+
+```
+yarn add react-mentions
+```
+
+The package exports two React components for rendering the mentions textarea:
 
 ```javascript
 import { MentionsInput, Mention } from 'react-mentions'
@@ -62,28 +54,28 @@ You can find more examples here: [demo/src/examples](https://github.com/signavio
 
 The `MentionsInput` supports the following props for configuring the widget:
 
-| Prop name             | Type                                                    | Default value              | Description                                                                            |
-| --------------------- | ------------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------- |
-| value                 | string                                                  | `''`                       | The value containing markup for mentions                                               |
-| onChange              | function (event, newValue, newPlainTextValue, mentions) | empty function             | A callback that is invoked when the user changes the value in the mentions input       |
-| markup                | string                                                  | `'@[__display__](__id__)'` | A template string for the markup to use for mentions                                   |
-| singleLine            | boolean                                                 | `false`                    | Renders a single line text input instead of a textarea, if set to `true`               |
-| displayTransform      | function (id, display, type)                            | returns `display`          | Accepts a function for customizing the string that is displayed for a mention          |
-| onBlur                | function (event, clickedSuggestion)                     | empty function             | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
-| allowSpaceInQuery     | boolean                                                 | false                      | Keep suggestions open even if the user separates keywords with spaces.                 |
-| suggestionsPortalHost | DOM Element                                             | undefined                  | Render suggestions into the DOM in the supplied host element.                          |
-| inputRef              | React ref                                               | undefined                  | Accepts a React ref to forward to the underlying input element                         |
+| Prop name             | Type                                                    | Default value  | Description                                                                            |
+| --------------------- | ------------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------- |
+| value                 | string                                                  | `''`           | The value containing markup for mentions                                               |
+| onChange              | function (event, newValue, newPlainTextValue, mentions) | empty function | A callback that is invoked when the user changes the value in the mentions input       |
+| singleLine            | boolean                                                 | `false`        | Renders a single line text input instead of a textarea, if set to `true`               |
+| onBlur                | function (event, clickedSuggestion)                     | empty function | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
+| allowSpaceInQuery     | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
+| suggestionsPortalHost | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
+| inputRef              | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 
 Each data source is configured using a `Mention` component, which has the following props:
 
-| Prop name        | Type                                                         | Default value  | Description                                                                                                                                            |
-| ---------------- | ------------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| trigger          | regexp or string                                             | `'@'`          | Defines the char sequence upon which to trigger querying the data source                                                                               |
-| type             | string                                                       | `null`         | Identifier for the data source, when using multiple data sources (optional)                                                                            |
-| data             | array or function (search, callback)                         | `null`         | An array of the mentionable data entries (objects with `id` & `display` keys, or a filtering function that returns an array based on a query parameter |
-| renderSuggestion | function (entry, search, highlightedDisplay, index, focused) | `null`         | Allows customizing how mention suggestions are rendered (optional)                                                                                     |
-| onAdd            | function (id, display)                                       | empty function | Callback invoked when a suggestion has been added (optional)                                                                                           |
-| appendSpaceOnAdd | boolean                                                      | false          | Append a space when a suggestion has been added (optional)                                                                                             |
+| Prop name        | Type                                                         | Default value                               | Description                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| trigger          | regexp or string                                             | `'@'`                                       | Defines the char sequence upon which to trigger querying the data source                                                                               |
+| data             | array or function (search, callback)                         | `null`                                      | An array of the mentionable data entries (objects with `id` & `display` keys, or a filtering function that returns an array based on a query parameter |
+| renderSuggestion | function (entry, search, highlightedDisplay, index, focused) | `null`                                      | Allows customizing how mention suggestions are rendered (optional)                                                                                     |
+| markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
+| displayTransform | function (id, display)                                       | returns `display`                           | Accepts a function for customizing the string that is displayed for a mention                                                                          |
+| regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |  |
+| onAdd            | function (id, display)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
+| appendSpaceOnAdd | boolean                                                      | `false`                                     | Append a space when a suggestion has been added (optional)                                                                                             |
 
 If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)
 

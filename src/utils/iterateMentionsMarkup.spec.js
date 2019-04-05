@@ -30,7 +30,7 @@ describe('#iterateMentionsMarkup', () => {
 
   it('should call the `markupIteratee` for every markup occurrence', () => {
     const markupIteratee = createSpy()
-    iterateMentionsMarkup(value, config, () => {}, markupIteratee)
+    iterateMentionsMarkup(value, config, markupIteratee)
 
     expect(markupIteratee.calls.length).toEqual(2)
     expect(markupIteratee).toHaveBeenCalledWith(
@@ -60,7 +60,6 @@ describe('#iterateMentionsMarkup', () => {
     iterateMentionsMarkup(
       value,
       config.map(c => ({ ...c, displayTransform })),
-      () => {},
       markupIteratee
     )
     const plainTextWithDisplayTransform =
@@ -90,7 +89,7 @@ describe('#iterateMentionsMarkup', () => {
 
   it('should call the `textIteratee` for all plain text sub string between markups', () => {
     const textIteratee = createSpy()
-    iterateMentionsMarkup(value, config, textIteratee, () => {})
+    iterateMentionsMarkup(value, config, () => {}, textIteratee)
 
     expect(textIteratee.calls.length).toEqual(3)
     expect(textIteratee).toHaveBeenCalledWith('Hi ', 0, 0)
@@ -111,7 +110,6 @@ describe('#iterateMentionsMarkup', () => {
     iterateMentionsMarkup(
       value,
       config.map(c => ({ ...c, displayTransform })),
-      () => {},
       markupIteratee
     )
 
@@ -142,8 +140,8 @@ describe('#iterateMentionsMarkup', () => {
     iterateMentionsMarkup(
       value,
       config.map(c => ({ ...c, displayTransform })),
-      textIteratee,
-      () => {}
+      () => {},
+      textIteratee
     )
 
     expect(textIteratee.calls.length).toEqual(3)

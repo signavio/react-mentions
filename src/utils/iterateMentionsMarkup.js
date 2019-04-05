@@ -2,10 +2,16 @@ import findPositionOfCapturingGroup from './findPositionOfCapturingGroup'
 import combineRegExps from './combineRegExps'
 import countPlaceholders from './countPlaceholders'
 
-// Finds all occurrences of the markup in the value and iterates the plain text sub strings
-// in between those markups using `textIteratee` and the markup occurrences using the
-// `markupIteratee`.
-const iterateMentionsMarkup = (value, config, textIteratee, markupIteratee) => {
+const emptyFn = () => {}
+
+// Finds all occurrences of the markup in the value and calls the `markupIteratee` callback for each of them.
+// The optional `textIteratee` callback is called for each plain text ranges in between these markup occurrences.
+const iterateMentionsMarkup = (
+  value,
+  config,
+  markupIteratee,
+  textIteratee = emptyFn
+) => {
   const regex = combineRegExps(config.map(c => c.regex))
 
   let accOffset = 2 // first is whole match, second is the for the capturing group of first regexp component

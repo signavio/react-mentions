@@ -146,7 +146,7 @@ class Highlighter extends Component {
       )
     }
 
-    iterateMentionsMarkup(value, config, textIteratee, mentionIteratee)
+    iterateMentionsMarkup(value, config, mentionIteratee, textIteratee)
 
     // append a span containing a space, to ensure the last text line has the correct height
     components.push(' ')

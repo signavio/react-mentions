@@ -5,7 +5,6 @@ const getMentions = (value, config) => {
   iterateMentionsMarkup(
     value,
     config,
-    () => {},
     (match, index, plainTextIndex, id, display, childIndex, start) => {
       mentions.push({
         id: id,

@@ -49,7 +49,7 @@ const mapPlainTextIndex = (
     }
   }
 
-  iterateMentionsMarkup(value, config, textIteratee, markupIteratee)
+  iterateMentionsMarkup(value, config, markupIteratee, textIteratee)
 
   // when a mention is at the end of the value and we want to get the caret position
   // at the end of the string, result is undefined

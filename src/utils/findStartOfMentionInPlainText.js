@@ -24,7 +24,7 @@ const findStartOfMentionInPlainText = (value, config, indexInPlainText) => {
       foundMention = true
     }
   }
-  iterateMentionsMarkup(value, config, () => {}, markupIteratee)
+  iterateMentionsMarkup(value, config, markupIteratee)
 
   if (foundMention) {
     return result

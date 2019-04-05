@@ -5,11 +5,11 @@ const getPlainText = (value, config) => {
   iterateMentionsMarkup(
     value,
     config,
-    plainText => {
-      result += plainText
-    },
     (match, index, plainTextIndex, id, display) => {
       result += display
+    },
+    plainText => {
+      result += plainText
     }
   )
   return result

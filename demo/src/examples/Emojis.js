@@ -36,10 +36,9 @@ function Emojis({ value, data, onChange, onAdd }) {
         />
         <Mention
           trigger=":"
-          markup=":__id__:"
+          markup="__id__"
           regex={neverMatchingRegex}
           data={queryEmojis}
-          // renderSuggestion={renderEmojiSuggestion}
         />
       </MentionsInput>
     </div>

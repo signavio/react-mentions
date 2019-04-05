@@ -6,51 +6,40 @@ import spliceString from './spliceString'
 // guided by the textarea text selection ranges before and after the change
 const applyChangeToValue = (
   value,
-  config,
   plainTextValue,
-  selectionStartBeforeChange,
-  selectionEndBeforeChange,
-  selectionEndAfterChange
+  { selectionStartBefore, selectionEndBefore, selectionEndAfter },
+  config
 ) => {
   let oldPlainTextValue = getPlainText(value, config)
 
   let lengthDelta = oldPlainTextValue.length - plainTextValue.length
-  if (selectionStartBeforeChange === 'undefined') {
-    selectionStartBeforeChange = selectionEndAfterChange + lengthDelta
+  if (selectionStartBefore === 'undefined') {
+    selectionStartBefore = selectionEndAfter + lengthDelta
   }
 
-  if (selectionEndBeforeChange === 'undefined') {
-    selectionEndBeforeChange = selectionStartBeforeChange
+  if (selectionEndBefore === 'undefined') {
+    selectionEndBefore = selectionStartBefore
   }
 
   // Fixes an issue with replacing combined characters for complex input. Eg like acented letters on OSX
   if (
-    selectionStartBeforeChange === selectionEndBeforeChange &&
-    selectionEndBeforeChange === selectionEndAfterChange &&
+    selectionStartBefore === selectionEndBefore &&
+    selectionEndBefore === selectionEndAfter &&
     oldPlainTextValue.length === plainTextValue.length
   ) {
-    selectionStartBeforeChange = selectionStartBeforeChange - 1
+    selectionStartBefore = selectionStartBefore - 1
   }
 
   // extract the insertion from the new plain text value
-  let insert = plainTextValue.slice(
-    selectionStartBeforeChange,
-    selectionEndAfterChange
-  )
+  let insert = plainTextValue.slice(selectionStartBefore, selectionEndAfter)
 
   // handling for Backspace key with no range selection
-  let spliceStart = Math.min(
-    selectionStartBeforeChange,
-    selectionEndAfterChange
-  )
+  let spliceStart = Math.min(selectionStartBefore, selectionEndAfter)
 
-  let spliceEnd = selectionEndBeforeChange
-  if (selectionStartBeforeChange === selectionEndAfterChange) {
+  let spliceEnd = selectionEndBefore
+  if (selectionStartBefore === selectionEndAfter) {
     // handling for Delete key with no range selection
-    spliceEnd = Math.max(
-      selectionEndBeforeChange,
-      selectionStartBeforeChange + lengthDelta
-    )
+    spliceEnd = Math.max(selectionEndBefore, selectionStartBefore + lengthDelta)
   }
 
   let mappedSpliceStart = mapPlainTextIndex(value, config, spliceStart, 'START')
@@ -75,11 +64,11 @@ const applyChangeToValue = (
         spliceStart++
 
       // extract auto-corrected insertion
-      insert = plainTextValue.slice(spliceStart, selectionEndAfterChange)
+      insert = plainTextValue.slice(spliceStart, selectionEndAfter)
 
       // find index of the unchanged remainder
       spliceEnd = oldPlainTextValue.lastIndexOf(
-        plainTextValue.substring(selectionEndAfterChange)
+        plainTextValue.substring(selectionEndAfter)
       )
 
       // re-map the corrected indices

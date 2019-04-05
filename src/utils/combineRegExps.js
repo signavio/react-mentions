@@ -1,3 +1,5 @@
+import invariant from 'invariant'
+
 const combineRegExps = regExps => {
   const serializedRegexParser = /^\/(.+)\/(\w+)?$/
   return new RegExp(
@@ -7,11 +9,10 @@ const combineRegExps = regExps => {
           regex.toString()
         )
 
-        if (regexFlags) {
-          throw new Error(
-            `RegExp flags are not supported. Change /${regexString}/${regexFlags} into /${regexString}/`
-          )
-        }
+        invariant(
+          !regexFlags,
+          `RegExp flags are not supported. Change /${regexString}/${regexFlags} into /${regexString}/`
+        )
 
         return `(${regexString})`
       })

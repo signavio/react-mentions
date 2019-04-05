@@ -4,7 +4,7 @@ import PLACEHOLDERS from './placeholders'
 const findPositionOfCapturingGroup = (markup, parameterName) => {
   invariant(
     parameterName === 'id' || parameterName === 'display',
-    'Second arg must be either "id" or "display"'
+    `Second arg must be either "id" or "display", got: "${parameterName}"`
   )
 
   // find positions of placeholders in the markup

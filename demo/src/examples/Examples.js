@@ -9,6 +9,7 @@ import CssModules from './CssModules'
 import AsyncGithubUserMentions from './AsyncGithubUserMentions'
 import Scrollable from './Scrollable'
 import SuggestionPortal from './SuggestionPortal'
+import Emojis from './Emojis'
 
 const users = [
   {
@@ -51,6 +52,7 @@ export default function Examples() {
         <Advanced data={users} />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />
+        <Emojis data={users} />
         <SuggestionPortal data={users} />
       </div>
     </EnhancerProvider>

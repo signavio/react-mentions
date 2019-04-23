@@ -1,1 +1,1 @@
-export provideExampleValue from './provideExampleValue'
+export { default as provideExampleValue } from './provideExampleValue'

@@ -2,8 +2,8 @@ import expect, { createSpy } from 'expect'
 import React from 'react'
 import { mount } from 'enzyme'
 
-import { MentionsInput, Mention } from '../src'
-import { _getTriggerRegex } from '../src/MentionsInput'
+import { MentionsInput, Mention } from './index'
+import { makeTriggerRegex } from './MentionsInput'
 
 const data = [
   { id: 'first', value: 'First entry' },
@@ -54,10 +54,9 @@ describe('MentionsInput', () => {
   it('should be able to handle sync responses from multiple mentions sources', () => {
     const wrapper = mount(
       <MentionsInput value="@">
-        <Mention trigger="@" type="testentries" data={data} />
+        <Mention trigger="@" data={data} />
         <Mention
           trigger="@"
-          type="testchars"
           data={[{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]}
         />
       </MentionsInput>,
@@ -90,7 +89,7 @@ describe('MentionsInput', () => {
           'multiple lines causing \n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n the textarea to scroll'
         }
       >
-        <Mention trigger="@" type="testentries" data={data} />
+        <Mention trigger="@" data={data} />
       </MentionsInput>,
       {
         attachTo: host,
@@ -144,16 +143,17 @@ describe('MentionsInput', () => {
   it('should accept a custom regex attribute', () => {
     const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
     const wrapper = mount(
-      <MentionsInput
-        value=":aaaa and :bbbb and :invalidId"
-        markup=":__id__"
-        regex={/:(\S+)/g}
-        displayTransform={id => {
-          let mention = data.find(item => item.id === id)
-          return mention ? mention.display : `:${id}`
-        }}
-      >
-        <Mention trigger="@" data={data} />
+      <MentionsInput value=":aaaa and :bbbb and :invalidId">
+        <Mention
+          trigger="@"
+          data={data}
+          markup=":__id__"
+          regex={/:(\S+)/}
+          displayTransform={id => {
+            let mention = data.find(item => item.id === id)
+            return mention ? mention.display : `:${id}`
+          }}
+        />
       </MentionsInput>,
       {
         attachTo: host,
@@ -194,19 +194,19 @@ describe('MentionsInput', () => {
     expect(inputRef).toHaveBeenCalledWith(el)
   })
 
-  describe('_getTriggerRegex', () => {
+  describe('makeTriggerRegex', () => {
     it('should return regular expressions', () => {
       const trigger = /abc/
-      expect(_getTriggerRegex(trigger)).toEqual(trigger)
+      expect(makeTriggerRegex(trigger)).toEqual(trigger)
     })
 
     it('should escape and capture a string trigger', () => {
-      const result = _getTriggerRegex('trigger').toString()
+      const result = makeTriggerRegex('trigger').toString()
       expect(result).toEqual('/(?:^|\\s)(trigger([^\\strigger]*))$/')
     })
 
     it('should allow spaces in search', () => {
-      const result = _getTriggerRegex('trigger', {
+      const result = makeTriggerRegex('trigger', {
         allowSpaceInQuery: true,
       }).toString()
       expect(result).toEqual('/(?:^|\\s)(trigger([^trigger]*))$/')

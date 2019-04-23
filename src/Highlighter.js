@@ -4,8 +4,11 @@ import { defaultStyle } from 'substyle'
 import isEqual from 'lodash/isEqual'
 import isNumber from 'lodash/isNumber'
 
-import { iterateMentionsMarkup, mapPlainTextIndex } from './utils'
-import Mention from './Mention'
+import {
+  iterateMentionsMarkup,
+  mapPlainTextIndex,
+  readConfigFromChildren,
+} from './utils'
 
 const _generateComponentKey = (usedKeys, id) => {
   if (!usedKeys.hasOwnProperty(id)) {
@@ -22,13 +25,14 @@ class Highlighter extends Component {
       start: PropTypes.number,
       end: PropTypes.number,
     }).isRequired,
-
-    markup: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-
-    displayTransform: PropTypes.func.isRequired,
     onCaretPositionChange: PropTypes.func.isRequired,
     inputStyle: PropTypes.object,
+
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired,
   }
 
   static defaultProps = {
@@ -74,26 +78,17 @@ class Highlighter extends Component {
   }
 
   render() {
-    let {
-      selection,
-      value,
-      markup,
-      displayTransform,
-      style,
-      inputStyle,
-      regex,
-    } = this.props
+    const { selection, value, style, inputStyle, children } = this.props
+    const config = readConfigFromChildren(children)
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     let caretPositionInMarkup
     if (selection.start === selection.end) {
       caretPositionInMarkup = mapPlainTextIndex(
         value,
-        markup,
+        config,
         selection.start,
-        'START',
-        displayTransform,
-        regex
+        'START'
       )
     }
 
@@ -102,7 +97,6 @@ class Highlighter extends Component {
 
     // start by appending directly to the resultComponents
     let components = resultComponents
-
     let substringComponentKey = 0
 
     const textIteratee = (substr, index, indexInPlainText) => {
@@ -142,22 +136,17 @@ class Highlighter extends Component {
       indexInPlainText,
       id,
       display,
-      type,
+      mentionChildIndex,
       lastMentionEndIndex
     ) => {
       // generate a component key based on the id
       const key = _generateComponentKey(componentKeys, id)
-      components.push(this.getMentionComponentForMatch(id, display, type, key))
+      components.push(
+        this.getMentionComponentForMatch(id, display, mentionChildIndex, key)
+      )
     }
 
-    iterateMentionsMarkup(
-      value,
-      markup,
-      textIteratee,
-      mentionIteratee,
-      displayTransform,
-      regex
-    )
+    iterateMentionsMarkup(value, config, mentionIteratee, textIteratee)
 
     // append a span containing a space, to ensure the last text line has the correct height
     components.push(' ')
@@ -190,42 +179,10 @@ class Highlighter extends Component {
   }
 
   // Returns a clone of the Mention child applicable for the specified type to be rendered inside the highlighter
-  getMentionComponentForMatch(id, display, type, key) {
-    const childrenCount = Children.count(this.props.children)
+  getMentionComponentForMatch(id, display, mentionChildIndex, key) {
     const props = { id, display, key }
-
-    if (childrenCount > 1) {
-      if (!type) {
-        throw new Error(
-          'Since multiple Mention components have been passed as children, the markup has to define the __type__ placeholder'
-        )
-      }
-
-      // detect the Mention child to be cloned
-      let foundChild = null
-      Children.forEach(this.props.children, child => {
-        if (!child) {
-          return
-        }
-
-        if (child.props.type === type) {
-          foundChild = child
-        }
-      })
-
-      // clone the Mention child that is applicable for the given type
-      return React.cloneElement(foundChild, props)
-    }
-
-    if (childrenCount === 1) {
-      // clone single Mention child
-      const child = this.props.children.length
-        ? this.props.children[0]
-        : Children.only(this.props.children)
-      return React.cloneElement(child, props)
-    }
-    // no children, use default configuration
-    return Mention(props)
+    const child = Children.toArray(this.props.children)[mentionChildIndex]
+    return React.cloneElement(child, props)
   }
 
   // Renders an component to be inserted in the highlighter at the current caret position

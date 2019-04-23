@@ -30,12 +30,16 @@ function Advanced({ value, data, onChange, onBlur, onAdd }) {
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-        markup="{{__id__}}"
         style={style}
-        displayTransform={id => `<-- ${id} -->`}
         inputRef={inputEl}
       >
-        <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
+        <Mention
+          markup="{{__id__}}"
+          displayTransform={id => `<-- ${id} -->`}
+          data={data}
+          onAdd={onAdd}
+          style={defaultMentionStyle}
+        />
       </MentionsInput>
 
       <button

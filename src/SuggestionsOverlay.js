@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 
-import { countSuggestions, getSuggestions } from './utils'
+import { countSuggestions } from './utils'
 import Suggestion from './Suggestion'
 import LoadingIndicator from './LoadingIndicator'
 
@@ -13,6 +13,11 @@ class SuggestionsOverlay extends Component {
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
     onSelect: PropTypes.func,
+
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired,
   }
 
   static defaultProps = {
@@ -69,37 +74,36 @@ class SuggestionsOverlay extends Component {
   }
 
   renderSuggestions() {
-    return getSuggestions(this.props.suggestions).reduce(
-      (result, { suggestions, descriptor }) => [
-        ...result,
-
-        ...suggestions.map((suggestion, index) =>
-          this.renderSuggestion(suggestion, descriptor, result.length + index)
+    return Object.values(this.props.suggestions).reduce(
+      (accResults, { results, queryInfo }) => [
+        ...accResults,
+        ...results.map((result, index) =>
+          this.renderSuggestion(result, queryInfo, accResults.length + index)
         ),
       ],
       []
     )
   }
 
-  renderSuggestion(suggestion, descriptor, index) {
-    let id = this.getID(suggestion)
-    let isFocused = index === this.props.focusIndex
-
-    let { mentionDescriptor, query } = descriptor
-
-    const type = mentionDescriptor.props.type
+  renderSuggestion(result, queryInfo, index) {
+    const id = this.getID(result)
+    const isFocused = index === this.props.focusIndex
+    const { childIndex, query } = queryInfo
+    const { renderSuggestion } = Children.toArray(this.props.children)[
+      childIndex
+    ].props
 
     return (
       <Suggestion
         style={this.props.style('item')}
-        key={`${type}-${id}`}
+        key={`${childIndex}-${id}`}
         id={id}
         query={query}
         index={index}
-        descriptor={mentionDescriptor}
-        suggestion={suggestion}
+        renderSuggestion={renderSuggestion}
+        suggestion={result}
         focused={isFocused}
-        onClick={() => this.select(suggestion, descriptor)}
+        onClick={() => this.select(result, queryInfo)}
         onMouseEnter={() => this.handleMouseEnter(index)}
       />
     )
@@ -127,8 +131,8 @@ class SuggestionsOverlay extends Component {
     }
   }
 
-  select(suggestion, descriptor) {
-    this.props.onSelect(suggestion, descriptor)
+  select(suggestion, queryInfo) {
+    this.props.onSelect(suggestion, queryInfo)
   }
 }
 

@@ -29,9 +29,13 @@ function AsyncGithubUserMentions({ value, data, onChange }) {
         onChange={onChange}
         style={defaultStyle}
         placeholder="Mention any Github user by typing `@` followed by at least one char"
-        displayTransform={login => `@${login}`}
       >
-        <Mention trigger="@" data={fetchUsers} style={defaultMentionStyle} />
+        <Mention
+          displayTransform={login => `@${login}`}
+          trigger="@"
+          data={fetchUsers}
+          style={defaultMentionStyle}
+        />
       </MentionsInput>
     </div>
   )

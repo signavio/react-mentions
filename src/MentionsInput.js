@@ -72,6 +72,7 @@ const propTypes = {
    * instead of a textarea
    */
   singleLine: PropTypes.bool,
+  allowSpaceInQuery: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,

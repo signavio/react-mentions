@@ -14,7 +14,7 @@ const Demo = () => (
       <a href="https://github.com/signavio/react-mentions">
         https://github.com/signavio/react-mentions
       </a>{' '}
-      (MIT license)
+      (BSD license)
     </p>
     <StrictMode>
       <Examples />

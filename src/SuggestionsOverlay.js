@@ -122,7 +122,7 @@ class SuggestionsOverlay extends Component {
       return
     }
 
-    return <LoadingIndicator {...this.props.style('loadingIndicator')} />
+    return <LoadingIndicator style={this.props.style('loadingIndicator')} />
   }
 
   handleMouseEnter(index, ev) {

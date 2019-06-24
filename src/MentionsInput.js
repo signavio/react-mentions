@@ -112,6 +112,7 @@ class MentionsInput extends React.Component {
     this.suggestions = {}
 
     this.handleCopy = this.handleCopy.bind(this)
+    this.handleCut = this.handleCut.bind(this)
 
     this.state = {
       focusIndex: 0,
@@ -128,6 +129,7 @@ class MentionsInput extends React.Component {
 
   componentDidMount() {
     document.addEventListener('copy', this.handleCopy)
+    document.addEventListener('cut', this.handleCut)
 
     this.updateSuggestionsPosition()
   }
@@ -149,6 +151,7 @@ class MentionsInput extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('copy', this.handleCopy)
+    document.removeEventListener('cut', this.handleCut)
   }
 
   render() {
@@ -329,6 +332,68 @@ class MentionsInput extends React.Component {
     )
 
     event.preventDefault()
+  }
+
+  handleCut(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    const { selectionStart, selectionEnd } = this.state
+    const { children, value } = this.props
+
+    const config = readConfigFromChildren(children)
+
+    const realStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    event.clipboardData.setData(
+      'text/plain',
+      value.slice(realStartIndex, realEndIndex)
+    )
+
+    event.preventDefault()
+
+    const mentions = getMentions(value, config)
+
+    const startMention = mentions.find(
+      mention =>
+        mention.plainTextIndex <= selectionStart &&
+        mention.plainTextIndex + mention.display.length > selectionStart
+    )
+    const endMention = mentions.find(
+      mention =>
+        mention.plainTextIndex <= selectionEnd &&
+        mention.plainTextIndex + mention.display.length > selectionEnd
+    )
+
+    const plainStartIndex = startMention
+      ? startMention.plainTextIndex
+      : selectionStart
+    const plainEndIndex = endMention
+      ? endMention.plainTextIndex + endMention.display.length
+      : selectionEnd
+
+    const plainTextValue = this.getPlainText()
+
+    const newPlainTextValue = [
+      plainTextValue.slice(0, plainStartIndex),
+      plainTextValue.slice(plainEndIndex),
+    ].join('')
+
+    const newValue = [
+      value.slice(0, realStartIndex),
+      value.slice(realEndIndex),
+    ].join('')
+
+    const eventMock = { target: { ...event.target, value: newPlainTextValue } }
+
+    this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
   }
 
   // Handle input element's change event

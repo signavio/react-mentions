@@ -1,30 +1,28 @@
-import React, { Children } from 'react'
-import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
-
-import keys from 'lodash/keys'
-import values from 'lodash/values'
-import omit from 'lodash/omit'
 import isEqual from 'lodash/isEqual'
 import isNumber from 'lodash/isNumber'
-
+import keys from 'lodash/keys'
+import omit from 'lodash/omit'
+import values from 'lodash/values'
+import PropTypes from 'prop-types'
+import React, { Children } from 'react'
+import ReactDOM from 'react-dom'
 import { defaultStyle } from 'substyle'
 
+import Highlighter from './Highlighter'
+import SuggestionsOverlay from './SuggestionsOverlay'
 import {
-  escapeRegex,
-  getPlainText,
   applyChangeToValue,
-  findStartOfMentionInPlainText,
-  getMentions,
   countSuggestions,
+  escapeRegex,
+  findStartOfMentionInPlainText,
   getEndOfLastMention,
+  getMentions,
+  getPlainText,
+  makeMentionsMarkup,
   mapPlainTextIndex,
   readConfigFromChildren,
   spliceString,
-  makeMentionsMarkup,
 } from './utils'
-import SuggestionsOverlay from './SuggestionsOverlay'
-import Highlighter from './Highlighter'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -113,6 +111,8 @@ class MentionsInput extends React.Component {
     super(props)
     this.suggestions = {}
 
+    this.handleCopy = this.handleCopy.bind(this)
+
     this.state = {
       focusIndex: 0,
 
@@ -124,6 +124,31 @@ class MentionsInput extends React.Component {
       caretPosition: null,
       suggestionsPosition: null,
     }
+  }
+
+  componentDidMount() {
+    document.addEventListener('copy', this.handleCopy)
+
+    this.updateSuggestionsPosition()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Update position of suggestions unless this componentDidUpdate was
+    // triggered by an update to suggestionsPosition.
+    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
+      this.updateSuggestionsPosition()
+    }
+
+    // maintain selection in case a mention is added/removed causing
+    // the cursor to jump to the end
+    if (this.state.setSelectionAfterMentionChange) {
+      this.setState({ setSelectionAfterMentionChange: false })
+      this.setSelection(this.state.selectionStart, this.state.selectionEnd)
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('copy', this.handleCopy)
   }
 
   render() {
@@ -278,6 +303,32 @@ class MentionsInput extends React.Component {
     if (this.props.valueLink) {
       return this.props.valueLink.requestChange(event.target.value, ...args)
     }
+  }
+
+  handleCopy(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    const { selectionStart, selectionEnd } = this.state
+    const { children, value } = this.props
+
+    const config = readConfigFromChildren(children)
+
+    const realStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    event.clipboardData.setData(
+      'text/plain',
+      value.slice(realStartIndex, realEndIndex)
+    )
+
+    event.preventDefault()
   }
 
   // Handle input element's change event
@@ -551,25 +602,6 @@ class MentionsInput extends React.Component {
 
   handleCompositionEnd = () => {
     isComposing = false
-  }
-
-  componentDidMount() {
-    this.updateSuggestionsPosition()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // Update position of suggestions unless this componentDidUpdate was
-    // triggered by an update to suggestionsPosition.
-    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
-      this.updateSuggestionsPosition()
-    }
-
-    // maintain selection in case a mention is added/removed causing
-    // the cursor to jump to the end
-    if (this.state.setSelectionAfterMentionChange) {
-      this.setState({ setSelectionAfterMentionChange: false })
-      this.setSelection(this.state.selectionStart, this.state.selectionEnd)
-    }
   }
 
   setSelection = (selectionStart, selectionEnd) => {

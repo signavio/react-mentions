@@ -113,6 +113,7 @@ class MentionsInput extends React.Component {
 
     this.handleCopy = this.handleCopy.bind(this)
     this.handleCut = this.handleCut.bind(this)
+    this.handlePaste = this.handlePaste.bind(this)
 
     this.state = {
       focusIndex: 0,
@@ -130,6 +131,7 @@ class MentionsInput extends React.Component {
   componentDidMount() {
     document.addEventListener('copy', this.handleCopy)
     document.addEventListener('cut', this.handleCut)
+    document.addEventListener('paste', this.handlePaste)
 
     this.updateSuggestionsPosition()
   }
@@ -152,6 +154,7 @@ class MentionsInput extends React.Component {
   componentWillUnmount() {
     document.removeEventListener('copy', this.handleCopy)
     document.removeEventListener('cut', this.handleCut)
+    document.removeEventListener('paste', this.handlePaste)
   }
 
   render() {
@@ -306,6 +309,46 @@ class MentionsInput extends React.Component {
     if (this.props.valueLink) {
       return this.props.valueLink.requestChange(event.target.value, ...args)
     }
+  }
+
+  handlePaste(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    event.preventDefault()
+
+    const { selectionStart, selectionEnd } = this.state
+    const { value, children } = this.props
+
+    const pastedData = event.clipboardData.getData('text/plain')
+
+    const config = readConfigFromChildren(children)
+
+    const realStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    const newValue = spliceString(
+      value,
+      realStartIndex,
+      realEndIndex,
+      pastedData
+    )
+    const newPlainTextValue = getPlainText(newValue, config)
+
+    const eventMock = { target: { ...event.target, value: newValue } }
+
+    this.executeOnChange(
+      eventMock,
+      newValue,
+      newPlainTextValue,
+      getMentions(newValue, config)
+    )
   }
 
   handleCopy(event) {

@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 
-import {
+import { 
+  getSubstringIndex,
   keys,
   omit
 } from './utils'
-
-import { getSubstringIndex } from './utils'
 
 class Suggestion extends Component {
   static propTypes = {

@@ -2,12 +2,6 @@ import React, { Children } from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 
-import keys from 'lodash/keys'
-import values from 'lodash/values'
-import omit from 'lodash/omit'
-import isEqual from 'lodash/isEqual'
-import isNumber from 'lodash/isNumber'
-
 import { defaultStyle } from 'substyle'
 
 import {
@@ -22,11 +16,15 @@ import {
   readConfigFromChildren,
   spliceString,
   makeMentionsMarkup,
+  isObjectEqual,
+  isNumber,
+  keys,
+  omit,
 } from './utils'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import Highlighter from './Highlighter'
 
-export const makeTriggerRegex = function(trigger, options = {}) {
+export const makeTriggerRegex = function (trigger, options = {}) {
   if (trigger instanceof RegExp) {
     return trigger
   } else {
@@ -37,16 +35,16 @@ export const makeTriggerRegex = function(trigger, options = {}) {
     // second capture group is for extracting the search query
     return new RegExp(
       `(?:^|\\s)(${escapedTriggerChar}([^${
-        allowSpaceInQuery ? '' : '\\s'
+      allowSpaceInQuery ? '' : '\\s'
       }${escapedTriggerChar}]*))$`
     )
   }
 }
 
-const getDataProvider = function(data) {
+const getDataProvider = function (data) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
-    return function(query, callback) {
+    return function (query, callback) {
       const results = []
       for (let i = 0, l = data.length; i < l; ++i) {
         const display = data[i].display || data[i].id
@@ -385,7 +383,7 @@ class MentionsInput extends React.Component {
       return
     }
 
-    if (values(KEY).indexOf(ev.keyCode) >= 0) {
+    if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault()
     }
 
@@ -523,7 +521,7 @@ class MentionsInput extends React.Component {
       position.top = caretPosition.top - highlighter.scrollTop
     }
 
-    if (isEqual(position, this.state.suggestionsPosition)) {
+    if (isObjectEqual(position, this.state.suggestionsPosition)) {
       return
     }
 
@@ -786,7 +784,7 @@ class MentionsInput extends React.Component {
 
   isLoading = () => {
     let isLoading = false
-    React.Children.forEach(this.props.children, function(child) {
+    React.Children.forEach(this.props.children, function (child) {
       isLoading = isLoading || (child && child.props.isLoading)
     })
     return isLoading
@@ -837,9 +835,9 @@ const styled = defaultStyle(
         // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
         ...(isMobileSafari
           ? {
-              marginTop: 1,
-              marginLeft: -3,
-            }
+            marginTop: 1,
+            marginLeft: -3,
+          }
           : null),
       },
     },

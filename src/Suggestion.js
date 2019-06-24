@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import omit from 'lodash/omit'
-import keys from 'lodash/keys'
+
+import {
+  keys,
+  omit
+} from './utils'
 
 class Suggestion extends Component {
   static propTypes = {

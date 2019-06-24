@@ -1,13 +1,13 @@
 import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import isEqual from 'lodash/isEqual'
-import isNumber from 'lodash/isNumber'
 
 import {
   iterateMentionsMarkup,
   mapPlainTextIndex,
   readConfigFromChildren,
+  isObjectEqual,
+  isNumber
 } from './utils'
 
 const _generateComponentKey = (usedKeys, id) => {
@@ -66,7 +66,7 @@ class Highlighter extends Component {
 
     let { lastPosition } = this.state
 
-    if (isEqual(lastPosition, position)) {
+    if (isObjectEqual(lastPosition, position)) {
       return
     }
 

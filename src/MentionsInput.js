@@ -129,9 +129,13 @@ class MentionsInput extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('copy', this.handleCopy)
-    document.addEventListener('cut', this.handleCut)
-    document.addEventListener('paste', this.handlePaste)
+    const { EXPERIMENTAL_cutCopyPaste } = this.props
+
+    if (EXPERIMENTAL_cutCopyPaste) {
+      document.addEventListener('copy', this.handleCopy)
+      document.addEventListener('cut', this.handleCut)
+      document.addEventListener('paste', this.handlePaste)
+    }
 
     this.updateSuggestionsPosition()
   }
@@ -152,9 +156,13 @@ class MentionsInput extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('copy', this.handleCopy)
-    document.removeEventListener('cut', this.handleCut)
-    document.removeEventListener('paste', this.handlePaste)
+    const { EXPERIMENTAL_cutCopyPaste } = this.props
+
+    if (EXPERIMENTAL_cutCopyPaste) {
+      document.removeEventListener('copy', this.handleCopy)
+      document.removeEventListener('cut', this.handleCut)
+      document.removeEventListener('paste', this.handlePaste)
+    }
   }
 
   render() {

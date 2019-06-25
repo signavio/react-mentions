@@ -329,8 +329,6 @@ class MentionsInput extends React.Component {
     const { selectionStart, selectionEnd } = this.state
     const { value, children } = this.props
 
-    const pastedData = event.clipboardData.getData('text/plain')
-
     const config = readConfigFromChildren(children)
 
     const realStartIndex = mapPlainTextIndex(
@@ -341,11 +339,14 @@ class MentionsInput extends React.Component {
     )
     const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
 
+    const pastedMentions = event.clipboardData.getData('text/react-mentions')
+    const pastedData = event.clipboardData.getData('text/plain')
+
     const newValue = spliceString(
       value,
       realStartIndex,
       realEndIndex,
-      pastedData
+      pastedMentions || pastedData
     )
     const newPlainTextValue = getPlainText(newValue, config)
 
@@ -379,6 +380,10 @@ class MentionsInput extends React.Component {
 
     event.clipboardData.setData(
       'text/plain',
+      event.target.value.slice(selectionStart, selectionEnd)
+    )
+    event.clipboardData.setData(
+      'text/react-mentions',
       value.slice(realStartIndex, realEndIndex)
     )
 
@@ -405,6 +410,10 @@ class MentionsInput extends React.Component {
 
     event.clipboardData.setData(
       'text/plain',
+      event.target.value.slice(selectionStart, selectionEnd)
+    )
+    event.clipboardData.setData(
+      'text/react-mentions',
       value.slice(realStartIndex, realEndIndex)
     )
 

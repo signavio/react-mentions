@@ -1,4 +1,3 @@
-import expect from 'expect'
 import getEndOfLastMention from './getEndOfLastMention'
 import markupToRegex from './markupToRegex'
 

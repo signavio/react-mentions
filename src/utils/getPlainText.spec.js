@@ -1,4 +1,3 @@
-import expect from 'expect'
 import getPlainText from './getPlainText'
 import markupToRegex from './markupToRegex'
 

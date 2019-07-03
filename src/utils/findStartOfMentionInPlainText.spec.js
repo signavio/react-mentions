@@ -1,4 +1,3 @@
-import expect from 'expect'
 import findStartOfMentionInPlainText from './findStartOfMentionInPlainText'
 import markupToRegex from './markupToRegex'
 

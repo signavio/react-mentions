@@ -1,4 +1,3 @@
-import expect from 'expect'
 import findPositionOfCapturingGroup from './findPositionOfCapturingGroup'
 
 describe('#findPositionOfCapturingGroup', () => {

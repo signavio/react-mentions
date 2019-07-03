@@ -1,4 +1,3 @@
-import expect, { createSpy } from 'expect'
 import iterateMentionsMarkup from './iterateMentionsMarkup'
 import markupToRegex from './markupToRegex'
 
@@ -29,10 +28,10 @@ describe('#iterateMentionsMarkup', () => {
     "Hi <--johndoe-->, \n\nlet's add <--joe@smoe.com--> to this conversation..."
 
   it('should call the `markupIteratee` for every markup occurrence', () => {
-    const markupIteratee = createSpy()
+    const markupIteratee = jest.fn()
     iterateMentionsMarkup(value, config, markupIteratee)
 
-    expect(markupIteratee.calls.length).toEqual(2)
+    expect(markupIteratee.mock.calls.length).toEqual(2)
     expect(markupIteratee).toHaveBeenCalledWith(
       '@[John Doe](user:johndoe)',
       value.indexOf('@[John Doe](user:johndoe)'),
@@ -55,7 +54,7 @@ describe('#iterateMentionsMarkup', () => {
   })
 
   it('should call the `markupIteratee` with the correct plain text indices when a display transform is used', () => {
-    const markupIteratee = createSpy()
+    const markupIteratee = jest.fn()
     const displayTransform = (id, display) => `[${display}]`
     iterateMentionsMarkup(
       value,
@@ -65,7 +64,7 @@ describe('#iterateMentionsMarkup', () => {
     const plainTextWithDisplayTransform =
       "Hi [John Doe], \n\nlet's add [joe@smoe.com] to this conversation..."
 
-    expect(markupIteratee.calls.length).toEqual(2)
+    expect(markupIteratee.mock.calls.length).toEqual(2)
     expect(markupIteratee).toHaveBeenCalledWith(
       '@[John Doe](user:johndoe)',
       value.indexOf('@[John Doe](user:johndoe)'),
@@ -88,10 +87,10 @@ describe('#iterateMentionsMarkup', () => {
   })
 
   it('should call the `textIteratee` for all plain text sub string between markups', () => {
-    const textIteratee = createSpy()
+    const textIteratee = jest.fn()
     iterateMentionsMarkup(value, config, () => {}, textIteratee)
 
-    expect(textIteratee.calls.length).toEqual(3)
+    expect(textIteratee.mock.calls.length).toEqual(3)
     expect(textIteratee).toHaveBeenCalledWith('Hi ', 0, 0)
     expect(textIteratee).toHaveBeenCalledWith(
       ", \n\nlet's add ",
@@ -106,14 +105,14 @@ describe('#iterateMentionsMarkup', () => {
   })
 
   it('should call the `markupIteratee` for every markup occurrence with display transform', () => {
-    const markupIteratee = createSpy()
+    const markupIteratee = jest.fn()
     iterateMentionsMarkup(
       value,
       config.map(c => ({ ...c, displayTransform })),
       markupIteratee
     )
 
-    expect(markupIteratee.calls.length).toEqual(2)
+    expect(markupIteratee.mock.calls.length).toEqual(2)
     expect(markupIteratee).toHaveBeenCalledWith(
       '@[John Doe](user:johndoe)',
       value.indexOf('@[John Doe](user:johndoe)'),
@@ -136,7 +135,7 @@ describe('#iterateMentionsMarkup', () => {
   })
 
   it('should call the `textIteratee` for all plain text sub string between markups with display transform', () => {
-    const textIteratee = createSpy()
+    const textIteratee = jest.fn()
     iterateMentionsMarkup(
       value,
       config.map(c => ({ ...c, displayTransform })),
@@ -144,7 +143,7 @@ describe('#iterateMentionsMarkup', () => {
       textIteratee
     )
 
-    expect(textIteratee.calls.length).toEqual(3)
+    expect(textIteratee.mock.calls.length).toEqual(3)
     expect(textIteratee).toHaveBeenCalledWith('Hi ', 0, 0)
     expect(textIteratee).toHaveBeenCalledWith(
       ", \n\nlet's add ",

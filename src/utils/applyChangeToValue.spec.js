@@ -1,4 +1,3 @@
-import expect from 'expect'
 import applyChangeToValue from './applyChangeToValue'
 import markupToRegex from './markupToRegex'
 

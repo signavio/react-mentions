@@ -1,9 +1,8 @@
-import expect, { createSpy } from 'expect'
-import React from 'react'
 import { mount } from 'enzyme'
+import React from 'react'
 
-import { MentionsInput, Mention } from './index'
 import { makeTriggerRegex } from './MentionsInput'
+import { Mention, MentionsInput } from './index'
 
 const data = [
   { id: 'first', value: 'First entry' },
@@ -44,12 +43,14 @@ describe('MentionsInput', () => {
     expect(wrapper.find('input').length).toEqual(1)
   })
 
-  it('should show a list of suggestions once the trigger key has been entered.')
-  it(
+  it.todo(
+    'should show a list of suggestions once the trigger key has been entered.'
+  )
+  it.todo(
     'should be possible to navigate through the suggestions with the up and down arrows.'
   )
-  it('should be possible to select a suggestion with enter.')
-  it('should be possible to close the suggestions with esc.')
+  it.todo('should be possible to select a suggestion with enter.')
+  it.todo('should be possible to close the suggestions with esc.')
 
   it('should be able to handle sync responses from multiple mentions sources', () => {
     const wrapper = mount(
@@ -181,7 +182,7 @@ describe('MentionsInput', () => {
   })
 
   it('should forward the `inputRef` prop to become the `ref` of the input (callback ref)', () => {
-    const inputRef = createSpy()
+    const inputRef = jest.fn()
     const wrapper = mount(
       <MentionsInput value="test" inputRef={inputRef}>
         <Mention trigger="@" data={data} />

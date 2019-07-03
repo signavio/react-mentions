@@ -1,4 +1,3 @@
-import expect from 'expect'
 import getMentions from './getMentions'
 import markupToRegex from './markupToRegex'
 

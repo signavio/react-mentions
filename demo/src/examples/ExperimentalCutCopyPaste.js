@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Mention, MentionsInput } from '../../../src'
 import defaultMentionStyle from './defaultMentionStyle'
@@ -16,6 +16,7 @@ function ExperimentalCutCopyPaste({ data }) {
     defaultValue
   )
   const [targetValue, onTargetChange, onTargetAdd] = useExampleValue('')
+  const [plainTextValue, setPlainTextValue] = useState('')
 
   return (
     <div className="multiple-triggers">
@@ -37,13 +38,24 @@ function ExperimentalCutCopyPaste({ data }) {
         </div>
 
         <div style={{ flex: 1, paddingLeft: 8 }}>
-          ...and paste over here
+          ...and paste over here...
           <MultiMention
             value={targetValue}
             data={data}
             onChange={onTargetChange}
             onAdd={onTargetAdd}
           />
+        </div>
+
+        <div style={{ flex: 1, paddingLeft: 8 }}>
+          ...or paste plain text here
+          <div>
+            <textarea
+              style={{ width: '100%', height: 80 }}
+              value={plainTextValue}
+              onChange={event => setPlainTextValue(event.target.value)}
+            />
+          </div>
         </div>
       </div>
     </div>

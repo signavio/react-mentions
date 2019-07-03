@@ -331,21 +331,21 @@ class MentionsInput extends React.Component {
 
     const config = readConfigFromChildren(children)
 
-    const realStartIndex = mapPlainTextIndex(
+    const markupStartIndex = mapPlainTextIndex(
       value,
       config,
       selectionStart,
       'START'
     )
-    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
 
     const pastedMentions = event.clipboardData.getData('text/react-mentions')
     const pastedData = event.clipboardData.getData('text/plain')
 
     const newValue = spliceString(
       value,
-      realStartIndex,
-      realEndIndex,
+      markupStartIndex,
+      markupEndIndex,
       pastedMentions || pastedData
     )
     const newPlainTextValue = getPlainText(newValue, config)
@@ -360,23 +360,19 @@ class MentionsInput extends React.Component {
     )
   }
 
-  handleCopy(event) {
-    if (event.target !== this.inputRef) {
-      return
-    }
-
+  saveSelectionToClipboard(event) {
     const { selectionStart, selectionEnd } = this.state
     const { children, value } = this.props
 
     const config = readConfigFromChildren(children)
 
-    const realStartIndex = mapPlainTextIndex(
+    const markupStartIndex = mapPlainTextIndex(
       value,
       config,
       selectionStart,
       'START'
     )
-    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
 
     event.clipboardData.setData(
       'text/plain',
@@ -384,10 +380,18 @@ class MentionsInput extends React.Component {
     )
     event.clipboardData.setData(
       'text/react-mentions',
-      value.slice(realStartIndex, realEndIndex)
+      value.slice(markupStartIndex, markupEndIndex)
     )
+  }
+
+  handleCopy(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
 
     event.preventDefault()
+
+    this.saveSelectionToClipboard(event)
   }
 
   handleCut(event) {
@@ -395,65 +399,37 @@ class MentionsInput extends React.Component {
       return
     }
 
+    event.preventDefault()
+
+    this.saveSelectionToClipboard(event)
+
     const { selectionStart, selectionEnd } = this.state
     const { children, value } = this.props
 
     const config = readConfigFromChildren(children)
 
-    const realStartIndex = mapPlainTextIndex(
+    const markupStartIndex = mapPlainTextIndex(
       value,
       config,
       selectionStart,
       'START'
     )
-    const realEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
-
-    event.clipboardData.setData(
-      'text/plain',
-      event.target.value.slice(selectionStart, selectionEnd)
-    )
-    event.clipboardData.setData(
-      'text/react-mentions',
-      value.slice(realStartIndex, realEndIndex)
-    )
-
-    event.preventDefault()
-
-    const mentions = getMentions(value, config)
-
-    const startMention = mentions.find(
-      mention =>
-        mention.plainTextIndex <= selectionStart &&
-        mention.plainTextIndex + mention.display.length > selectionStart
-    )
-    const endMention = mentions.find(
-      mention =>
-        mention.plainTextIndex <= selectionEnd &&
-        mention.plainTextIndex + mention.display.length > selectionEnd
-    )
-
-    const plainStartIndex = startMention
-      ? startMention.plainTextIndex
-      : selectionStart
-    const plainEndIndex = endMention
-      ? endMention.plainTextIndex + endMention.display.length
-      : selectionEnd
-
-    const plainTextValue = this.getPlainText()
-
-    const newPlainTextValue = [
-      plainTextValue.slice(0, plainStartIndex),
-      plainTextValue.slice(plainEndIndex),
-    ].join('')
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
 
     const newValue = [
-      value.slice(0, realStartIndex),
-      value.slice(realEndIndex),
+      value.slice(0, markupStartIndex),
+      value.slice(markupEndIndex),
     ].join('')
+    const newPlainTextValue = getPlainText(newValue, config)
 
     const eventMock = { target: { ...event.target, value: newPlainTextValue } }
 
-    this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
+    this.executeOnChange(
+      eventMock,
+      newValue,
+      newPlainTextValue,
+      getMentions(value, config)
+    )
   }
 
   // Handle input element's change event

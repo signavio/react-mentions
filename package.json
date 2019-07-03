@@ -5,9 +5,7 @@
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
   "files": [
-    "es",
-    "lib",
-    "umd"
+    "dist"
   ],
   "scripts": {
     "build": "preconstruct build",
@@ -72,6 +70,7 @@
     "recompose": "^0.30.0",
     "regenerator-runtime": "^0.13.2",
     "semantic-release": "^12.4.1",
+    "style-loader": "^0.23.1",
     "webpack": "^4.35.2",
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2"
@@ -81,7 +80,6 @@
     "invariant": "^2.2.4",
     "lodash": "^4.5.1",
     "prop-types": "^15.5.8",
-    "style-loader": "^0.23.1",
     "substyle": "^6.3.1"
   },
   "peerDependencies": {

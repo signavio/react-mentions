@@ -194,4 +194,81 @@ describe('MentionsInput', () => {
       expect(result).toEqual('/(?:^|\\s)(trigger([^trigger]*))$/')
     })
   })
+
+  describe('custom cut/copy/paste', () => {
+    let component
+
+    const plainTextValue = "Hi First, \n\nlet's add Second to the conversation."
+    const value =
+      "Hi @[First](first), \n\nlet's add @[Second](second) to the conversation."
+
+    beforeEach(() => {
+      component = mount(
+        <MentionsInput EXPERIMENTAL_cutCopyPaste value={value}>
+          <Mention trigger="@[__display__](__id__)" data={data} />
+        </MentionsInput>,
+        {
+          attachTo: host,
+        }
+      )
+    })
+
+    it('should include the whole mention when the selection starts in one.', () => {
+      const textarea = component.find('textarea')
+
+      const selectionStart = plainTextValue.indexOf('First') + 2
+      const selectionEnd = plainTextValue.length
+
+      textarea.simulate('select', { target: { selectionStart, selectionEnd } })
+
+      const setData = jest.fn()
+
+      const event = new Event('copy', { bubbles: true })
+      event.clipboardData = { setData }
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      expect(setData).toHaveBeenCalledTimes(2)
+
+      expect(setData).toHaveBeenNthCalledWith(
+        1,
+        'text/plain',
+        plainTextValue.slice(selectionStart, selectionEnd)
+      )
+      expect(setData).toHaveBeenNthCalledWith(
+        2,
+        'text/react-mentions',
+        "@[First](first), \n\nlet's add @[Second](second) to the conversation."
+      )
+    })
+
+    it('should include the whole mention when the selection ends in one.', () => {
+      const textarea = component.find('textarea')
+
+      const selectionStart = 0
+      const selectionEnd = plainTextValue.indexOf('Second') + 2
+
+      textarea.simulate('select', { target: { selectionStart, selectionEnd } })
+
+      const setData = jest.fn()
+
+      const event = new Event('copy', { bubbles: true })
+      event.clipboardData = { setData }
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      expect(setData).toHaveBeenCalledTimes(2)
+
+      expect(setData).toHaveBeenNthCalledWith(
+        1,
+        'text/plain',
+        plainTextValue.slice(selectionStart, selectionEnd)
+      )
+      expect(setData).toHaveBeenNthCalledWith(
+        2,
+        'text/react-mentions',
+        "Hi @[First](first), \n\nlet's add @[Second](second)"
+      )
+    })
+  })
 })

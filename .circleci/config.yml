@@ -88,9 +88,7 @@ workflows:
       - test:
           requires:
             - install
-      - publish-demo:
-          requires:
-            - install
+
       - release:
           context: NPM
           requires:

@@ -71,6 +71,7 @@ const propTypes = {
    */
   singleLine: PropTypes.bool,
   allowSpaceInQuery: PropTypes.bool,
+  EXPERIMENTAL_cutCopyPaste: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,

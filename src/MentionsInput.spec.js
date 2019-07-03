@@ -7,6 +7,7 @@ import { Mention, MentionsInput } from './index'
 const data = [
   { id: 'first', value: 'First entry' },
   { id: 'second', value: 'Second entry' },
+  { id: 'third', value: 'Third' },
 ]
 
 describe('MentionsInput', () => {
@@ -50,13 +51,12 @@ describe('MentionsInput', () => {
   it.todo('should be possible to close the suggestions with esc.')
 
   it('should be able to handle sync responses from multiple mentions sources', () => {
+    const extraData = [{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]
+
     const wrapper = mount(
       <MentionsInput value="@">
         <Mention trigger="@" data={data} />
-        <Mention
-          trigger="@"
-          data={[{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]}
-        />
+        <Mention trigger="@" data={extraData} />
       </MentionsInput>
     )
 
@@ -67,7 +67,7 @@ describe('MentionsInput', () => {
 
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
-    ).toEqual(4)
+    ).toEqual(data.length + extraData.length)
   })
 
   it('should scroll the highlighter in sync with the textarea', () => {
@@ -326,6 +326,60 @@ describe('MentionsInput', () => {
 
       const event = new Event('cut', { bubbles: true })
       event.clipboardData = { setData: jest.fn() }
+
+      expect(onChange).not.toHaveBeenCalled()
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      expect(onChange).toHaveBeenCalledTimes(1)
+
+      const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+
+      expect(newValue).toMatchSnapshot()
+      expect(newPlainTextValue).toMatchSnapshot()
+    })
+
+    it('should read mentions markup from a paste event.', () => {
+      const onChange = jest.fn()
+
+      component.setProps({ onChange })
+
+      const textarea = component.find('textarea')
+
+      const pastedText = 'Not forget about @[Third](third)!'
+
+      const event = new Event('paste', { bubbles: true })
+      event.clipboardData = {
+        getData: jest.fn(
+          type => (type === 'text/react-mentions' ? pastedText : '')
+        ),
+      }
+
+      expect(onChange).not.toHaveBeenCalled()
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      expect(onChange).toHaveBeenCalledTimes(1)
+
+      const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+
+      expect(newValue).toMatchSnapshot()
+      expect(newPlainTextValue).toMatchSnapshot()
+    })
+
+    it('should default to the standard pasted text.', () => {
+      const onChange = jest.fn()
+
+      component.setProps({ onChange })
+
+      const textarea = component.find('textarea')
+
+      const pastedText = 'Not forget about @[Third](third)!'
+
+      const event = new Event('paste', { bubbles: true })
+      event.clipboardData = {
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
+      }
 
       expect(onChange).not.toHaveBeenCalled()
 

@@ -12,7 +12,11 @@ const inDev = NODE_ENV === 'development' || NODE_ENV === 'test'
 module.exports = {
   mode: inDev ? 'development' : 'production',
   devtool: inDev ? 'dev-tool-cheap-source-map' : 'source-map',
-  entry: ['@babel/polyfill', path.resolve(__dirname, 'src/index.js')],
+  entry: [
+    'core-js/stable',
+    'regenerator-runtime/runtime',
+    path.resolve(__dirname, 'src/index.js'),
+  ],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: inDev ? '[name].[chunkhash].js' : '[chunkhash].js',

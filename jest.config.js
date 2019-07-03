@@ -6,16 +6,10 @@ module.exports = {
   coverageReporters: ['cobertura', 'lcov', 'text-summary'],
   coverageDirectory: '<rootDir>/coverage',
   setupFilesAfterEnv: ['./jest/setupTestFramework.js'],
-  setupFiles: [
-    'raf/polyfill',
-    // './jest/setupTests.js'
-  ],
+  setupFiles: ['raf/polyfill'],
   roots: ['<rootDir>/src'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-  // transform: {
-  //   '^.+\\.jsx?$': './jest/testTransformer.js',
-  // },
 }

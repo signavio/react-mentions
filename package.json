@@ -11,14 +11,13 @@
   ],
   "scripts": {
     "build": "nwb build-react-component --no-demo",
-    "build-demo": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
-    "lint": "eslint --max-warnings=0 --ext .js src test demo/src",
-    "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
-    "start": "nwb serve-react-demo",
+    "lint": "eslint --max-warnings=0 --ext .js src test demo",
+    "start": "NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
     "semantic-release": "semantic-release",
-    "test": "jest"
+    "test": "jest",
+    "now-build": "webpack --config demo/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -41,13 +40,17 @@
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.5",
     "babel-eslint": "^7.2.3",
+    "babel-loader": "^8.0.6",
     "babel-plugin-lodash": "^3.3.4",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "condition-circle": "^2.0.1",
+    "css-loader": "^3.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",
@@ -56,7 +59,8 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "gh-pages": "^1.1.0",
+    "html-webpack-harddisk-plugin": "1.0.1",
+    "html-webpack-plugin": "4.0.0-beta.5",
     "jasmine-reporters": "^2.3.2",
     "jest": "^24.8.0",
     "jest-enzyme": "^7.0.2",
@@ -66,12 +70,16 @@
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "recompose": "^0.30.0",
-    "semantic-release": "^12.4.1"
+    "semantic-release": "^12.4.1",
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
     "invariant": "^2.2.4",
     "lodash": "^4.5.1",
     "prop-types": "^15.5.8",
+    "style-loader": "^0.23.1",
     "substyle": "^6.3.1"
   },
   "peerDependencies": {

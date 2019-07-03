@@ -5,6 +5,7 @@
 /lib
 /node_modules
 /umd
+/demo/build
 npm-debug.log*
 
 *.log

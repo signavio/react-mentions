@@ -25,6 +25,12 @@
     "mentions",
     "react-component"
   ],
+  "browserslist": [
+    "chrome >= 50",
+    "firefox >= 52",
+    "safari >= 10",
+    "ie >= 11"
+  ],
   "author": "Jan-Felix Schwarz",
   "license": "BSD-3-Clause",
   "bugs": {

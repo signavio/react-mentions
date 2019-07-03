@@ -213,62 +213,130 @@ describe('MentionsInput', () => {
       )
     })
 
-    it('should include the whole mention when the selection starts in one.', () => {
+    it.each(['cut', 'copy'])(
+      'should include the whole mention for a "%s" event when the selection starts in one.',
+      eventType => {
+        const textarea = component.find('textarea')
+
+        const selectionStart = plainTextValue.indexOf('First') + 2
+        const selectionEnd = plainTextValue.length
+
+        textarea.simulate('select', {
+          target: { selectionStart, selectionEnd },
+        })
+
+        const setData = jest.fn()
+
+        const event = new Event(eventType, { bubbles: true })
+        event.clipboardData = { setData }
+
+        textarea.getDOMNode().dispatchEvent(event)
+
+        expect(setData).toHaveBeenCalledTimes(2)
+
+        expect(setData).toHaveBeenNthCalledWith(
+          1,
+          'text/plain',
+          plainTextValue.slice(selectionStart, selectionEnd)
+        )
+        expect(setData).toHaveBeenNthCalledWith(
+          2,
+          'text/react-mentions',
+          "@[First](first), \n\nlet's add @[Second](second) to the conversation."
+        )
+      }
+    )
+
+    it.each(['cut', 'copy'])(
+      'should include the whole mention for a "%s" event when the selection ends in one.',
+      eventType => {
+        const textarea = component.find('textarea')
+
+        const selectionStart = 0
+        const selectionEnd = plainTextValue.indexOf('Second') + 2
+
+        textarea.simulate('select', {
+          target: { selectionStart, selectionEnd },
+        })
+
+        const setData = jest.fn()
+
+        const event = new Event(eventType, { bubbles: true })
+        event.clipboardData = { setData }
+
+        textarea.getDOMNode().dispatchEvent(event)
+
+        expect(setData).toHaveBeenCalledTimes(2)
+
+        expect(setData).toHaveBeenNthCalledWith(
+          1,
+          'text/plain',
+          plainTextValue.slice(selectionStart, selectionEnd)
+        )
+        expect(setData).toHaveBeenNthCalledWith(
+          2,
+          'text/react-mentions',
+          "Hi @[First](first), \n\nlet's add @[Second](second)"
+        )
+      }
+    )
+
+    it('should remove a leading mention from the value when the text is cut.', () => {
+      const onChange = jest.fn()
+
+      component.setProps({ onChange })
+
       const textarea = component.find('textarea')
 
       const selectionStart = plainTextValue.indexOf('First') + 2
-      const selectionEnd = plainTextValue.length
+      const selectionEnd = plainTextValue.indexOf('First') + 'First'.length + 5
 
-      textarea.simulate('select', { target: { selectionStart, selectionEnd } })
+      textarea.simulate('select', {
+        target: { selectionStart, selectionEnd },
+      })
 
-      const setData = jest.fn()
+      const event = new Event('cut', { bubbles: true })
+      event.clipboardData = { setData: jest.fn() }
 
-      const event = new Event('copy', { bubbles: true })
-      event.clipboardData = { setData }
+      expect(onChange).not.toHaveBeenCalled()
 
       textarea.getDOMNode().dispatchEvent(event)
 
-      expect(setData).toHaveBeenCalledTimes(2)
+      expect(onChange).toHaveBeenCalledTimes(1)
 
-      expect(setData).toHaveBeenNthCalledWith(
-        1,
-        'text/plain',
-        plainTextValue.slice(selectionStart, selectionEnd)
-      )
-      expect(setData).toHaveBeenNthCalledWith(
-        2,
-        'text/react-mentions',
-        "@[First](first), \n\nlet's add @[Second](second) to the conversation."
-      )
+      const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+
+      expect(newValue).toMatchSnapshot()
+      expect(newPlainTextValue).toMatchSnapshot()
     })
 
-    it('should include the whole mention when the selection ends in one.', () => {
+    it('should remove a trailing mention from the value when the text is cut.', () => {
+      const onChange = jest.fn()
+
+      component.setProps({ onChange })
+
       const textarea = component.find('textarea')
 
-      const selectionStart = 0
+      const selectionStart = plainTextValue.indexOf('First') + 'First'.length
       const selectionEnd = plainTextValue.indexOf('Second') + 2
 
-      textarea.simulate('select', { target: { selectionStart, selectionEnd } })
+      textarea.simulate('select', {
+        target: { selectionStart, selectionEnd },
+      })
 
-      const setData = jest.fn()
+      const event = new Event('cut', { bubbles: true })
+      event.clipboardData = { setData: jest.fn() }
 
-      const event = new Event('copy', { bubbles: true })
-      event.clipboardData = { setData }
+      expect(onChange).not.toHaveBeenCalled()
 
       textarea.getDOMNode().dispatchEvent(event)
 
-      expect(setData).toHaveBeenCalledTimes(2)
+      expect(onChange).toHaveBeenCalledTimes(1)
 
-      expect(setData).toHaveBeenNthCalledWith(
-        1,
-        'text/plain',
-        plainTextValue.slice(selectionStart, selectionEnd)
-      )
-      expect(setData).toHaveBeenNthCalledWith(
-        2,
-        'text/react-mentions',
-        "Hi @[First](first), \n\nlet's add @[Second](second)"
-      )
+      const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+
+      expect(newValue).toMatchSnapshot()
+      expect(newPlainTextValue).toMatchSnapshot()
     })
   })
 })

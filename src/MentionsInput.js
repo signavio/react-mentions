@@ -495,13 +495,13 @@ class MentionsInput extends React.Component {
       }
       position.position = 'fixed'
       let left = viewportRelative.left
-      position.top = viewportRelative.top
+      let top = viewportRelative.top
       // absolute/fixed positioned elements are positioned according to their entire box including margins; so we remove margins here:
       left -= getComputedStyleLengthProp(suggestions, 'margin-left')
-      position.top -= getComputedStyleLengthProp(suggestions, 'margin-top')
+      top -= getComputedStyleLengthProp(suggestions, 'margin-top')
       // take into account highlighter/textinput scrolling:
       left -= highlighter.scrollLeft
-      position.top -= highlighter.scrollTop
+      top -= highlighter.scrollTop
       // guard for mentions suggestions list clipped by right edge of window
       const viewportWidth = Math.max(
         document.documentElement.clientWidth,
@@ -511,6 +511,15 @@ class MentionsInput extends React.Component {
         position.left = Math.max(0, viewportWidth - suggestions.offsetWidth)
       } else {
         position.left = left
+      }
+      // guard for mentions suggestions list clipped by bottom edge of window
+      // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
+      // is small enough to NOT cover up the caret
+      const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      if (top + suggestions.offsetHeight > viewportHeight && suggestions.offsetHeight < caretOffsetParentRect.top - caretHeight) {
+        position.top = Math.max(0, caretOffsetParentRect.top - suggestions.offsetHeight - caretHeight)
+      } else {
+        position.top = top
       }
     } else {
       let left = caretPosition.left - highlighter.scrollLeft

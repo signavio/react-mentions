@@ -477,6 +477,14 @@ class MentionsInput extends React.Component {
 
     let suggestions = ReactDOM.findDOMNode(this.suggestionsRef)
     let highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    // first get viewport-relative position (highlighter is offsetParent of caret):
+    const caretOffsetParentRect = highlighter.getBoundingClientRect()
+    const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
+    const viewportRelative = {
+      left: caretOffsetParentRect.left + caretPosition.left,
+      top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
+    }
+    const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     if (!suggestions) {
       return
@@ -486,13 +494,6 @@ class MentionsInput extends React.Component {
 
     // if suggestions menu is in a portal, update position to be releative to its portal node
     if (this.props.suggestionsPortalHost) {
-      // first get viewport-relative position (highlighter is offsetParent of caret):
-      const caretOffsetParentRect = highlighter.getBoundingClientRect()
-      const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
-      const viewportRelative = {
-        left: caretOffsetParentRect.left + caretPosition.left,
-        top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
-      }
       position.position = 'fixed'
       let left = viewportRelative.left
       let top = viewportRelative.top
@@ -515,21 +516,29 @@ class MentionsInput extends React.Component {
       // guard for mentions suggestions list clipped by bottom edge of window
       // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
-      const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-      if (top + suggestions.offsetHeight > viewportHeight && suggestions.offsetHeight < caretOffsetParentRect.top - caretHeight) {
-        position.top = Math.max(0, caretOffsetParentRect.top - suggestions.offsetHeight - caretHeight)
+      if (top + suggestions.offsetHeight > viewportHeight && suggestions.offsetHeight < top - caretHeight) {
+        position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
         position.top = top
       }
     } else {
       let left = caretPosition.left - highlighter.scrollLeft
+      let top = caretPosition.top - highlighter.scrollTop
       // guard for mentions suggestions list clipped by right edge of window
       if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
         position.right = 0
       } else {
         position.left = left
       }
-      position.top = caretPosition.top - highlighter.scrollTop
+      // guard for mentions suggestions list clipped by bottom edge of window
+      // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
+      // is small enough to NOT cover up the caret
+      if (viewportRelative.top - highlighter.scrollTop + suggestions.offsetHeight > viewportHeight &&
+          suggestions.offsetHeight < caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) {
+        position.top = top - suggestions.offsetHeight - caretHeight
+      } else {
+        position.top = top
+      }
     }
 
     if (isEqual(position, this.state.suggestionsPosition)) {

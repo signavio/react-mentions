@@ -73,6 +73,7 @@ const propTypes = {
    */
   singleLine: PropTypes.bool,
   allowSpaceInQuery: PropTypes.bool,
+  allowSuggestionsAboveCursor: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -104,6 +105,7 @@ class MentionsInput extends React.Component {
 
   static defaultProps = {
     singleLine: false,
+    allowSuggestionsAboveCursor: false,
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
@@ -470,6 +472,7 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
+    const { suggestionsPortalHost, allowSuggestionsAboveCursor } = this.props
 
     if (!caretPosition || !this.suggestionsRef) {
       return
@@ -493,7 +496,7 @@ class MentionsInput extends React.Component {
     let position = {}
 
     // if suggestions menu is in a portal, update position to be releative to its portal node
-    if (this.props.suggestionsPortalHost) {
+    if (suggestionsPortalHost) {
       position.position = 'fixed'
       let left = viewportRelative.left
       let top = viewportRelative.top
@@ -513,10 +516,12 @@ class MentionsInput extends React.Component {
       } else {
         position.left = left
       }
-      // guard for mentions suggestions list clipped by bottom edge of window
-      // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
+      // guard for mentions suggestions list clipped by bottom edge of window if allowSuggestionsAboveCursor set to true.
+      // Move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
-      if (top + suggestions.offsetHeight > viewportHeight && suggestions.offsetHeight < top - caretHeight) {
+      if (allowSuggestionsAboveCursor &&
+          top + suggestions.offsetHeight > viewportHeight &&
+          suggestions.offsetHeight < top - caretHeight) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
         position.top = top
@@ -530,10 +535,11 @@ class MentionsInput extends React.Component {
       } else {
         position.left = left
       }
-      // guard for mentions suggestions list clipped by bottom edge of window
+      // guard for mentions suggestions list clipped by bottom edge of window if allowSuggestionsAboveCursor set to true.
       // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
-      if (viewportRelative.top - highlighter.scrollTop + suggestions.offsetHeight > viewportHeight &&
+      if (allowSuggestionsAboveCursor &&
+          viewportRelative.top - highlighter.scrollTop + suggestions.offsetHeight > viewportHeight &&
           suggestions.offsetHeight < caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) {
         position.top = top - suggestions.offsetHeight - caretHeight
       } else {

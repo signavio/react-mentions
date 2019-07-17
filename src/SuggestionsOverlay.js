@@ -9,6 +9,7 @@ import LoadingIndicator from './LoadingIndicator'
 class SuggestionsOverlay extends Component {
   static propTypes = {
     suggestions: PropTypes.object.isRequired,
+    maxSuggestions: PropTypes.number,
     focusIndex: PropTypes.number,
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
@@ -75,12 +76,16 @@ class SuggestionsOverlay extends Component {
 
   renderSuggestions() {
     return Object.values(this.props.suggestions).reduce(
-      (accResults, { results, queryInfo }) => [
+      (accResults, { results, queryInfo }) => {
+        const visibleResults = this.props.maxSuggestions ? results.slice(0, this.props.maxSuggestions) : results
+
+        return [
         ...accResults,
-        ...results.map((result, index) =>
+        ...visibleResults.map((result, index) =>
           this.renderSuggestion(result, queryInfo, accResults.length + index)
         ),
-      ],
+        ]
+      },
       []
     )
   }

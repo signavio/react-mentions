@@ -393,4 +393,25 @@ describe('MentionsInput', () => {
       expect(newPlainTextValue).toMatchSnapshot()
     })
   })
+
+  it('respects the maxSuggestions limit', () => {
+    const maxSuggestions = 1
+
+    const wrapper = mount(
+      <MentionsInput
+        className={'testClass'}
+        value={'@'}
+        maxSuggestions={maxSuggestions}
+      >
+        <Mention trigger="@" data={data} />
+      </MentionsInput>
+    )
+
+    wrapper.find('textarea').simulate('focus')
+    wrapper.find('textarea').simulate('select', {
+      target: { selectionStart: 1, selectionEnd: 1 },
+    })
+
+    expect(wrapper.find('SuggestionsOverlay').find('Suggestion').length).toEqual(maxSuggestions)
+  })
 })

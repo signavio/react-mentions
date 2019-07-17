@@ -63,6 +63,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | allowSpaceInQuery     | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
 | suggestionsPortalHost | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
 | inputRef              | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
+| maxSuggestions        | number                                                  | undefined      | An upper bound on the number of suggestions rendered                         |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

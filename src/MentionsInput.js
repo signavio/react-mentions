@@ -74,6 +74,7 @@ const propTypes = {
   EXPERIMENTAL_cutCopyPaste: PropTypes.bool,
 
   value: PropTypes.string,
+  maxSuggestions: PropTypes.number,
   onKeyDown: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
@@ -262,6 +263,7 @@ class MentionsInput extends React.Component {
           })
         }
         isLoading={this.isLoading()}
+        maxSuggestions={this.props.maxSuggestions}
       >
         {this.props.children}
       </SuggestionsOverlay>

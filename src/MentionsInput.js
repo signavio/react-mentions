@@ -953,11 +953,13 @@ const styled = defaultStyle(
       display: 'block',
       position: 'absolute',
       top: 0,
+      left: 0,
       boxSizing: 'border-box',
       backgroundColor: 'transparent',
       width: 'inherit',
       fontFamily: 'inherit',
       fontSize: 'inherit',
+      letterSpacing: 'inherit',
     },
 
     '&multiLine': {

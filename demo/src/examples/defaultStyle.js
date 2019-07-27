@@ -36,7 +36,6 @@ export default {
   '&multiLine': {
     control: {
       fontFamily: 'monospace',
-
       border: '1px solid silver',
     },
 

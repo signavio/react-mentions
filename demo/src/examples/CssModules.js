@@ -18,4 +18,4 @@ function CssModules({ value, data, onChange }) {
   )
 }
 
-export default provideExampleValue('')(CssModules)
+export default provideExampleValue('Hi @[John Doe](johndoe)')(CssModules)

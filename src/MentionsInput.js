@@ -1,30 +1,28 @@
-import React, { Children } from 'react'
-import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
-
-import keys from 'lodash/keys'
-import values from 'lodash/values'
-import omit from 'lodash/omit'
 import isEqual from 'lodash/isEqual'
 import isNumber from 'lodash/isNumber'
-
+import keys from 'lodash/keys'
+import omit from 'lodash/omit'
+import values from 'lodash/values'
+import PropTypes from 'prop-types'
+import React, { Children } from 'react'
+import ReactDOM from 'react-dom'
 import { defaultStyle } from 'substyle'
 
+import Highlighter from './Highlighter'
+import SuggestionsOverlay from './SuggestionsOverlay'
 import {
-  escapeRegex,
-  getPlainText,
   applyChangeToValue,
-  findStartOfMentionInPlainText,
-  getMentions,
   countSuggestions,
+  escapeRegex,
+  findStartOfMentionInPlainText,
   getEndOfLastMention,
+  getMentions,
+  getPlainText,
+  makeMentionsMarkup,
   mapPlainTextIndex,
   readConfigFromChildren,
   spliceString,
-  makeMentionsMarkup,
 } from './utils'
-import SuggestionsOverlay from './SuggestionsOverlay'
-import Highlighter from './Highlighter'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -73,6 +71,7 @@ const propTypes = {
    */
   singleLine: PropTypes.bool,
   allowSpaceInQuery: PropTypes.bool,
+  EXPERIMENTAL_cutCopyPaste: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -113,6 +112,10 @@ class MentionsInput extends React.Component {
     super(props)
     this.suggestions = {}
 
+    this.handleCopy = this.handleCopy.bind(this)
+    this.handleCut = this.handleCut.bind(this)
+    this.handlePaste = this.handlePaste.bind(this)
+
     this.state = {
       focusIndex: 0,
 
@@ -123,6 +126,43 @@ class MentionsInput extends React.Component {
 
       caretPosition: null,
       suggestionsPosition: null,
+    }
+  }
+
+  componentDidMount() {
+    const { EXPERIMENTAL_cutCopyPaste } = this.props
+
+    if (EXPERIMENTAL_cutCopyPaste) {
+      document.addEventListener('copy', this.handleCopy)
+      document.addEventListener('cut', this.handleCut)
+      document.addEventListener('paste', this.handlePaste)
+    }
+
+    this.updateSuggestionsPosition()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Update position of suggestions unless this componentDidUpdate was
+    // triggered by an update to suggestionsPosition.
+    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
+      this.updateSuggestionsPosition()
+    }
+
+    // maintain selection in case a mention is added/removed causing
+    // the cursor to jump to the end
+    if (this.state.setSelectionAfterMentionChange) {
+      this.setState({ setSelectionAfterMentionChange: false })
+      this.setSelection(this.state.selectionStart, this.state.selectionEnd)
+    }
+  }
+
+  componentWillUnmount() {
+    const { EXPERIMENTAL_cutCopyPaste } = this.props
+
+    if (EXPERIMENTAL_cutCopyPaste) {
+      document.removeEventListener('copy', this.handleCopy)
+      document.removeEventListener('cut', this.handleCut)
+      document.removeEventListener('paste', this.handlePaste)
     }
   }
 
@@ -278,6 +318,119 @@ class MentionsInput extends React.Component {
     if (this.props.valueLink) {
       return this.props.valueLink.requestChange(event.target.value, ...args)
     }
+  }
+
+  handlePaste(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    event.preventDefault()
+
+    const { selectionStart, selectionEnd } = this.state
+    const { value, children } = this.props
+
+    const config = readConfigFromChildren(children)
+
+    const markupStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    const pastedMentions = event.clipboardData.getData('text/react-mentions')
+    const pastedData = event.clipboardData.getData('text/plain')
+
+    const newValue = spliceString(
+      value,
+      markupStartIndex,
+      markupEndIndex,
+      pastedMentions || pastedData
+    )
+    const newPlainTextValue = getPlainText(newValue, config)
+
+    const eventMock = { target: { ...event.target, value: newValue } }
+
+    this.executeOnChange(
+      eventMock,
+      newValue,
+      newPlainTextValue,
+      getMentions(newValue, config)
+    )
+  }
+
+  saveSelectionToClipboard(event) {
+    const { selectionStart, selectionEnd } = this.state
+    const { children, value } = this.props
+
+    const config = readConfigFromChildren(children)
+
+    const markupStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    event.clipboardData.setData(
+      'text/plain',
+      event.target.value.slice(selectionStart, selectionEnd)
+    )
+    event.clipboardData.setData(
+      'text/react-mentions',
+      value.slice(markupStartIndex, markupEndIndex)
+    )
+  }
+
+  handleCopy(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    event.preventDefault()
+
+    this.saveSelectionToClipboard(event)
+  }
+
+  handleCut(event) {
+    if (event.target !== this.inputRef) {
+      return
+    }
+
+    event.preventDefault()
+
+    this.saveSelectionToClipboard(event)
+
+    const { selectionStart, selectionEnd } = this.state
+    const { children, value } = this.props
+
+    const config = readConfigFromChildren(children)
+
+    const markupStartIndex = mapPlainTextIndex(
+      value,
+      config,
+      selectionStart,
+      'START'
+    )
+    const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
+
+    const newValue = [
+      value.slice(0, markupStartIndex),
+      value.slice(markupEndIndex),
+    ].join('')
+    const newPlainTextValue = getPlainText(newValue, config)
+
+    const eventMock = { target: { ...event.target, value: newPlainTextValue } }
+
+    this.executeOnChange(
+      eventMock,
+      newValue,
+      newPlainTextValue,
+      getMentions(value, config)
+    )
   }
 
   // Handle input element's change event
@@ -551,25 +704,6 @@ class MentionsInput extends React.Component {
 
   handleCompositionEnd = () => {
     isComposing = false
-  }
-
-  componentDidMount() {
-    this.updateSuggestionsPosition()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // Update position of suggestions unless this componentDidUpdate was
-    // triggered by an update to suggestionsPosition.
-    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
-      this.updateSuggestionsPosition()
-    }
-
-    // maintain selection in case a mention is added/removed causing
-    // the cursor to jump to the end
-    if (this.state.setSelectionAfterMentionChange) {
-      this.setState({ setSelectionAfterMentionChange: false })
-      this.setSelection(this.state.selectionStart, this.state.selectionEnd)
-    }
   }
 
   setSelection = (selectionStart, selectionEnd) => {

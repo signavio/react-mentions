@@ -74,7 +74,6 @@ const propTypes = {
   EXPERIMENTAL_cutCopyPaste: PropTypes.bool,
 
   value: PropTypes.string,
-  maxSuggestions: PropTypes.number,
   onKeyDown: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
@@ -92,7 +91,13 @@ const propTypes = {
           : PropTypes.instanceOf(Element),
     }),
   ]),
-
+  maxSuggestions: (props, propName, componentName) => {
+    if (props[propName] < 1) {
+      return new Error(
+        `Invalid prop ${propName} supplied to ${componentName}. Must be greater than or equal to 1.`
+      )
+    }
+  },
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),

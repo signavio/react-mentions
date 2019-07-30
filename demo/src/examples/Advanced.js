@@ -32,6 +32,7 @@ function Advanced({ value, data, onChange, onBlur, onAdd }) {
         onBlur={onBlur}
         style={style}
         inputRef={inputEl}
+        maxSuggestions={5}
       >
         <Mention
           markup="{{__id__}}"

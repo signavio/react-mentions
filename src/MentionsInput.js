@@ -531,7 +531,7 @@ class MentionsInput extends React.Component {
 
   handleKeyDown = ev => {
     // do not intercept key events if the suggestions overlay is not shown
-    const suggestionsCount = countSuggestions(this.state.suggestions)
+    const suggestionsCount = countSuggestions(this.state.suggestions, this.props.maxSuggestions)
 
     const suggestionsComp = this.suggestionsRef
     if (suggestionsCount === 0 || !suggestionsComp) {
@@ -572,7 +572,7 @@ class MentionsInput extends React.Component {
   }
 
   shiftFocus = delta => {
-    const suggestionsCount = countSuggestions(this.state.suggestions)
+    const suggestionsCount = countSuggestions(this.state.suggestions, this.props.maxSuggestions)
 
     this.setState({
       focusIndex:
@@ -853,7 +853,7 @@ class MentionsInput extends React.Component {
     }
 
     const { focusIndex } = this.state
-    const suggestionsCount = countSuggestions(this.suggestions)
+    const suggestionsCount = countSuggestions(this.suggestions, this.props.maxSuggestions)
     this.setState({
       suggestions: this.suggestions,
       focusIndex:

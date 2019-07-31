@@ -5,11 +5,11 @@ defaults: &defaults
   docker:
     - image: circleci/node:8-browsers
       environment:
-        CHROME_BIN: "/usr/bin/google-chrome"
+        CHROME_BIN: '/usr/bin/google-chrome'
 
 attach_workspace: &attach_workspace
   attach_workspace:
-      at: ~/project
+    at: ~/project
 
 restore_cache: &restore_cache
   restore_cache:
@@ -65,28 +65,6 @@ jobs:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
-  publish-demo:
-    <<: *defaults
-    steps:
-      - *attach_workspace
-      - *restore_cache
-      - add_ssh_keys:
-          fingerprints:
-            - "21:90:d1:2d:be:19:c0:20:da:80:8a:6f:78:78:1f:91"
-      - run:
-          name: Fix host authenticity for github.com
-          command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - run:
-          name: Set git name & email
-          command: |
-            git config --global user.name "CircleCI" && git config --global user.email "circleci@signavio.com"
-      - run:
-          name: Build demo
-          command: yarn build-demo
-      - run:
-          name: Publish demo
-          command: yarn publish-demo
-
   release:
     <<: *defaults
     steps:
@@ -99,8 +77,6 @@ jobs:
           name: Release
           command: yarn semantic-release
 
-
-
 workflows:
   version: 2
   qa-publish-release:
@@ -112,9 +88,7 @@ workflows:
       - test:
           requires:
             - install
-      - publish-demo:
-          requires:
-            - install
+
       - release:
           context: NPM
           requires:

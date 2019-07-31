@@ -1,4 +1,3 @@
-import expect from 'expect'
 import mapPlainTextIndex from './mapPlainTextIndex'
 import markupToRegex from './markupToRegex'
 

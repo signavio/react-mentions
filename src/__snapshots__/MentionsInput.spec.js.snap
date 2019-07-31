@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MentionsInput custom cut/copy/paste should default to the standard pasted text. 1`] = `
+"Not forget about @[Third](third)!Hi @[First](first), 
+
+let's add @[Second](second) to the conversation."
+`;
+
+exports[`MentionsInput custom cut/copy/paste should default to the standard pasted text. 2`] = `
+"Not forget about Third!Hi First, 
+
+let's add Second to the conversation."
+`;
+
+exports[`MentionsInput custom cut/copy/paste should read mentions markup from a paste event. 1`] = `
+"Not forget about @[Third](third)!Hi @[First](first), 
+
+let's add @[Second](second) to the conversation."
+`;
+
+exports[`MentionsInput custom cut/copy/paste should read mentions markup from a paste event. 2`] = `
+"Not forget about Third!Hi First, 
+
+let's add Second to the conversation."
+`;
+
+exports[`MentionsInput custom cut/copy/paste should remove a leading mention from the value when the text is cut. 1`] = `"Hi et's add @[Second](second) to the conversation."`;
+
+exports[`MentionsInput custom cut/copy/paste should remove a leading mention from the value when the text is cut. 2`] = `"Hi et's add Second to the conversation."`;
+
+exports[`MentionsInput custom cut/copy/paste should remove a trailing mention from the value when the text is cut. 1`] = `"Hi @[First](first) to the conversation."`;
+
+exports[`MentionsInput custom cut/copy/paste should remove a trailing mention from the value when the text is cut. 2`] = `"Hi First to the conversation."`;

@@ -1,4 +1,4 @@
-# [React Mentions](http://signavio.github.io/react-mentions)
+# [React Mentions](https://react-mentions.wolf-pack.now.sh)
 
 [![CircleCI][build-badge]][build]
 [![codecov][codecov-badge]][codecov]

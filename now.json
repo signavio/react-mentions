@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "react-mentions",
+  "regions": ["cdg1"],
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": {
+        "distDir": "demo/build"
+      }
+    }
+  ],
+  "github": {
+    "autoJobCancelation": true
+  }
+}

@@ -11,6 +11,7 @@ import MultipleTrigger from './MultipleTrigger'
 import Scrollable from './Scrollable'
 import SingleLine from './SingleLine'
 import SuggestionPortal from './SuggestionPortal'
+import BottomGuard from "./BottomGuard";
 
 const users = [
   {
@@ -56,6 +57,7 @@ export default function Examples() {
         <AsyncGithubUserMentions data={users} />
         <Emojis data={users} />
         <SuggestionPortal data={users} />
+        <BottomGuard data={users} />
       </div>
     </EnhancerProvider>
   )

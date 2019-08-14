@@ -25,6 +25,7 @@ function ExperimentalCutCopyPaste({ data }) {
         In order to activate this functionality you need to set the
         EXPERIMENTAL__cutCopyPaste flag on a MentionsInput to true .
       </p>
+      <p>This functionality is not supported in Internet Explorer.</p>
 
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1, paddingRight: 8 }}>

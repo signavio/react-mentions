@@ -324,6 +324,9 @@ class MentionsInput extends React.Component {
     if (event.target !== this.inputRef) {
       return
     }
+    if (!this.supportsClipboardActions(event)) {
+      return
+    }
 
     event.preventDefault()
 
@@ -385,8 +388,15 @@ class MentionsInput extends React.Component {
     )
   }
 
+  supportsClipboardActions(event) {
+    return !!event.clipboardData
+  }
+
   handleCopy(event) {
     if (event.target !== this.inputRef) {
+      return
+    }
+    if (!this.supportsClipboardActions(event)) {
       return
     }
 
@@ -397,6 +407,9 @@ class MentionsInput extends React.Component {
 
   handleCut(event) {
     if (event.target !== this.inputRef) {
+      return
+    }
+    if (!this.supportsClipboardActions(event)) {
       return
     }
 

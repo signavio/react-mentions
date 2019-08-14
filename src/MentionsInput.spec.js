@@ -281,6 +281,30 @@ describe('MentionsInput', () => {
       }
     )
 
+    it.each(['cut', 'copy'])(
+      'should fallback to the browsers behaviour if the "%s" event does not support clipboardData',
+      eventType => {
+        // IE 11 has no clipboardData attached to the event and only supports mime type "text"
+        // therefore, the new mechanism should ignore those events and let the browser handle them
+        const textarea = component.find('textarea')
+
+        const selectionStart = plainTextValue.indexOf('First') + 2
+        const selectionEnd = plainTextValue.length
+
+        textarea.simulate('select', {
+          target: { selectionStart, selectionEnd },
+        })
+
+        const preventDefault = jest.fn()
+        const event = new Event(eventType, { bubbles: true })
+        event.preventDefault = preventDefault
+
+        textarea.getDOMNode().dispatchEvent(event)
+
+        expect(preventDefault).not.toHaveBeenCalled()
+      }
+    )
+
     it('should remove a leading mention from the value when the text is cut.', () => {
       const onChange = jest.fn()
 
@@ -391,6 +415,27 @@ describe('MentionsInput', () => {
 
       expect(newValue).toMatchSnapshot()
       expect(newPlainTextValue).toMatchSnapshot()
+    })
+
+    it('should fallback to the browsers behaviour if the "paste" event does not support clipboardData', () => {
+      // IE 11 has no clipboardData attached to the event and only supports mime type "text"
+      // therefore, the new mechanism should ignore those events and let the browser handle them
+      const textarea = component.find('textarea')
+
+      const selectionStart = plainTextValue.indexOf('First') + 2
+      const selectionEnd = plainTextValue.length
+
+      textarea.simulate('select', {
+        target: { selectionStart, selectionEnd },
+      })
+
+      const preventDefault = jest.fn()
+      const event = new Event('paste', { bubbles: true })
+      event.preventDefault = preventDefault
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      expect(preventDefault).not.toHaveBeenCalled()
     })
   })
 })

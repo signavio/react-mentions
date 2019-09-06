@@ -73,6 +73,7 @@ const propTypes = {
   allowSpaceInQuery: PropTypes.bool,
   EXPERIMENTAL_cutCopyPaste: PropTypes.bool,
   allowSuggestionsAboveCursor: PropTypes.bool,
+  ignoreAccents: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -103,6 +104,7 @@ class MentionsInput extends React.Component {
   static propTypes = propTypes
 
   static defaultProps = {
+    ignoreAccents: false,
     singleLine: false,
     allowSuggestionsAboveCursor: false,
     onKeyDown: () => null,

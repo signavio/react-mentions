@@ -18,6 +18,7 @@ import {
   getEndOfLastMention,
   getMentions,
   getPlainText,
+  getSubstringIndex,
   makeMentionsMarkup,
   mapPlainTextIndex,
   readConfigFromChildren,
@@ -41,14 +42,14 @@ export const makeTriggerRegex = function(trigger, options = {}) {
   }
 }
 
-const getDataProvider = function(data) {
+const getDataProvider = function(data, ignoreAccents) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
     return function(query, callback) {
       const results = []
       for (let i = 0, l = data.length; i < l; ++i) {
         const display = data[i].display || data[i].id
-        if (display.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+        if (getSubstringIndex(display, query, ignoreAccents) >= 0) {
           results.push(data[i])
         }
       }
@@ -266,6 +267,7 @@ class MentionsInput extends React.Component {
           })
         }
         isLoading={this.isLoading()}
+        ignoreAccents={this.props.ignoreAccents}
       >
         {this.props.children}
       </SuggestionsOverlay>
@@ -834,8 +836,9 @@ class MentionsInput extends React.Component {
     querySequenceEnd,
     plainTextValue
   ) => {
-    const mentionChild = Children.toArray(this.props.children)[childIndex]
-    const provideData = getDataProvider(mentionChild.props.data)
+    const { children, ignoreAccents } = this.props
+    const mentionChild = Children.toArray(children)[childIndex]
+    const provideData = getDataProvider(mentionChild.props.data, ignoreAccents)
     const syncResult = provideData(
       query,
       this.updateSuggestions.bind(

@@ -11,7 +11,7 @@
     "build": "preconstruct build",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo",
-    "start": "NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
     "semantic-release": "semantic-release",
     "test": "jest",
     "now-build": "webpack --config demo/webpack.config.js"
@@ -53,6 +53,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "condition-circle": "^2.0.1",
     "core-js": "^3.1.4",
+    "cross-env": "^5.2.1",
     "css-loader": "^3.0.0",
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.14.0",

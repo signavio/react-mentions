@@ -13,6 +13,7 @@ class SuggestionsOverlay extends Component {
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
     onSelect: PropTypes.func,
+    ignoreAccents: PropTypes.bool,
 
     children: PropTypes.oneOfType([
       PropTypes.element,
@@ -92,6 +93,7 @@ class SuggestionsOverlay extends Component {
     const { renderSuggestion } = Children.toArray(this.props.children)[
       childIndex
     ].props
+    const { ignoreAccents } = this.props
 
     return (
       <Suggestion
@@ -100,6 +102,7 @@ class SuggestionsOverlay extends Component {
         id={id}
         query={query}
         index={index}
+        ignoreAccents={ignoreAccents}
         renderSuggestion={renderSuggestion}
         suggestion={result}
         focused={isFocused}

@@ -4,11 +4,14 @@ import { defaultStyle } from 'substyle'
 import omit from 'lodash/omit'
 import keys from 'lodash/keys'
 
+import { getSubstringIndex } from './utils'
+
 class Suggestion extends Component {
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     query: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
+    ignoreAccents: PropTypes.bool,
 
     suggestion: PropTypes.oneOfType([
       PropTypes.string,
@@ -69,9 +72,9 @@ class Suggestion extends Component {
   }
 
   renderHighlightedDisplay(display) {
-    const { query, style } = this.props
+    const { ignoreAccents, query, style } = this.props
 
-    let i = display.toLowerCase().indexOf(query.toLowerCase())
+    let i = getSubstringIndex(display, query, ignoreAccents)
 
     if (i === -1) {
       return <span {...style('display')}>{display}</span>

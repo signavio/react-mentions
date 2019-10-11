@@ -10,6 +10,7 @@ import ExperimentalCutCopyPaste from './ExperimentalCutCopyPaste'
 import MultipleTrigger from './MultipleTrigger'
 import Scrollable from './Scrollable'
 import SingleLine from './SingleLine'
+import SingleLineIgnoringAccents from './SingleLineIgnoringAccents'
 import SuggestionPortal from './SuggestionPortal'
 import BottomGuard from "./BottomGuard";
 
@@ -42,6 +43,10 @@ const users = [
     id: 'mike',
     display: 'Mike Ehrmantraut',
   },
+  {
+    id: 'lydia',
+    display: 'Lydìã Rôdarté-Qüayle'
+  }
 ]
 
 export default function Examples() {
@@ -50,6 +55,7 @@ export default function Examples() {
       <div>
         <MultipleTrigger data={users} />
         <SingleLine data={users} />
+        <SingleLineIgnoringAccents data={users} />
         <Scrollable data={users} />
         <Advanced data={users} />
         <ExperimentalCutCopyPaste data={users} />

@@ -1,8 +1,8 @@
-import { mount } from 'enzyme'
-import React from 'react'
-
-import { makeTriggerRegex } from './MentionsInput'
 import { Mention, MentionsInput } from './index'
+
+import React from 'react'
+import { makeTriggerRegex } from './MentionsInput'
+import { mount } from 'enzyme'
 
 const data = [
   { id: 'first', value: 'First entry' },
@@ -374,8 +374,8 @@ describe('MentionsInput', () => {
 
       const event = new Event('paste', { bubbles: true })
       event.clipboardData = {
-        getData: jest.fn(
-          type => (type === 'text/react-mentions' ? pastedText : '')
+        getData: jest.fn(type =>
+          type === 'text/react-mentions' ? pastedText : ''
         ),
       }
 
@@ -415,6 +415,37 @@ describe('MentionsInput', () => {
 
       expect(newValue).toMatchSnapshot()
       expect(newPlainTextValue).toMatchSnapshot()
+    })
+
+    it('should remove carriage returns from pasted values', () => {
+      const pastedText =
+        "Hi First, \r\n\r\nlet's add Second to the conversation."
+
+      const event = new Event('paste', { bubbles: true })
+
+      event.clipboardData = {
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
+      }
+
+      const onChange = jest.fn()
+
+      component.setProps({ onChange, value: '' })
+
+      expect(onChange).not.toHaveBeenCalled()
+
+      const textarea = component.find('textarea')
+
+      textarea.getDOMNode().dispatchEvent(event)
+
+      const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+
+      expect(newValue).toEqual(
+        "Hi First, \n\nlet's add Second to the conversation."
+      )
+
+      expect(newPlainTextValue).toEqual(
+        "Hi First, \n\nlet's add Second to the conversation."
+      )
     })
 
     it('should fallback to the browsers behaviour if the "paste" event does not support clipboardData', () => {

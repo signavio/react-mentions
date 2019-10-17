@@ -1,15 +1,4 @@
-import isEqual from 'lodash/isEqual'
-import isNumber from 'lodash/isNumber'
-import keys from 'lodash/keys'
-import omit from 'lodash/omit'
-import values from 'lodash/values'
-import PropTypes from 'prop-types'
 import React, { Children } from 'react'
-import ReactDOM from 'react-dom'
-import { defaultStyle } from 'substyle'
-
-import Highlighter from './Highlighter'
-import SuggestionsOverlay from './SuggestionsOverlay'
 import {
   applyChangeToValue,
   countSuggestions,
@@ -24,6 +13,17 @@ import {
   readConfigFromChildren,
   spliceString,
 } from './utils'
+
+import Highlighter from './Highlighter'
+import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
+import SuggestionsOverlay from './SuggestionsOverlay'
+import { defaultStyle } from 'substyle'
+import isEqual from 'lodash/isEqual'
+import isNumber from 'lodash/isNumber'
+import keys from 'lodash/keys'
+import omit from 'lodash/omit'
+import values from 'lodash/values'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -357,7 +357,8 @@ class MentionsInput extends React.Component {
       markupStartIndex,
       markupEndIndex,
       pastedMentions || pastedData
-    )
+    ).replace(/\r/g, '')
+
     const newPlainTextValue = getPlainText(newValue, config)
 
     const eventMock = { target: { ...event.target, value: newValue } }
@@ -657,7 +658,10 @@ class MentionsInput extends React.Component {
       left: caretOffsetParentRect.left + caretPosition.left,
       top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
     }
-    const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    const viewportHeight = Math.max(
+      document.documentElement.clientHeight,
+      window.innerHeight || 0
+    )
 
     if (!suggestions) {
       return
@@ -689,9 +693,11 @@ class MentionsInput extends React.Component {
       // guard for mentions suggestions list clipped by bottom edge of window if allowSuggestionsAboveCursor set to true.
       // Move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
-      if (allowSuggestionsAboveCursor &&
-          top + suggestions.offsetHeight > viewportHeight &&
-          suggestions.offsetHeight < top - caretHeight) {
+      if (
+        allowSuggestionsAboveCursor &&
+        top + suggestions.offsetHeight > viewportHeight &&
+        suggestions.offsetHeight < top - caretHeight
+      ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
         position.top = top
@@ -708,9 +714,15 @@ class MentionsInput extends React.Component {
       // guard for mentions suggestions list clipped by bottom edge of window if allowSuggestionsAboveCursor set to true.
       // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
-      if (allowSuggestionsAboveCursor &&
-          viewportRelative.top - highlighter.scrollTop + suggestions.offsetHeight > viewportHeight &&
-          suggestions.offsetHeight < caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) {
+      if (
+        allowSuggestionsAboveCursor &&
+        viewportRelative.top -
+          highlighter.scrollTop +
+          suggestions.offsetHeight >
+          viewportHeight &&
+        suggestions.offsetHeight <
+          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop
+      ) {
         position.top = top - suggestions.offsetHeight - caretHeight
       } else {
         position.top = top

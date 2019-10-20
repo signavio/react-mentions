@@ -557,7 +557,7 @@ class MentionsInput extends React.Component {
       return
     }
 
-    if (values(KEY).indexOf(ev.keyCode) >= 0) {
+    if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault()
     }
 

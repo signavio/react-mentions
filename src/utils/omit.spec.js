@@ -1,4 +1,3 @@
-import expect from 'expect'
 import omit from './omit'
 
 describe('#omit', () => {

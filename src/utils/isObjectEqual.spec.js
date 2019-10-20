@@ -1,5 +1,4 @@
-import expect from 'expect'
-import isObjectEqual from './isObjectEqual';
+import isObjectEqual from './isObjectEqual'
 
 describe('#isObjectEqual', () => {
   const pairs = [
@@ -18,7 +17,7 @@ describe('#isObjectEqual', () => {
     const value1 = JSON.stringify(pair[0])
     const value2 = JSON.stringify(pair[1])
     it(`${value1} should ${pair[2] ? '' : 'not '}equal ${value2}`, () => {
-      const result = isObjectEqual(pair[0], pair[1]);
+      const result = isObjectEqual(pair[0], pair[1])
       expect(result).toBe(pair[2])
     })
   })

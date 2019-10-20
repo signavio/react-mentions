@@ -728,7 +728,7 @@ class MentionsInput extends React.Component {
       }
     }
 
-    if (isEqual(position, this.state.suggestionsPosition)) {
+    if (isObjectEqual(position, this.state.suggestionsPosition)) {
       return
     }
 

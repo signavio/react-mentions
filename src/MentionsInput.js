@@ -99,6 +99,8 @@ const propTypes = {
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
   ]).isRequired,
+
+  containerStyle: PropTypes.object,
 }
 
 class MentionsInput extends React.Component {
@@ -251,6 +253,7 @@ class MentionsInput extends React.Component {
     const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
+        containerStyle={this.props.containerStyle}
         position={this.state.suggestionsPosition}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}

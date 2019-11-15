@@ -1,5 +1,4 @@
 import React from 'react'
-import { merge } from 'lodash'
 import { compose, withHandlers } from 'recompose'
 
 import { MentionsInput, Mention } from '../../../src'
@@ -8,6 +7,8 @@ import { provideExampleValue } from './higher-order'
 
 import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
+
+import { merge } from '../../../src/utils'
 
 const style = merge({}, defaultStyle, {
   suggestions: {

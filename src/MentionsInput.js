@@ -12,6 +12,10 @@ import {
   mapPlainTextIndex,
   readConfigFromChildren,
   spliceString,
+  isObjectEqual,
+  isNumber,
+  keys,
+  omit,
 } from './utils'
 
 import Highlighter from './Highlighter'
@@ -19,11 +23,6 @@ import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import { defaultStyle } from 'substyle'
-import isEqual from 'lodash/isEqual'
-import isNumber from 'lodash/isNumber'
-import keys from 'lodash/keys'
-import omit from 'lodash/omit'
-import values from 'lodash/values'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -558,7 +557,7 @@ class MentionsInput extends React.Component {
       return
     }
 
-    if (values(KEY).indexOf(ev.keyCode) >= 0) {
+    if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault()
     }
 
@@ -729,7 +728,7 @@ class MentionsInput extends React.Component {
       }
     }
 
-    if (isEqual(position, this.state.suggestionsPosition)) {
+    if (isObjectEqual(position, this.state.suggestionsPosition)) {
       return
     }
 

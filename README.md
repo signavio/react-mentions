@@ -1,4 +1,4 @@
-# [React Mentions](https://react-mentions.wolf-pack.now.sh)
+# [React Mentions](https://react-mentions.now.sh)
 
 [![CircleCI][build-badge]][build]
 [![codecov][codecov-badge]][codecov]

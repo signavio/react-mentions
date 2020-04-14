@@ -463,7 +463,10 @@ class MentionsInput extends React.Component {
       return
     }
 
-    const value = this.props.value || ''
+    let value = this.props.value || ''
+    if (isComposing) {
+      value = ev.target.value
+    }
     const config = readConfigFromChildren(this.props.children)
 
     let newPlainTextValue = ev.target.value

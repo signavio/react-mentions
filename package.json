@@ -1,7 +1,7 @@
 {
-  "name": "react-mentions-tw",
-  "version": "3.3.2",
-  "description": "React mentions input - fix compositionend event",
+  "name": "react-mentions",
+  "version": "0.0.0-development",
+  "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
   "files": [
@@ -11,7 +11,7 @@
     "build": "preconstruct build",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config demo/webpack.config.js --disableHostCheck=true",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
     "semantic-release": "semantic-release",
     "test": "jest",
     "now-build": "webpack --config demo/webpack.config.js"

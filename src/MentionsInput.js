@@ -1009,12 +1009,13 @@ const styled = defaultStyle(
 
     input: {
       display: 'block',
+      width: '100%',
       position: 'absolute',
+      margin: 0,
       top: 0,
       left: 0,
       boxSizing: 'border-box',
       backgroundColor: 'transparent',
-      width: 'inherit',
       fontFamily: 'inherit',
       fontSize: 'inherit',
       letterSpacing: 'inherit',
@@ -1022,7 +1023,6 @@ const styled = defaultStyle(
 
     '&multiLine': {
       input: {
-        width: '100%',
         height: '100%',
         bottom: 0,
         overflow: 'hidden',

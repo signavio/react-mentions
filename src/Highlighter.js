@@ -199,7 +199,7 @@ class Highlighter extends Component {
     )
   }
 
-  setCaretElement = el => {
+  setCaretElement = (el) => {
     this.caretElement = el
   }
 }
@@ -207,13 +207,14 @@ class Highlighter extends Component {
 const styled = defaultStyle(
   {
     position: 'relative',
-    width: 'inherit',
+    boxSizing: 'border-box',
+    width: '100%',
     color: 'transparent',
-
     overflow: 'hidden',
-
     whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',
+    border: '1px solid transparent',
+    textAlign: 'start',
 
     '&singleLine': {
       whiteSpace: 'pre',
@@ -224,7 +225,7 @@ const styled = defaultStyle(
       visibility: 'hidden',
     },
   },
-  props => ({
+  (props) => ({
     '&singleLine': props.singleLine,
   })
 )

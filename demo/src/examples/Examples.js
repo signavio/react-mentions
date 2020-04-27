@@ -5,7 +5,7 @@ import Advanced from './Advanced'
 import AsyncGithubUserMentions from './AsyncGithubUserMentions'
 import CssModules from './CssModules'
 import Emojis from './Emojis'
-import ExperimentalCutCopyPaste from './ExperimentalCutCopyPaste'
+import CutCopyPaste from './CutCopyPaste'
 import MultipleTrigger from './MultipleTrigger'
 import Scrollable from './Scrollable'
 import SingleLine from './SingleLine'
@@ -57,7 +57,7 @@ export default function Examples() {
         <SingleLineIgnoringAccents data={users} />
         <Scrollable data={users} />
         <Advanced data={users} />
-        <ExperimentalCutCopyPaste data={users} />
+        <CutCopyPaste data={users} />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />
         <Emojis data={users} />

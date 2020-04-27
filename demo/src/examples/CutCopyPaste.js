@@ -11,7 +11,7 @@ const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/
 const defaultValue =
   "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
 
-function ExperimentalCutCopyPaste({ data }) {
+function CutCopyPaste({ data }) {
   const [sourceValue, onSourceChange, onSourceAdd] = useExampleValue(
     defaultValue
   )
@@ -20,11 +20,7 @@ function ExperimentalCutCopyPaste({ data }) {
 
   return (
     <div className="multiple-triggers">
-      <h3>EXPERIMENTAL: Copy and paste mentions between mention components</h3>
-      <p>
-        In order to activate this functionality you need to set the
-        EXPERIMENTAL__cutCopyPaste flag on a MentionsInput to true .
-      </p>
+      <h3>Copy and paste mentions between mention components</h3>
       <p>This functionality is not supported in Internet Explorer.</p>
 
       <div style={{ display: 'flex' }}>
@@ -54,7 +50,7 @@ function ExperimentalCutCopyPaste({ data }) {
             <textarea
               style={{ width: '100%', height: 80 }}
               value={plainTextValue}
-              onChange={event => setPlainTextValue(event.target.value)}
+              onChange={(event) => setPlainTextValue(event.target.value)}
             />
           </div>
         </div>
@@ -65,7 +61,6 @@ function ExperimentalCutCopyPaste({ data }) {
 
 const MultiMention = ({ value, data, onChange, onAdd }) => (
   <MentionsInput
-    EXPERIMENTAL_cutCopyPaste
     value={value}
     onChange={onChange}
     style={defaultStyle}
@@ -93,11 +88,11 @@ const MultiMention = ({ value, data, onChange, onAdd }) => (
     <Mention
       markup="@[__display__](email:__id__)"
       trigger={emailRegex}
-      data={search => [{ id: search, display: search }]}
+      data={(search) => [{ id: search, display: search }]}
       onAdd={onAdd}
       style={{ backgroundColor: '#d1c4e9' }}
     />
   </MentionsInput>
 )
 
-export default ExperimentalCutCopyPaste
+export default CutCopyPaste

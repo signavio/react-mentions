@@ -1,4 +1,4 @@
-const keys = (obj) => {
+const keys = obj => {
   return obj === Object(obj) ? Object.keys(obj) : []
 }
 

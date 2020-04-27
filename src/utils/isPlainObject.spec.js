@@ -1,7 +1,7 @@
 import isPlainObject from './isPlainObject'
 
 describe('isPlainObject', () => {
-  [
+  ;[
     { input: {}, expected: true },
     { input: { a: 1 }, expected: true },
     { input: new Object(), expected: true }, // eslint-disable-line no-new-object

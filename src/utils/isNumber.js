@@ -1,3 +1,3 @@
-const isNumber = (val) => typeof val === 'number'
+const isNumber = val => typeof val === 'number'
 
 export default isNumber

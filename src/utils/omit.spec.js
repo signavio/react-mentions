@@ -16,6 +16,8 @@ describe('#omit', () => {
   })
 
   it(`should omit values from input with given mutliples arguments `, () => {
-    expect(omit({ a: 2, b: 3 }, 'style', ['someKey', 'otherKey', 'b'])).toEqual({ a: 2 })
+    expect(omit({ a: 2, b: 3 }, 'style', ['someKey', 'otherKey', 'b'])).toEqual(
+      { a: 2 }
+    )
   })
 })

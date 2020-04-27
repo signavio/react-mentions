@@ -1,13 +1,12 @@
 import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './utils'
 
 import {
   iterateMentionsMarkup,
   mapPlainTextIndex,
   readConfigFromChildren,
-  isObjectEqual,
-  isNumber
+  isNumber,
 } from './utils'
 
 const _generateComponentKey = (usedKeys, id) => {
@@ -21,14 +20,19 @@ const _generateComponentKey = (usedKeys, id) => {
 
 class Highlighter extends Component {
   static propTypes = {
-    selection: PropTypes.shape({
-      start: PropTypes.number,
-      end: PropTypes.number,
-    }).isRequired,
+    selectionStart: PropTypes.number,
+    selectionEnd: PropTypes.number,
     value: PropTypes.string.isRequired,
     onCaretPositionChange: PropTypes.func.isRequired,
-    inputStyle: PropTypes.object,
-
+    containerRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({
+        current:
+          typeof Element === 'undefined'
+            ? PropTypes.any
+            : PropTypes.instanceOf(Element),
+      }),
+    ]),
     children: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.arrayOf(PropTypes.element),
@@ -37,13 +41,12 @@ class Highlighter extends Component {
 
   static defaultProps = {
     value: '',
-    inputStyle: {},
   }
 
   constructor() {
     super(...arguments)
 
-    this.state = { lastPosition: {} }
+    this.state = { left: undefined, top: undefined }
   }
 
   componentDidMount() {
@@ -55,39 +58,43 @@ class Highlighter extends Component {
   }
 
   notifyCaretPosition() {
-    if (!this.caretRef) {
+    if (!this.caretElement) {
       return
     }
 
-    let position = {
-      left: this.caretRef.offsetLeft,
-      top: this.caretRef.offsetTop,
-    }
+    const { offsetLeft, offsetTop } = this.caretElement
 
-    let { lastPosition } = this.state
-
-    if (isObjectEqual(lastPosition, position)) {
+    if (this.state.left === offsetLeft && this.state.top === offsetTop) {
       return
     }
 
-    this.setState({
-      lastPosition: position,
-    })
+    const newPosition = {
+      left: offsetLeft,
+      top: offsetTop,
+    }
+    this.setState(newPosition)
 
-    this.props.onCaretPositionChange(position)
+    this.props.onCaretPositionChange(newPosition)
   }
 
   render() {
-    const { selection, value, style, inputStyle, children } = this.props
+    const {
+      selectionStart,
+      selectionEnd,
+      value,
+      style,
+      children,
+      containerRef,
+    } = this.props
     const config = readConfigFromChildren(children)
 
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     let caretPositionInMarkup
-    if (selection.start === selection.end) {
+    if (selectionStart === selectionEnd) {
       caretPositionInMarkup = mapPlainTextIndex(
         value,
         config,
-        selection.start,
+        selectionStart,
         'START'
       )
     }
@@ -157,13 +164,7 @@ class Highlighter extends Component {
     }
 
     return (
-      <div
-        {...style}
-        style={{
-          ...inputStyle,
-          ...style.style,
-        }}
-      >
+      <div {...style} ref={containerRef}>
         {resultComponents}
       </div>
     )
@@ -190,14 +191,16 @@ class Highlighter extends Component {
     return (
       <span
         {...this.props.style('caret')}
-        ref={el => {
-          this.caretRef = el
-        }}
+        ref={this.setCaretElement}
         key="caret"
       >
         {children}
       </span>
     )
+  }
+
+  setCaretElement = el => {
+    this.caretElement = el
   }
 }
 

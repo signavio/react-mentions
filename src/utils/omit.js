@@ -8,5 +8,4 @@ const omit = (obj, ...rest) => {
   }, {})
 }
 
-
 export default omit

@@ -12,7 +12,6 @@ import {
   mapPlainTextIndex,
   readConfigFromChildren,
   spliceString,
-  isObjectEqual,
   isNumber,
   keys,
   omit,
@@ -22,7 +21,7 @@ import Highlighter from './Highlighter'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
-import { defaultStyle } from 'substyle'
+import { defaultStyle } from './utils'
 
 export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
@@ -129,7 +128,7 @@ class MentionsInput extends React.Component {
       suggestions: {},
 
       caretPosition: null,
-      suggestionsPosition: null,
+      suggestionsPosition: {},
     }
   }
 
@@ -172,23 +171,26 @@ class MentionsInput extends React.Component {
 
   render() {
     return (
-      <div
-        ref={el => {
-          this.containerRef = el
-        }}
-        {...this.props.style}
-      >
+      <div ref={this.setContainerElement} {...this.props.style}>
         {this.renderControl()}
         {this.renderSuggestionsOverlay()}
       </div>
     )
   }
 
-  getInputProps = isTextarea => {
+  setContainerElement = el => {
+    this.containerElement = el
+  }
+
+  getInputProps = () => {
     let { readOnly, disabled, style } = this.props
 
-    // pass all props that we don't use through to the input control
-    let props = omit(this.props, 'style', keys(propTypes))
+    // pass all props that neither we, nor substyle, consume through to the input control
+    let props = omit(
+      this.props,
+      ['style', 'classNames', 'className'], // substyle props
+      keys(propTypes)
+    )
 
     return {
       ...props,
@@ -211,11 +213,11 @@ class MentionsInput extends React.Component {
 
   renderControl = () => {
     let { singleLine, style } = this.props
-    let inputProps = this.getInputProps(!singleLine)
+    let inputProps = this.getInputProps()
 
     return (
       <div {...style('control')}>
-        {this.renderHighlighter(inputProps.style)}
+        {this.renderHighlighter()}
         {singleLine
           ? this.renderInput(inputProps)
           : this.renderTextarea(inputProps)}
@@ -232,7 +234,7 @@ class MentionsInput extends React.Component {
   }
 
   setInputRef = el => {
-    this.inputRef = el
+    this.inputElement = el
     const { inputRef } = this.props
     if (typeof inputRef === 'function') {
       inputRef(el)
@@ -241,30 +243,31 @@ class MentionsInput extends React.Component {
     }
   }
 
+  setSuggestionsElement = el => {
+    this.suggestionsElement = el
+  }
+
   renderSuggestionsOverlay = () => {
     if (!isNumber(this.state.selectionStart)) {
       // do not show suggestions when the input does not have the focus
       return null
     }
 
+    const { position, left, top } = this.state.suggestionsPosition
+
     const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
-        position={this.state.suggestionsPosition}
+        position={position}
+        left={left}
+        top={top}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
-        ref={el => {
-          this.suggestionsRef = el
-        }}
+        containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
-        onMouseEnter={focusIndex =>
-          this.setState({
-            focusIndex,
-            scrollFocusedIntoView: false,
-          })
-        }
+        onMouseEnter={this.handleSuggestionsMouseEnter}
         isLoading={this.isLoading()}
         ignoreAccents={this.props.ignoreAccents}
       >
@@ -281,30 +284,31 @@ class MentionsInput extends React.Component {
     }
   }
 
-  renderHighlighter = inputStyle => {
+  renderHighlighter = () => {
     const { selectionStart, selectionEnd } = this.state
     const { singleLine, children, value, style } = this.props
 
     return (
       <Highlighter
-        ref={el => {
-          this.highlighterRef = el
-        }}
+        containerRef={this.setHighlighterElement}
         style={style('highlighter')}
-        inputStyle={inputStyle}
         value={value}
         singleLine={singleLine}
-        selection={{
-          start: selectionStart,
-          end: selectionEnd,
-        }}
-        onCaretPositionChange={position =>
-          this.setState({ caretPosition: position })
-        }
+        selectionStart={selectionStart}
+        selectionEnd={selectionEnd}
+        onCaretPositionChange={this.handleCaretPositionChange}
       >
         {children}
       </Highlighter>
     )
+  }
+
+  setHighlighterElement = el => {
+    this.highlighterElement = el
+  }
+
+  handleCaretPositionChange = position => {
+    this.setState({ caretPosition: position })
   }
 
   // Returns the text to set as the value of the textarea with all markups removed
@@ -326,7 +330,7 @@ class MentionsInput extends React.Component {
   }
 
   handlePaste(event) {
-    if (event.target !== this.inputRef) {
+    if (event.target !== this.inputElement) {
       return
     }
     if (!this.supportsClipboardActions(event)) {
@@ -399,7 +403,7 @@ class MentionsInput extends React.Component {
   }
 
   handleCopy(event) {
-    if (event.target !== this.inputRef) {
+    if (event.target !== this.inputElement) {
       return
     }
     if (!this.supportsClipboardActions(event)) {
@@ -412,7 +416,7 @@ class MentionsInput extends React.Component {
   }
 
   handleCut(event) {
-    if (event.target !== this.inputRef) {
+    if (event.target !== this.inputElement) {
       return
     }
     if (!this.supportsClipboardActions(event)) {
@@ -533,7 +537,7 @@ class MentionsInput extends React.Component {
     if (isComposing) return
 
     // refresh suggestions queries
-    const el = this.inputRef
+    const el = this.inputElement
     if (ev.target.selectionStart === ev.target.selectionEnd) {
       this.updateMentionsQueries(el.value, ev.target.selectionStart)
     } else {
@@ -550,8 +554,7 @@ class MentionsInput extends React.Component {
     // do not intercept key events if the suggestions overlay is not shown
     const suggestionsCount = countSuggestions(this.state.suggestions)
 
-    const suggestionsComp = this.suggestionsRef
-    if (suggestionsCount === 0 || !suggestionsComp) {
+    if (suggestionsCount === 0 || !this.suggestionsElement) {
       this.props.onKeyDown(ev)
 
       return
@@ -640,16 +643,23 @@ class MentionsInput extends React.Component {
     this._suggestionsMouseDown = true
   }
 
+  handleSuggestionsMouseEnter = focusIndex => {
+    this.setState({
+      focusIndex,
+      scrollFocusedIntoView: false,
+    })
+  }
+
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
     const { suggestionsPortalHost, allowSuggestionsAboveCursor } = this.props
 
-    if (!caretPosition || !this.suggestionsRef) {
+    if (!caretPosition || !this.suggestionsElement) {
       return
     }
 
-    let suggestions = ReactDOM.findDOMNode(this.suggestionsRef)
-    let highlighter = ReactDOM.findDOMNode(this.highlighterRef)
+    let suggestions = this.suggestionsElement
+    let highlighter = this.highlighterElement
     // first get viewport-relative position (highlighter is offsetParent of caret):
     const caretOffsetParentRect = highlighter.getBoundingClientRect()
     const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
@@ -705,7 +715,7 @@ class MentionsInput extends React.Component {
       let left = caretPosition.left - highlighter.scrollLeft
       let top = caretPosition.top - highlighter.scrollTop
       // guard for mentions suggestions list clipped by right edge of window
-      if (left + suggestions.offsetWidth > this.containerRef.offsetWidth) {
+      if (left + suggestions.offsetWidth > this.containerElement.offsetWidth) {
         position.right = 0
       } else {
         position.left = left
@@ -728,7 +738,11 @@ class MentionsInput extends React.Component {
       }
     }
 
-    if (isObjectEqual(position, this.state.suggestionsPosition)) {
+    if (
+      position.left === this.state.suggestionsPosition.left &&
+      position.top === this.state.suggestionsPosition.top &&
+      position.position === this.state.suggestionsPosition.position
+    ) {
       return
     }
 
@@ -738,13 +752,13 @@ class MentionsInput extends React.Component {
   }
 
   updateHighlighterScroll = () => {
-    if (!this.inputRef || !this.highlighterRef) {
+    const input = this.inputElement
+    const highlighter = this.highlighterElement
+    if (!input || !highlighter) {
       // since the invocation of this function is deferred,
       // the whole component may have been unmounted in the meanwhile
       return
     }
-    const input = this.inputRef
-    const highlighter = ReactDOM.findDOMNode(this.highlighterRef)
     highlighter.scrollLeft = input.scrollLeft
     highlighter.scrollTop = input.scrollTop
     highlighter.height = input.height
@@ -761,7 +775,7 @@ class MentionsInput extends React.Component {
   setSelection = (selectionStart, selectionEnd) => {
     if (selectionStart === null || selectionEnd === null) return
 
-    const el = this.inputRef
+    const el = this.inputElement
     if (el.setSelectionRange) {
       el.setSelectionRange(selectionStart, selectionEnd)
     } else if (el.createTextRange) {
@@ -938,7 +952,7 @@ class MentionsInput extends React.Component {
     const newValue = spliceString(value, start, end, insert)
 
     // Refocus input and set caret position to end of mention
-    this.inputRef.focus()
+    this.inputElement.focus()
 
     let displayValue = displayTransform(id, display)
     if (appendSpaceOnAdd) {

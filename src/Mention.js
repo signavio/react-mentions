@@ -1,14 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { createUseStyle } from 'substyle'
 
-const styled = defaultStyle({
+const useStyle = createUseStyle({
   fontWeight: 'inherit',
 })
 
-const Mention = styled(({ display, style }) => (
-  <strong {...style}>{display}</strong>
-))
+const Mention = props => {
+  const style = useStyle(props)
+  const { display } = props
+  return <strong {...style}>{display}</strong>
+}
 
 Mention.propTypes = {
   /**

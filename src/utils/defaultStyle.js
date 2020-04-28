@@ -1,13 +1,22 @@
 import React from 'react'
-import { createUseStyle } from 'substyle'
+import useStyles from 'substyle'
 
-function createDefaultStyle(defaultStyle, getModifiers, getDependsOn) {
-  const enhance = ComponentToWrap => {
-    const useStyle = createUseStyle(defaultStyle, getModifiers, getDependsOn)
+function createDefaultStyle(defaultStyle, getModifiers) {
+  const enhance = (ComponentToWrap) => {
+    const DefaultStyleEnhancer = ({
+      style,
+      className,
+      classNames,
+      ...rest
+    }) => {
+      const modifiers = getModifiers ? getModifiers(rest) : undefined
+      const styles = useStyles(
+        defaultStyle,
+        { style, className, classNames },
+        modifiers
+      )
 
-    const DefaultStyleEnhancer = props => {
-      const style = useStyle(props)
-      return <ComponentToWrap {...props} style={style} />
+      return <ComponentToWrap {...rest} style={styles} />
     }
     const displayName =
       ComponentToWrap.displayName || ComponentToWrap.name || 'Component'

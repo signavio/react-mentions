@@ -76,7 +76,7 @@
     "regenerator-runtime": "^0.13.2",
     "semantic-release": "^12.4.1",
     "style-loader": "^0.23.1",
-    "substyle-jss": "^3.0.0",
+    "substyle-jss": "^4.0.0",
     "webpack": "^4.35.2",
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2"
@@ -85,7 +85,7 @@
     "@babel/runtime": "7.4.5",
     "invariant": "^2.2.4",
     "prop-types": "^15.5.8",
-    "substyle": "^8.0.0"
+    "substyle": "^9.0.0"
   },
   "peerDependencies": {
     "react": ">=16.8.3",

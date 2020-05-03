@@ -9022,19 +9022,19 @@ style-loader@^0.23.1:
     loader-utils "^1.1.0"
     schema-utils "^1.0.0"
 
-substyle-jss@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/substyle-jss/-/substyle-jss-4.0.0.tgz#17f13166698432e2898bc47ad0894f506307a835"
-  integrity sha512-FIC8+fiYXPVZ2KEVuFXMqEIPKdqpBwbsPOducLffwsxYsx9qwzFpzR9ukItpwDeXyDBp5395362ZPOfQ42L2mg==
+substyle-jss@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/substyle-jss/-/substyle-jss-4.0.1.tgz#d6503a2b962f38bfc6bb1da9019fa89b5ffec14f"
+  integrity sha512-o+YxS8yXPTlvEZuwF0hAfsf4ijsIH7pTBYWVBzF3ubYhtx7ac/5fiC2mgn2gcFlp02hvMA0UBbFrvkKsU89sXQ==
   dependencies:
     "@babel/runtime" "^7.3.4"
     css-jss "^10.0.0"
-    substyle "^9.0.0"
+    substyle "^9.1.0"
 
-substyle@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/substyle/-/substyle-9.0.0.tgz#3c280012faf5b8b8767c37a4b3b58151ca505062"
-  integrity sha512-fIa4xoT7ukN6pV8IY/irPcl6wzHQ/zKF9lZ3CXfBu6DBPMhxLDaIZwb3FL+AaXB8hgfclaQgXELnrQdodWd0wA==
+substyle@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-9.1.0.tgz#920cd206c8750ad2b88e5a7c445b2a35f6d25186"
+  integrity sha512-k4DSCd0c1hl4+0GKtCMeoP8R1SQ3jetEM1nUY1xKTN3nbHSCKmg3uKnljhEk+WF1uhXdF1W0Q4+J4TCUEOwY3g==
   dependencies:
     "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"

@@ -1,22 +1,20 @@
 export default {
   control: {
-    backgroundColor: '#fff',
     fontSize: 16,
-    fontWeight: 'normal',
-    border: '1px solid silver',
+    lineHeight: 1.2,
+    minHeight: 63,
   },
 
   highlighter: {
-    overflow: 'hidden',
+    padding: 9,
+    border: '1px solid transparent',
   },
 
   input: {
-    margin: 0,
+    fontSize: 16,
+    lineHeight: 1.2,
     padding: 9,
-    minHeight: 63,
-    outline: 0,
-    border: 0,
-    lineHeight: 1,
+    border: '1px solid silver',
   },
 
   suggestions: {

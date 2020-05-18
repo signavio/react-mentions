@@ -63,6 +63,7 @@ const getDataProvider = function(data, ignoreAccents) {
 const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40 }
 
 let isComposing = false
+let OSName = "Unknown OS"
 
 const propTypes = {
   /**
@@ -142,6 +143,8 @@ class MentionsInput extends React.Component {
       document.addEventListener('paste', this.handlePaste)
     }
 
+    OSName = this.getOSName()
+
     this.updateSuggestionsPosition()
   }
 
@@ -182,6 +185,25 @@ class MentionsInput extends React.Component {
         {this.renderSuggestionsOverlay()}
       </div>
     )
+  }
+
+  getOSName = () => {
+    var OSName="Unknown OS";
+    var OSCpu = navigator.oscpu
+
+    if (!OSCpu) {
+      return OSName
+    }
+
+    if (OSCpu.indexOf("Win")!=-1) {
+      OSName = "Windows"
+    } else if (OSCpu.indexOf("Mac")!=-1) {
+      OSName = "MacOS"
+    } else if (OSCpu.indexOf("Linux")!=-1 || OSCpu.indexOf("X11")!=-1) {
+      OSName = "Linux"
+    }
+
+    return OSName
   }
 
   getInputProps = isTextarea => {
@@ -464,7 +486,7 @@ class MentionsInput extends React.Component {
     }
 
     let value = this.props.value || ''
-    if (isComposing) {
+    if (isComposing && OSName == "Linux") {
       value = ev.target.value
     }
     const config = readConfigFromChildren(this.props.children)

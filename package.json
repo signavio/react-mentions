@@ -1,6 +1,6 @@
 {
   "name": "react-mentions-tw",
-  "version": "3.3.7",
+  "version": "3.3.9",
   "description": "React mentions input",
   "main": "dist/react-mentions-tw.cjs.js",
   "module": "dist/react-mentions-tw.esm.js",

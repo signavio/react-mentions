@@ -65,8 +65,8 @@ const getOS = function() {
     platform = window.navigator.platform,
     macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
     windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-    iosPlatforms = ['iPhone', 'iPad', 'iPod'],
-    os = null;
+    iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+  let os = null;
 
   if (macosPlatforms.indexOf(platform) !== -1) {
     os = 'Mac OS';
@@ -487,7 +487,7 @@ class MentionsInput extends React.Component {
       return
     }
 
-    const value = (isComposing && this.OS == 'Linux')
+    const value = (isComposing && this.OS === 'Linux')
       ? ev.target.value || ''
       : this.props.value || ''
     const config = readConfigFromChildren(this.props.children)

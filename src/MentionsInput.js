@@ -60,10 +60,32 @@ const getDataProvider = function(data, ignoreAccents) {
   }
 }
 
+const getOS = function() {
+  const userAgent = window.navigator.userAgent,
+    platform = window.navigator.platform,
+    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+    iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+    os = null;
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (iosPlatforms.indexOf(platform) !== -1) {
+    os = 'iOS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    os = 'Android';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+
+  return os;
+}
+
 const KEY = { TAB: 9, RETURN: 13, ESC: 27, UP: 38, DOWN: 40 }
 
 let isComposing = false
-let OSName = "Unknown OS"
 
 const propTypes = {
   /**
@@ -132,6 +154,7 @@ class MentionsInput extends React.Component {
       caretPosition: null,
       suggestionsPosition: null,
     }
+    this.OS = getOS()
   }
 
   componentDidMount() {
@@ -142,8 +165,6 @@ class MentionsInput extends React.Component {
       document.addEventListener('cut', this.handleCut)
       document.addEventListener('paste', this.handlePaste)
     }
-
-    OSName = this.getOSName()
 
     this.updateSuggestionsPosition()
   }
@@ -185,25 +206,6 @@ class MentionsInput extends React.Component {
         {this.renderSuggestionsOverlay()}
       </div>
     )
-  }
-
-  getOSName = () => {
-    var OSName="Unknown OS";
-    var OSCpu = navigator.oscpu
-
-    if (!OSCpu) {
-      return OSName
-    }
-
-    if (OSCpu.indexOf("Win")!=-1) {
-      OSName = "Windows"
-    } else if (OSCpu.indexOf("Mac")!=-1) {
-      OSName = "MacOS"
-    } else if (OSCpu.indexOf("Linux")!=-1 || OSCpu.indexOf("X11")!=-1) {
-      OSName = "Linux"
-    }
-
-    return OSName
   }
 
   getInputProps = isTextarea => {
@@ -485,10 +487,9 @@ class MentionsInput extends React.Component {
       return
     }
 
-    let value = this.props.value || ''
-    if (isComposing && OSName == "Linux") {
-      value = ev.target.value
-    }
+    const value = (isComposing && this.OS == 'Linux')
+      ? ev.target.value || ''
+      : this.props.value || ''
     const config = readConfigFromChildren(this.props.children)
 
     let newPlainTextValue = ev.target.value

@@ -36,7 +36,11 @@ const applyChangeToValue = (
   // handling for Backspace key with no range selection
   let spliceStart = Math.min(selectionStartBefore, selectionEndAfter)
 
-  let spliceEnd = selectionEndBefore
+  // fix for Windows cannot change chinese
+  let spliceEnd = oldPlainTextValue.lastIndexOf(
+    plainTextValue.substring(selectionEndAfter)
+  )
+
   if (selectionStartBefore === selectionEndAfter) {
     // handling for Delete key with no range selection
     spliceEnd = Math.max(selectionEndBefore, selectionStartBefore + lengthDelta)

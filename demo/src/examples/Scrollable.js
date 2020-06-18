@@ -13,6 +13,11 @@ function Scrollable({ value, data, onChange, onAdd }) {
       overflow: 'auto',
       height: 70,
     },
+    highlighter: {
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      height: 70,
+    },
   })
 
   return (

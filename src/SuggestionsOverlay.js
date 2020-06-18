@@ -1,6 +1,7 @@
 import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
+import { inline } from 'substyle'
+import { defaultStyle } from './utils'
 
 import { countSuggestions } from './utils'
 import Suggestion from './Suggestion'
@@ -10,10 +11,22 @@ class SuggestionsOverlay extends Component {
   static propTypes = {
     suggestions: PropTypes.object.isRequired,
     focusIndex: PropTypes.number,
+    position: PropTypes.string,
+    left: PropTypes.number,
+    top: PropTypes.number,
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
     onSelect: PropTypes.func,
     ignoreAccents: PropTypes.bool,
+    containerRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({
+        current:
+          typeof Element === 'undefined'
+            ? PropTypes.any
+            : PropTypes.instanceOf(Element),
+      }),
+    ]),
 
     children: PropTypes.oneOfType([
       PropTypes.element,
@@ -28,30 +41,39 @@ class SuggestionsOverlay extends Component {
 
   componentDidUpdate() {
     if (
-      !this.suggestionsRef ||
-      this.suggestionsRef.offsetHeight >= this.suggestionsRef.scrollHeight ||
+      !this.ulElement ||
+      this.ulElement.offsetHeight >= this.ulElement.scrollHeight ||
       !this.props.scrollFocusedIntoView
     ) {
       return
     }
 
-    const scrollTop = this.suggestionsRef.scrollTop
-    let { top, bottom } = this.suggestionsRef.children[
+    const scrollTop = this.ulElement.scrollTop
+    let { top, bottom } = this.ulElement.children[
       this.props.focusIndex
     ].getBoundingClientRect()
-    const { top: topContainer } = this.suggestionsRef.getBoundingClientRect()
+    const { top: topContainer } = this.ulElement.getBoundingClientRect()
     top = top - topContainer + scrollTop
     bottom = bottom - topContainer + scrollTop
 
     if (top < scrollTop) {
-      this.suggestionsRef.scrollTop = top
-    } else if (bottom > this.suggestionsRef.offsetHeight) {
-      this.suggestionsRef.scrollTop = bottom - this.suggestionsRef.offsetHeight
+      this.ulElement.scrollTop = top
+    } else if (bottom > this.ulElement.offsetHeight) {
+      this.ulElement.scrollTop = bottom - this.ulElement.offsetHeight
     }
   }
 
   render() {
-    const { suggestions, isLoading, style, onMouseDown } = this.props
+    const {
+      suggestions,
+      isLoading,
+      style,
+      onMouseDown,
+      containerRef,
+      position,
+      left,
+      top,
+    } = this.props
 
     // do not show suggestions until there is some data
     if (countSuggestions(suggestions) === 0 && !isLoading) {
@@ -59,13 +81,12 @@ class SuggestionsOverlay extends Component {
     }
 
     return (
-      <div {...style} onMouseDown={onMouseDown}>
-        <ul
-          ref={el => {
-            this.suggestionsRef = el
-          }}
-          {...style('list')}
-        >
+      <div
+        {...inline(style, { position, left, top })}
+        onMouseDown={onMouseDown}
+        ref={containerRef}
+      >
+        <ul ref={this.setUlElement} {...style('list')}>
           {this.renderSuggestions()}
         </ul>
 
@@ -87,7 +108,7 @@ class SuggestionsOverlay extends Component {
   }
 
   renderSuggestion(result, queryInfo, index) {
-    const id = this.getID(result)
+    const id = getID(result)
     const isFocused = index === this.props.focusIndex
     const { childIndex, query } = queryInfo
     const { renderSuggestion } = Children.toArray(this.props.children)[
@@ -112,14 +133,6 @@ class SuggestionsOverlay extends Component {
     )
   }
 
-  getID(suggestion) {
-    if (suggestion instanceof String) {
-      return suggestion
-    }
-
-    return suggestion.id
-  }
-
   renderLoadingIndicator() {
     if (!this.props.isLoading) {
       return
@@ -128,30 +141,41 @@ class SuggestionsOverlay extends Component {
     return <LoadingIndicator style={this.props.style('loadingIndicator')} />
   }
 
-  handleMouseEnter(index, ev) {
+  handleMouseEnter = (index, ev) => {
     if (this.props.onMouseEnter) {
       this.props.onMouseEnter(index)
     }
   }
 
-  select(suggestion, queryInfo) {
+  select = (suggestion, queryInfo) => {
     this.props.onSelect(suggestion, queryInfo)
+  }
+
+  setUlElement = el => {
+    this.ulElement = el
   }
 }
 
-const styled = defaultStyle(({ position }) => ({
+const getID = suggestion => {
+  if (suggestion instanceof String) {
+    return suggestion
+  }
+
+  return suggestion.id
+}
+
+const styled = defaultStyle({
   position: 'absolute',
   zIndex: 1,
   backgroundColor: 'white',
   marginTop: 14,
   minWidth: 100,
-  ...position,
 
   list: {
     margin: 0,
     padding: 0,
     listStyleType: 'none',
   },
-}))
+})
 
 export default styled(SuggestionsOverlay)

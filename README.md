@@ -64,6 +64,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | suggestionsPortalHost       | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
+| loader                      | element                                                 | null           | An element to use as a loading indicator                                               |
 
 Each data source is configured using a `Mention` component, which has the following props:
 
@@ -74,9 +75,10 @@ Each data source is configured using a `Mention` component, which has the follow
 | renderSuggestion | function (entry, search, highlightedDisplay, index, focused) | `null`                                      | Allows customizing how mention suggestions are rendered (optional)                                                                                     |
 | markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
 | displayTransform | function (id, display)                                       | returns `display`                           | Accepts a function for customizing the string that is displayed for a mention                                                                          |
-| regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |  |
+| regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |
 | onAdd            | function (id, display)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
 | appendSpaceOnAdd | boolean                                                      | `false`                                     | Append a space when a suggestion has been added (optional)                                                                                             |
+| isLoading        | boolean                                                      | `false`                                     | Specifies whether the mention suggestions are being loaded. Used to display a loading indicator (optional)                                             |
 
 If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)
 

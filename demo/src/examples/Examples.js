@@ -12,6 +12,7 @@ import SingleLine from './SingleLine'
 import SingleLineIgnoringAccents from './SingleLineIgnoringAccents'
 import SuggestionPortal from './SuggestionPortal'
 import BottomGuard from './BottomGuard'
+import CustomLoader from './CustomLoader'
 
 const users = [
   {
@@ -63,6 +64,7 @@ export default function Examples() {
         <Emojis data={users} />
         <SuggestionPortal data={users} />
         <BottomGuard data={users} />
+        <CustomLoader data={users} />
       </div>
     </StylesViaJss>
   )

@@ -82,7 +82,7 @@ class SuggestionsOverlay extends Component {
 
     return (
       <div
-        {...inline(style, { position, left, top })}
+        {...inline({ position: position || 'absolute', left, top }, style)}
         onMouseDown={onMouseDown}
         ref={containerRef}
       >
@@ -151,12 +151,12 @@ class SuggestionsOverlay extends Component {
     this.props.onSelect(suggestion, queryInfo)
   }
 
-  setUlElement = el => {
+  setUlElement = (el) => {
     this.ulElement = el
   }
 }
 
-const getID = suggestion => {
+const getID = (suggestion) => {
   if (suggestion instanceof String) {
     return suggestion
   }
@@ -165,7 +165,6 @@ const getID = suggestion => {
 }
 
 const styled = defaultStyle({
-  position: 'absolute',
   zIndex: 1,
   backgroundColor: 'white',
   marginTop: 14,

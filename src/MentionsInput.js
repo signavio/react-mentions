@@ -244,13 +244,14 @@ class MentionsInput extends React.Component {
       return null
     }
 
-    const { position, left, top } = this.state.suggestionsPosition
+    const { position, left, right, top } = this.state.suggestionsPosition
 
     const suggestionsNode = (
       <SuggestionsOverlay
         style={this.props.style('suggestions')}
         position={position}
         left={left}
+        right={right}
         top={top}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
@@ -732,6 +733,7 @@ class MentionsInput extends React.Component {
 
     if (
       position.left === this.state.suggestionsPosition.left &&
+      position.right === this.state.suggestionsPosition.right &&
       position.top === this.state.suggestionsPosition.top &&
       position.position === this.state.suggestionsPosition.position
     ) {

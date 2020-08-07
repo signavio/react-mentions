@@ -13,6 +13,7 @@ class SuggestionsOverlay extends Component {
     focusIndex: PropTypes.number,
     position: PropTypes.string,
     left: PropTypes.number,
+    right: PropTypes.number,
     top: PropTypes.number,
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
@@ -72,6 +73,7 @@ class SuggestionsOverlay extends Component {
       containerRef,
       position,
       left,
+      right,
       top,
     } = this.props
 
@@ -82,7 +84,7 @@ class SuggestionsOverlay extends Component {
 
     return (
       <div
-        {...inline({ position: position || 'absolute', left, top }, style)}
+        {...inline({ position: position || 'absolute', left, right, top }, style)}
         onMouseDown={onMouseDown}
         ref={containerRef}
       >

@@ -91,7 +91,6 @@ const propTypes = {
           : PropTypes.instanceOf(Element),
     }),
   ]),
-
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
@@ -657,7 +656,7 @@ class MentionsInput extends React.Component {
     const caretHeight = getComputedStyleLengthProp(highlighter, 'font-size')
     const viewportRelative = {
       left: caretOffsetParentRect.left + caretPosition.left,
-      top: caretOffsetParentRect.top + caretPosition.top + caretHeight,
+      top: caretOffsetParentRect.top + caretPosition.top + caretHeight + window.scrollHeight,
     }
     const viewportHeight = Math.max(
       document.documentElement.clientHeight,

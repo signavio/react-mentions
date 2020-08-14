@@ -27,4 +27,9 @@ describe('#markupToRegex', () => {
     const regex = markupToRegex('@[__display__](foo:__id__)')
     expect(regex.exec('Hi @[Foo], how are you ](foo:1)')).toEqual(null)
   })
+  
+  it('should parse regex that doesn\'t use "display"', () => {
+    const regex = markupToRegex('[tag id=__id__ /]')
+    expect(regex.exec('[tag id=italy /]')[1]).toEqual('italy')
+  })
 })

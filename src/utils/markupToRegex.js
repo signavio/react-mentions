@@ -6,7 +6,7 @@ const markupToRegex = markup => {
   const charAfterDisplay =
     markup[markup.indexOf(PLACEHOLDERS.display) + PLACEHOLDERS.display.length]
   const charAfterId =
-    markup[markup.indexOf(PLACEHOLDERS.display) + PLACEHOLDERS.display.length]
+    markup[markup.indexOf(PLACEHOLDERS.id) + PLACEHOLDERS.id.length]
   return new RegExp(
     escapedMarkup
       .replace(

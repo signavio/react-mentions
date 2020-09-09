@@ -72,6 +72,7 @@ const propTypes = {
   allowSpaceInQuery: PropTypes.bool,
   allowSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,
+  loader: PropTypes.element,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -105,6 +106,7 @@ class MentionsInput extends React.Component {
     ignoreAccents: false,
     singleLine: false,
     allowSuggestionsAboveCursor: false,
+    loader: null,
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
@@ -260,6 +262,7 @@ class MentionsInput extends React.Component {
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
         isLoading={this.isLoading()}
+        loader={this.props.loader}
         ignoreAccents={this.props.ignoreAccents}
       >
         {this.props.children}

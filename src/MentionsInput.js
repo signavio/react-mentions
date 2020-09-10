@@ -499,25 +499,22 @@ class MentionsInput extends React.Component {
       // only if a deletion has taken place
       selectionStart = startOfMention
       selectionEnd = selectionStart
-      setSelectionAfterMentionChange = true
+      setSelectionAfterMentionChange = false
     }
 
-    this.setState(
-      {
-        selectionStart,
-        selectionEnd,
-        setSelectionAfterMentionChange: setSelectionAfterMentionChange,
-      },
-      () => {
-        let mentions = getMentions(newValue, config)
+    this.setState({
+      selectionStart,
+      selectionEnd,
+      setSelectionAfterMentionChange: setSelectionAfterMentionChange,
+    })
 
-        // Propagate change
-        // let handleChange = this.getOnChange(this.props) || emptyFunction;
-        let eventMock = { target: { value: newValue } }
-        // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
-        this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
-      }
-    )
+    let mentions = getMentions(newValue, config)
+
+    // Propagate change
+    // let handleChange = this.getOnChange(this.props) || emptyFunction;
+    let eventMock = { target: { value: newValue } }
+    // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
+    this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
   }
 
   // Handle input element's select event

@@ -512,7 +512,7 @@ class MentionsInput extends React.Component {
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;
-    let eventMock = { target: { value: newValue } }
+    let eventMock = { target: { ...ev.target, value: newValue } }
     // this.props.onChange.call(this, eventMock, newValue, newPlainTextValue, mentions);
     this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
   }

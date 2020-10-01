@@ -90,6 +90,11 @@ If you want to avoid global class names and use css modules instead, you can pro
 
 You can also assign `className` and `style` props to the `Mention` elements to define how to highlight the mentioned words.
 
+## Testing
+
+Due to react-mentions' internal cursor tracking it is not good enough to simulate the editing of the textarea value using `ReactTestUtils.Simulate.change`.
+We recommend using [@testing-library/user-event](https://github.com/testing-library/user-event) for a realistic simulation of events as they would happen in the browser as the user interacts the textarea.
+
 ## Contributing
 
 Spawn a development server with an example page and module hot loading all set up:

@@ -127,6 +127,7 @@ class SuggestionsOverlay extends Component {
         renderSuggestion={renderSuggestion}
         suggestion={result}
         focused={isFocused}
+        disabled={result.disabled}
         onClick={() => this.select(result, queryInfo)}
         onMouseEnter={() => this.handleMouseEnter(index)}
       />
@@ -148,7 +149,9 @@ class SuggestionsOverlay extends Component {
   }
 
   select = (suggestion, queryInfo) => {
-    this.props.onSelect(suggestion, queryInfo)
+    if(!suggestion.disabled) {
+      this.props.onSelect(suggestion, queryInfo)
+    }
   }
 
   setUlElement = (el) => {

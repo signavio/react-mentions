@@ -46,6 +46,10 @@ export default {
       '&focused': {
         backgroundColor: '#cee4e5',
       },
+      '&disabled': {
+        opacity: '0.3',
+        cursor: 'default',
+      },
     },
   },
 }

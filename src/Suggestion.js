@@ -17,6 +17,7 @@ class Suggestion extends Component {
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
           .isRequired,
         display: PropTypes.string,
+        disabled: PropTypes.string
       }),
     ]).isRequired,
     renderSuggestion: PropTypes.func,
@@ -96,7 +97,7 @@ const styled = defaultStyle(
   {
     cursor: 'pointer',
   },
-  props => ({ '&focused': props.focused })
+  props => ({ '&focused': props.focused, '&disabled': props.disabled })
 )
 
 export default styled(Suggestion)

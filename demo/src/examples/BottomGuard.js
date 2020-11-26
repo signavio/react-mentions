@@ -20,7 +20,9 @@ function BottomGuard({ value, data, onChange, onAdd }) {
       <h3>Bottom guard example</h3>
       <p>
         Note that the bottom input will open the suggestions list above the
-        cursor
+        cursor.
+        Also, the middle one will render its suggestions always on top,
+        even if it has enough space below.
       </p>
       <div
         style={{
@@ -47,6 +49,16 @@ function BottomGuard({ value, data, onChange, onAdd }) {
         <br />
         <br />
         <br />
+        <MentionsInput
+          value={value}
+          onChange={onChange}
+          style={defaultStyle}
+          placeholder={"Mention people using '@'"}
+          suggestionsPortalHost={container}
+          forceSuggestionsAboveCursor={true}
+        >
+          <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
+        </MentionsInput>
         <br />
         <br />
         <br />

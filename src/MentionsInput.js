@@ -71,6 +71,7 @@ const propTypes = {
   singleLine: PropTypes.bool,
   allowSpaceInQuery: PropTypes.bool,
   allowSuggestionsAboveCursor: PropTypes.bool,
+  forceSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,
 
   value: PropTypes.string,
@@ -644,7 +645,7 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
-    const { suggestionsPortalHost, allowSuggestionsAboveCursor } = this.props
+    const { suggestionsPortalHost, allowSuggestionsAboveCursor, forceSuggestionsAboveCursor } = this.props
 
     if (!caretPosition || !this.suggestionsElement) {
       return
@@ -695,9 +696,10 @@ class MentionsInput extends React.Component {
       // Move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
       if (
-        allowSuggestionsAboveCursor &&
+        (allowSuggestionsAboveCursor &&
         top + suggestions.offsetHeight > viewportHeight &&
-        suggestions.offsetHeight < top - caretHeight
+          suggestions.offsetHeight < top - caretHeight) ||
+          forceSuggestionsAboveCursor
       ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {

@@ -3,19 +3,22 @@ import PropTypes from 'prop-types'
 import { inline } from 'substyle'
 import { defaultStyle } from './utils'
 
-import { countSuggestions } from './utils'
+import { countSuggestions, getSuggestionHtmlId } from './utils'
 import Suggestion from './Suggestion'
 import LoadingIndicator from './LoadingIndicator'
 
 class SuggestionsOverlay extends Component {
   static propTypes = {
+    id: PropTypes.string.isRequired,
     suggestions: PropTypes.object.isRequired,
+    a11ySuggestionsListLabel: PropTypes.string,
     focusIndex: PropTypes.number,
     position: PropTypes.string,
     left: PropTypes.number,
     top: PropTypes.number,
     scrollFocusedIntoView: PropTypes.bool,
     isLoading: PropTypes.bool,
+    isOpened: PropTypes.bool.isRequired,
     onSelect: PropTypes.func,
     ignoreAccents: PropTypes.bool,
     containerRef: PropTypes.oneOfType([
@@ -65,8 +68,10 @@ class SuggestionsOverlay extends Component {
 
   render() {
     const {
+      id,
       suggestions,
-      isLoading,
+      a11ySuggestionsListLabel,
+      isOpened,
       style,
       onMouseDown,
       containerRef,
@@ -76,7 +81,7 @@ class SuggestionsOverlay extends Component {
     } = this.props
 
     // do not show suggestions until there is some data
-    if (countSuggestions(suggestions) === 0 && !isLoading) {
+    if (!isOpened) {
       return null
     }
 
@@ -86,7 +91,13 @@ class SuggestionsOverlay extends Component {
         onMouseDown={onMouseDown}
         ref={containerRef}
       >
-        <ul ref={this.setUlElement} {...style('list')}>
+        <ul
+          ref={this.setUlElement}
+          id={id}
+          role="listbox"
+          aria-label={a11ySuggestionsListLabel}
+          {...style('list')}
+        >
           {this.renderSuggestions()}
         </ul>
 
@@ -108,7 +119,6 @@ class SuggestionsOverlay extends Component {
   }
 
   renderSuggestion(result, queryInfo, index) {
-    const id = getID(result)
     const isFocused = index === this.props.focusIndex
     const { childIndex, query } = queryInfo
     const { renderSuggestion } = Children.toArray(this.props.children)[
@@ -119,8 +129,8 @@ class SuggestionsOverlay extends Component {
     return (
       <Suggestion
         style={this.props.style('item')}
-        key={`${childIndex}-${id}`}
-        id={id}
+        key={`${childIndex}-${getID(result)}`}
+        id={getSuggestionHtmlId(this.props.id, index)}
         query={query}
         index={index}
         ignoreAccents={ignoreAccents}
@@ -157,7 +167,7 @@ class SuggestionsOverlay extends Component {
 }
 
 const getID = (suggestion) => {
-  if (suggestion instanceof String) {
+  if (typeof suggestion === 'string') {
     return suggestion
   }
 

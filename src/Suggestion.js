@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from './utils'
 
-import { getSubstringIndex, keys, omit } from './utils'
+import { getSubstringIndex, keys, omit, getSuggestionHtmlId } from './utils'
 
 class Suggestion extends Component {
   static propTypes = {
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    id: PropTypes.string.isRequired,
     query: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
     ignoreAccents: PropTypes.bool,
@@ -25,14 +25,20 @@ class Suggestion extends Component {
   }
 
   render() {
-    let rest = omit(
+    const rest = omit(
       this.props,
       ['style', 'classNames', 'className'], // substyle props
       keys(Suggestion.propTypes)
     )
 
     return (
-      <li {...rest} {...this.props.style}>
+      <li
+        id={this.props.id}
+        role="option"
+        aria-selected={this.props.focused}
+        {...rest}
+        {...this.props.style}
+      >
         {this.renderContent()}
       </li>
     )
@@ -60,7 +66,7 @@ class Suggestion extends Component {
   getDisplay() {
     let { suggestion } = this.props
 
-    if (suggestion instanceof String) {
+    if (typeof suggestion === 'string') {
       return suggestion
     }
 
@@ -96,7 +102,7 @@ const styled = defaultStyle(
   {
     cursor: 'pointer',
   },
-  props => ({ '&focused': props.focused })
+  (props) => ({ '&focused': props.focused })
 )
 
 export default styled(Suggestion)

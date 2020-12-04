@@ -16,6 +16,7 @@ function CssModules({ value, data, onChange }) {
         onChange={onChange}
         className="mentions"
         classNames={classNames}
+        a11ySuggestionsListLabel={"Suggested mentions"}
       >
         <Mention data={data} className={classNames.mentions__mention} />
       </MentionsInput>

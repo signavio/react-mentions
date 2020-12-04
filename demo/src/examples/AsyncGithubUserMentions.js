@@ -29,6 +29,7 @@ function AsyncGithubUserMentions({ value, data, onChange }) {
         onChange={onChange}
         style={defaultStyle}
         placeholder="Mention any Github user by typing `@` followed by at least one char"
+        a11ySuggestionsListLabel={"Suggested Github users for mention"}
       >
         <Mention
           displayTransform={login => `@${login}`}

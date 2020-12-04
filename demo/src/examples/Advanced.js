@@ -33,6 +33,7 @@ function Advanced({ value, data, onChange, onBlur, onAdd }) {
         onBlur={onBlur}
         style={style}
         inputRef={inputEl}
+        a11ySuggestionsListLabel={"Suggested mentions"}
       >
         <Mention
           markup="{{__id__}}"

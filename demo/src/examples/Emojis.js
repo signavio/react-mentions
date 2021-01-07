@@ -24,12 +24,14 @@ function Emojis({ value, data, onChange, onAdd }) {
   }, [])
 
   const queryEmojis = (query, callback) => {
-    if (query.length < 2) return null
+    if (query.length === 0) return
 
-    const matches = emojis.filter((emoji) => {
-      return emoji.shortname.indexOf(query) > -1
-    })
-    callback(matches.map(({ emoji }) => ({ id: emoji })))
+    const matches = emojis
+      .filter((emoji) => {
+        return emoji.name.indexOf(query.toLowerCase()) > -1
+      })
+      .slice(0, 10)
+    return matches.map(({ emoji }) => ({ id: emoji }))
   }
 
   return (

@@ -15,6 +15,7 @@ import {
   isNumber,
   keys,
   omit,
+  getSuggestionHtmlId,
 } from './utils'
 
 import Highlighter from './Highlighter'
@@ -72,6 +73,7 @@ const propTypes = {
   allowSpaceInQuery: PropTypes.bool,
   allowSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,
+  a11ySuggestionsListLabel: PropTypes.string,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -113,6 +115,9 @@ class MentionsInput extends React.Component {
   constructor(props) {
     super(props)
     this.suggestions = {}
+    this.uuidSuggestionsOverlay = Math.random()
+      .toString(16)
+      .substring(2)
 
     this.handleCopy = this.handleCopy.bind(this)
     this.handleCut = this.handleCut.bind(this)
@@ -199,6 +204,18 @@ class MentionsInput extends React.Component {
           onCompositionEnd: this.handleCompositionEnd,
           onScroll: this.updateHighlighterScroll,
         }),
+
+      ...(this.isOpened() && {
+        role: 'combobox',
+        'aria-controls': this.uuidSuggestionsOverlay,
+        'aria-expanded': true,
+        'aria-autocomplete': 'list',
+        'aria-haspopup': 'listbox',
+        'aria-activedescendant': getSuggestionHtmlId(
+          this.uuidSuggestionsOverlay,
+          this.state.focusIndex
+        ),
+      }),
     }
   }
 
@@ -248,6 +265,7 @@ class MentionsInput extends React.Component {
 
     const suggestionsNode = (
       <SuggestionsOverlay
+        id={this.uuidSuggestionsOverlay}
         style={this.props.style('suggestions')}
         position={position}
         left={left}
@@ -260,7 +278,9 @@ class MentionsInput extends React.Component {
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
         isLoading={this.isLoading()}
+        isOpened={this.isOpened()}
         ignoreAccents={this.props.ignoreAccents}
+        a11ySuggestionsListLabel={this.props.a11ySuggestionsListLabel}
       >
         {this.props.children}
       </SuggestionsOverlay>
@@ -984,6 +1004,10 @@ class MentionsInput extends React.Component {
     })
     return isLoading
   }
+
+  isOpened = () =>
+    isNumber(this.state.selectionStart) &&
+    (countSuggestions(this.state.suggestions) !== 0 || this.isLoading())
 
   _queryId = 0
 }

@@ -17,6 +17,7 @@ function SingleLine({ value, data, onChange, onAdd }) {
         onChange={onChange}
         style={defaultStyle}
         placeholder={"Mention people using '@'"}
+        a11ySuggestionsListLabel={"Suggested mentions"}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>

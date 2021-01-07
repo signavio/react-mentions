@@ -18,6 +18,7 @@ function SingleLineIgnoringAccents({ value, data, onChange, onAdd }) {
         style={defaultStyle}
         placeholder={"Mention people using '@'"}
         ignoreAccents
+        a11ySuggestionsListLabel={"Suggested mentions"}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>

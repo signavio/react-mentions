@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { inline } from 'substyle'
 import { defaultStyle } from './utils'
 
-import { countSuggestions, getSuggestionHtmlId } from './utils'
+import { getSuggestionHtmlId } from './utils'
 import Suggestion from './Suggestion'
 import LoadingIndicator from './LoadingIndicator'
 
@@ -69,7 +69,6 @@ class SuggestionsOverlay extends Component {
   render() {
     const {
       id,
-      suggestions,
       a11ySuggestionsListLabel,
       isOpened,
       style,

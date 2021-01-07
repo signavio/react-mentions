@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from './utils'
 
-import { getSubstringIndex, keys, omit, getSuggestionHtmlId } from './utils'
+import { getSubstringIndex, keys, omit } from './utils'
 
 class Suggestion extends Component {
   static propTypes = {

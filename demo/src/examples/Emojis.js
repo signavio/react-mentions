@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Mention, MentionsInput } from '../../../src'
 
@@ -6,15 +6,34 @@ import { provideExampleValue } from './higher-order'
 import emojiExampleStyle from './emojiExampleStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
-const queryEmojis = async (query, callback) => {
-  const url = new URL('https://emoji.getdango.com/api/emoji')
-  url.searchParams.append('q', query)
-  const { results } = await fetch(url).then(res => res.json())
-  callback(results.map(({ text }) => ({ id: text })))
-}
 const neverMatchingRegex = /($a)/
 
 function Emojis({ value, data, onChange, onAdd }) {
+  const [emojis, setEmojis] = useState([])
+
+  useEffect(() => {
+    fetch(
+      'https://gist.githubusercontent.com/oliveratgithub/0bf11a9aff0d6da7b46f1490f86a71eb/raw/d8e4b78cfe66862cf3809443c1dba017f37b61db/emojis.json'
+    )
+      .then((response) => {
+        return response.json()
+      })
+      .then((jsonData) => {
+        setEmojis(jsonData.emojis)
+      })
+  }, [])
+
+  const queryEmojis = (query, callback) => {
+    if (query.length === 0) return
+
+    const matches = emojis
+      .filter((emoji) => {
+        return emoji.name.indexOf(query.toLowerCase()) > -1
+      })
+      .slice(0, 10)
+    return matches.map(({ emoji }) => ({ id: emoji }))
+  }
+
   return (
     <div>
       <h3>Emoji support</h3>
@@ -27,7 +46,7 @@ function Emojis({ value, data, onChange, onAdd }) {
       >
         <Mention
           trigger="@"
-          displayTransform={username => `@${username}`}
+          displayTransform={(username) => `@${username}`}
           markup="@__id__"
           data={data}
           regex={/@(\S+)/}

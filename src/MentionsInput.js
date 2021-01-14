@@ -574,6 +574,7 @@ class MentionsInput extends React.Component {
 
     if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
       ev.preventDefault()
+      ev.stopPropagation()
     }
 
     switch (ev.keyCode) {

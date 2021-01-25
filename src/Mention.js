@@ -6,9 +6,9 @@ const defaultStyle = {
   fontWeight: 'inherit',
 }
 
-const Mention = ({ display, style, className, classNames }) => {
+const Mention = ({ display, style, className, classNames, renderer }) => {
   const styles = useStyles(defaultStyle, { style, className, classNames })
-  return <strong {...styles}>{display}</strong>
+  return renderer(display, styleData);
 }
 
 Mention.propTypes = {
@@ -40,6 +40,8 @@ Mention.propTypes = {
   allowSpaceInQuery: PropTypes.bool,
 
   isLoading: PropTypes.bool,
+
+  renderer: PropTypes.func,
 }
 
 Mention.defaultProps = {
@@ -53,6 +55,10 @@ Mention.defaultProps = {
   renderSuggestion: null,
   isLoading: false,
   appendSpaceOnAdd: false,
+  onClick: () => null,
+  renderer: function(display, styleData) {
+    return <strong {...styleData}>{display}</strong>
+  }
 }
 
 export default Mention

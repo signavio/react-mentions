@@ -173,8 +173,8 @@ class Highlighter extends Component {
     const config = readConfigFromChildren(children)
 
     let resultComponents
-    // If auto direction is used and the value contains newlines, split be \n and iterate over each line separately
-    if (_unstableAutoDirection && value.indexOf('\n') !== -1) {
+    // If auto direction is used split by \n and iterate over each line separately
+    if (_unstableAutoDirection) {
       const lines = value.split('\n')
       resultComponents = lines.map((value, index) => (
         <div key={index} dir="auto">{this.renderLine({

@@ -77,17 +77,12 @@ class Highlighter extends Component {
     this.props.onCaretPositionChange(newPosition)
   }
 
-  render() {
-    const {
-      selectionStart,
-      selectionEnd,
-      value,
-      style,
-      children,
-      containerRef,
-    } = this.props
-    const config = readConfigFromChildren(children)
-
+  renderLine({
+    value,
+    selectionStart,
+    selectionEnd,
+    config
+  }) {
     // If there's a caret (i.e. no range selection), map the caret position into the marked up value
     let caretPositionInMarkup
     if (selectionStart === selectionEnd) {
@@ -161,6 +156,41 @@ class Highlighter extends Component {
     if (components !== resultComponents) {
       // if a caret component is to be rendered, add all components that followed as its children
       resultComponents.push(this.renderHighlighterCaret(components))
+    }
+    return resultComponents
+  }
+
+  render() {
+    const {
+      selectionStart,
+      selectionEnd,
+      value,
+      style,
+      children,
+      containerRef,
+      _unstableAutoDirection,
+    } = this.props
+    const config = readConfigFromChildren(children)
+
+    let resultComponents
+    // If auto direction is used and the value contains newlines, split be \n and iterate over each line separately
+    if (_unstableAutoDirection && value.indexOf('\n') !== -1) {
+      const lines = value.split('\n')
+      resultComponents = lines.map((value, index) => (
+        <div key={index} dir="auto">{this.renderLine({
+          value,
+          selectionStart,
+          selectionEnd,
+          config
+        })}</div>
+      ))
+    } else {
+      resultComponents =this.renderLine({
+        value,
+        selectionStart,
+        selectionEnd,
+        config
+      })
     }
 
     return (

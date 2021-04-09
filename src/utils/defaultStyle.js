@@ -22,7 +22,9 @@ function createDefaultStyle(defaultStyle, getModifiers) {
       ComponentToWrap.displayName || ComponentToWrap.name || 'Component'
     DefaultStyleEnhancer.displayName = `defaultStyle(${displayName})`
 
-    return DefaultStyleEnhancer
+    return React.forwardRef((props, ref) => {
+      return DefaultStyleEnhancer({...props, ref})
+    })
   }
 
   return enhance

@@ -65,6 +65,8 @@ The `MentionsInput` supports the following props for configuring the widget:
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
+| markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
+
 
 Each data source is configured using a `Mention` component, which has the following props:
 
@@ -73,7 +75,6 @@ Each data source is configured using a `Mention` component, which has the follow
 | trigger          | regexp or string                                             | `'@'`                                       | Defines the char sequence upon which to trigger querying the data source                                                                               |
 | data             | array or function (search, callback)                         | `null`                                      | An array of the mentionable data entries (objects with `id` & `display` keys, or a filtering function that returns an array based on a query parameter |
 | renderSuggestion | function (entry, search, highlightedDisplay, index, focused) | `null`                                      | Allows customizing how mention suggestions are rendered (optional)                                                                                     |
-| markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
 | displayTransform | function (id, display)                                       | returns `display`                           | Accepts a function for customizing the string that is displayed for a mention                                                                          |
 | regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |  |
 | onAdd            | function (id, display)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |

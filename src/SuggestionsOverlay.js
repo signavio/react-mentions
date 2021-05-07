@@ -77,7 +77,6 @@ class SuggestionsOverlay extends Component {
       position,
       left,
       top,
-      customSuggestionsContainer
     } = this.props
 
     // do not show suggestions until there is some data
@@ -99,7 +98,7 @@ class SuggestionsOverlay extends Component {
           aria-label={a11ySuggestionsListLabel}
           {...style('list')}
         >
-        {customSuggestionsContainer ? customSuggestionsContainer(this.renderSuggestions()) : this.renderSuggestions()}
+        {this.renderSuggestions()}
         </ul>
         {this.renderLoadingIndicator()}
       </div>
@@ -107,7 +106,8 @@ class SuggestionsOverlay extends Component {
   }
 
   renderSuggestions() {
-    return Object.values(this.props.suggestions).reduce(
+    const {customSuggestionsContainer} = this.props;
+    const suggestions = Object.values(this.props.suggestions).reduce(
       (accResults, { results, queryInfo }) => [
         ...accResults,
         ...results.map((result, index) =>
@@ -115,7 +115,12 @@ class SuggestionsOverlay extends Component {
         ),
       ],
       []
-    )
+    );
+
+    if(customSuggestionsContainer)
+      return customSuggestionsContainer(suggestions);
+    else
+      return suggestions;
   }
 
   renderSuggestion(result, queryInfo, index) {

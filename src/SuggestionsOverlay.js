@@ -77,6 +77,7 @@ class SuggestionsOverlay extends Component {
       position,
       left,
       top,
+      customSuggestionsContainer
     } = this.props
 
     // do not show suggestions until there is some data
@@ -90,6 +91,7 @@ class SuggestionsOverlay extends Component {
         onMouseDown={onMouseDown}
         ref={containerRef}
       >
+        
         <ul
           ref={this.setUlElement}
           id={id}
@@ -97,9 +99,8 @@ class SuggestionsOverlay extends Component {
           aria-label={a11ySuggestionsListLabel}
           {...style('list')}
         >
-          {this.renderSuggestions()}
+        {customSuggestionsContainer ? customSuggestionsContainer(this.renderSuggestions()) : this.renderSuggestions()}
         </ul>
-
         {this.renderLoadingIndicator()}
       </div>
     )

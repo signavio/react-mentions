@@ -993,7 +993,7 @@ class MentionsInput extends React.Component {
     this.executeOnChange(eventMock, newValue, newPlainTextValue, mentions)
 
     if (onAdd) {
-      onAdd(id, display)
+      onAdd(id, display, start, end)
     }
 
     // Make sure the suggestions overlay is closed

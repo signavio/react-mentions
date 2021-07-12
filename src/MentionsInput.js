@@ -3,6 +3,7 @@ import {
   applyChangeToValue,
   countSuggestions,
   escapeRegex,
+  findFirstDiffPos,
   findStartOfMentionInPlainText,
   getEndOfLastMention,
   getMentions,
@@ -366,15 +367,22 @@ class MentionsInput extends React.Component {
 
     const pastedMentions = event.clipboardData.getData('text/react-mentions')
     const pastedData = event.clipboardData.getData('text/plain')
+    const pasted = pastedMentions || pastedData
 
     const newValue = spliceString(
       value,
       markupStartIndex,
       markupEndIndex,
-      pastedMentions || pastedData
+      pasted
     ).replace(/\r/g, '')
 
     const newPlainTextValue = getPlainText(newValue, config)
+
+    // Calculate the new selection position.
+    const prevValue = getPlainText(value, config)
+    const startPos = findFirstDiffPos(prevValue, newPlainTextValue)
+    const nextLength = getPlainText(pasted, config).length
+    const nextPos = startPos + nextLength
 
     const eventMock = { target: { ...event.target, value: newValue } }
 
@@ -384,6 +392,8 @@ class MentionsInput extends React.Component {
       newPlainTextValue,
       getMentions(newValue, config)
     )
+
+    this.setSelection(nextPos, nextPos)
   }
 
   saveSelectionToClipboard(event) {

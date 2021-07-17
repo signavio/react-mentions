@@ -739,13 +739,14 @@ class MentionsInput extends React.Component {
       // move the list up above the caret if it's getting cut off by the bottom of the window, provided that the list height
       // is small enough to NOT cover up the caret
       if (
-        allowSuggestionsAboveCursor &&
+        (allowSuggestionsAboveCursor &&
         viewportRelative.top -
           highlighter.scrollTop +
           suggestions.offsetHeight >
           viewportHeight &&
         suggestions.offsetHeight <
-          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop
+          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
+        forceSuggestionsAboveCursor
       ) {
         position.top = top - suggestions.offsetHeight - caretHeight
       } else {

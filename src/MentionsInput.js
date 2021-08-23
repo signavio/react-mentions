@@ -384,6 +384,15 @@ class MentionsInput extends React.Component {
       newPlainTextValue,
       getMentions(newValue, config)
     )
+
+    // Move the cursor position to the end of the pasted data
+    const startOfMention = findStartOfMentionInPlainText(
+      value,
+      config,
+      selectionStart
+    )
+    const nextPos = (startOfMention || selectionStart) + pastedData.length
+    this.setSelection(nextPos, nextPos)
   }
 
   saveSelectionToClipboard(event) {

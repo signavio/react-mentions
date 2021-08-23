@@ -391,7 +391,9 @@ class MentionsInput extends React.Component {
       config,
       selectionStart
     )
-    const nextPos = (startOfMention || selectionStart) + pastedData.length
+    const nextPos =
+      (startOfMention || selectionStart) +
+      getPlainText(pastedMentions || pastedData, config).length
     this.setSelection(nextPos, nextPos)
   }
 

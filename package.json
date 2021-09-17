@@ -4,6 +4,7 @@
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
+	"private": "false",
   "files": [
     "dist"
   ],

@@ -1,6 +1,6 @@
 {
   "name": "@highlight-run/react-mentions",
-  "version": "0.0.0-development",
+  "version": "4.3.0",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/signavio/react-mentions.git"
+    "url": "https://github.com/highlight-run/react-mentions"
   },
   "keywords": [
     "react",

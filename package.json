@@ -1,5 +1,5 @@
 {
-  "name": "react-mentions",
+  "name": "@highlight-run/react-mentions",
   "version": "0.0.0-development",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",

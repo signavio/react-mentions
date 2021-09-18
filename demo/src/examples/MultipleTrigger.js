@@ -22,7 +22,13 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
         onChange={onChange}
         style={defaultStyle}
         placeholder={"Mention people using '@'"}
-        a11ySuggestionsListLabel={"Suggested mentions"}
+        a11ySuggestionsListLabel={'Suggested mentions'}
+        listHeader={
+          <>
+            <h2>boba</h2>
+            <h3>hello</h3>
+          </>
+        }
       >
         <Mention
           markup="@[__display__](user:__id__)"

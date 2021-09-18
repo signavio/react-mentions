@@ -30,6 +30,10 @@ class SuggestionsOverlay extends Component {
             : PropTypes.instanceOf(Element),
       }),
     ]),
+    listHeader: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired,
 
     children: PropTypes.oneOfType([
       PropTypes.element,
@@ -77,6 +81,7 @@ class SuggestionsOverlay extends Component {
       position,
       left,
       top,
+      listHeader,
     } = this.props
 
     // do not show suggestions until there is some data
@@ -90,6 +95,7 @@ class SuggestionsOverlay extends Component {
         onMouseDown={onMouseDown}
         ref={containerRef}
       >
+        {listHeader}
         <ul
           ref={this.setUlElement}
           id={id}

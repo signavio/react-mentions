@@ -29,6 +29,11 @@ function MultipleTriggers({ value, data, onChange, onAdd }) {
             <h3>hello</h3>
           </>
         }
+        noResultsMessage={
+          <>
+            <h2>No results</h2>
+          </>
+        }
       >
         <Mention
           markup="@[__display__](user:__id__)"

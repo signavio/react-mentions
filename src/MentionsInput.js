@@ -79,6 +79,10 @@ const propTypes = {
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
   ]).isRequired,
+  noResultsMessage: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+  ]).isRequired,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -287,6 +291,7 @@ class MentionsInput extends React.Component {
         ignoreAccents={this.props.ignoreAccents}
         a11ySuggestionsListLabel={this.props.a11ySuggestionsListLabel}
         listHeader={this.props.listHeader}
+        noResultsMessage={this.props.noResultsMessage}
       >
         {this.props.children}
       </SuggestionsOverlay>

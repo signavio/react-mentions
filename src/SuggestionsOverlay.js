@@ -34,6 +34,10 @@ class SuggestionsOverlay extends Component {
       PropTypes.element,
       PropTypes.arrayOf(PropTypes.element),
     ]).isRequired,
+    noResultsMessage: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.arrayOf(PropTypes.element),
+    ]).isRequired,
 
     children: PropTypes.oneOfType([
       PropTypes.element,
@@ -82,10 +86,23 @@ class SuggestionsOverlay extends Component {
       left,
       top,
       listHeader,
+      noResultsMessage,
+      suggestions,
     } = this.props
 
-    // do not show suggestions until there is some data
-    if (!isOpened) {
+    if (suggestions && suggestions[0]) {
+      if (
+        suggestions[0].queryInfo.query === '' &&
+        suggestions[0].results.length > 0
+      ) {
+      } else if (
+        suggestions[0].queryInfo.query.length > 0 &&
+        suggestions[0].results.length >= 0
+      ) {
+      } else {
+        return null
+      }
+    } else {
       return null
     }
 
@@ -96,17 +113,23 @@ class SuggestionsOverlay extends Component {
         ref={containerRef}
       >
         {listHeader}
-        <ul
-          ref={this.setUlElement}
-          id={id}
-          role="listbox"
-          aria-label={a11ySuggestionsListLabel}
-          {...style('list')}
-        >
-          {this.renderSuggestions()}
-        </ul>
+        {isOpened ? (
+          <>
+            <ul
+              ref={this.setUlElement}
+              id={id}
+              role="listbox"
+              aria-label={a11ySuggestionsListLabel}
+              {...style('list')}
+            >
+              {this.renderSuggestions()}
+            </ul>
 
-        {this.renderLoadingIndicator()}
+            {this.renderLoadingIndicator()}
+          </>
+        ) : (
+          noResultsMessage
+        )}
       </div>
     )
   }
@@ -181,7 +204,7 @@ const getID = (suggestion) => {
 
 const styled = defaultStyle({
   zIndex: 1,
-  backgroundColor: 'white',
+  backgroundColor: 'transparent',
   marginTop: 14,
   minWidth: 100,
 

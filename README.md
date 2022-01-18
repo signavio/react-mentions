@@ -7,7 +7,7 @@
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
-Used in production at [Signavio](https://signavio.com), [State](https://state.com), [Snips](https://snips.ai), [Swat.io](https://swat.io), [GotDone](https://www.gotdone.me), [Volinspire](https://volinspire.com), [Marvin](https://amazingmarvin.com), [Timely](https://timelyapp.com), [GuideFitter](https://www.guidefitter.com/), [Evite](https://www.evite.com/), [Publer](https://publer.me/), [Kontentino](https://www.kontentino.com/), [Highlight](https://highlight.run/) and [you?](https://github.com/signavio/react-mentions/edit/master/README.md)
+Used in production at [Signavio](https://signavio.com), [State](https://state.com), [Snips](https://snips.ai), [Swat.io](https://swat.io), [GotDone](https://www.gotdone.me), [Volinspire](https://volinspire.com), [Marvin](https://amazingmarvin.com), [Timely](https://timelyapp.com), [GuideFitter](https://www.guidefitter.com/), [Evite](https://www.evite.com/), [Publer](https://publer.me/), [Kontentino](https://www.kontentino.com/), [Wix.com](https://wix.com), [Highlight](https://highlight.run/) and [you?](https://github.com/signavio/react-mentions/edit/master/README.md)
 
 ## Getting started
 
@@ -76,7 +76,7 @@ Each data source is configured using a `Mention` component, which has the follow
 | markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
 | displayTransform | function (id, display)                                       | returns `display`                           | Accepts a function for customizing the string that is displayed for a mention                                                                          |
 | regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |  |
-| onAdd            | function (id, display)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
+| onAdd            | function (id, display, startPos, endPos)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
 | appendSpaceOnAdd | boolean                                                      | `false`                                     | Append a space when a suggestion has been added (optional)                                                                                             |
 
 If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)

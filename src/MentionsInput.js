@@ -263,7 +263,7 @@ class MentionsInput extends React.Component {
       return null
     }
 
-    const { position, left, top } = this.state.suggestionsPosition
+    const { position, left, top, right } = this.state.suggestionsPosition
 
     const suggestionsNode = (
       <SuggestionsOverlay
@@ -272,6 +272,7 @@ class MentionsInput extends React.Component {
         position={position}
         left={left}
         top={top}
+        right={right}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}

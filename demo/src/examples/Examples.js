@@ -19,6 +19,30 @@ const users = [
     display: 'Walter White',
   },
   {
+    id: 'pipilu',
+    display: '皮皮鲁',
+  },
+  {
+    id: 'luxixi',
+    display: '鲁西西',
+  },
+  {
+    id: 'satoshi1',
+    display: '中本聪',
+  },
+  {
+    id: 'satoshi2',
+    display: 'サトシ・ナカモト',
+  },
+  {
+    id: 'nobi',
+    display: '野比のび太',
+  },
+  {
+    id: 'sung',
+    display: '성덕선',
+  },
+  {
     id: 'jesse',
     display: 'Jesse Pinkman',
   },

@@ -300,7 +300,7 @@ class MentionsInput extends React.Component {
 
   renderHighlighter = () => {
     const { selectionStart, selectionEnd } = this.state
-    const { singleLine, children, value, style } = this.props
+    const { singleLine, children, value, style, _unstableAutoDirection } = this.props
 
     return (
       <Highlighter
@@ -311,6 +311,7 @@ class MentionsInput extends React.Component {
         selectionStart={selectionStart}
         selectionEnd={selectionEnd}
         onCaretPositionChange={this.handleCaretPositionChange}
+        _unstableAutoDirection={_unstableAutoDirection}
       >
         {children}
       </Highlighter>

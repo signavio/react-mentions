@@ -11,7 +11,7 @@ const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/
 const defaultValue =
   "Hi @[John Doe](user:johndoe), \n\nlet's add @[joe@smoe.com](email:joe@smoe.com) and @[John Doe](user:johndoe) to this conversation... "
 
-function CutCopyPaste({ data }) {
+function CutCopyPaste({ data, disabledSource }) {
   const [sourceValue, onSourceChange, onSourceAdd] = useExampleValue(
     defaultValue
   )
@@ -20,7 +20,7 @@ function CutCopyPaste({ data }) {
 
   return (
     <div className="multiple-triggers">
-      <h3>Copy and paste mentions between mention components</h3>
+      <h3>Copy and paste mentions between mention components{disabledSource && " from a disabled field"}</h3>
       <p>This functionality is not supported in Internet Explorer.</p>
 
       <div style={{ display: 'flex' }}>
@@ -31,6 +31,7 @@ function CutCopyPaste({ data }) {
             data={data}
             onChange={onSourceChange}
             onAdd={onSourceAdd}
+            disabled={disabledSource}
           />
         </div>
 
@@ -59,13 +60,14 @@ function CutCopyPaste({ data }) {
   )
 }
 
-const MultiMention = ({ value, data, onChange, onAdd }) => (
+const MultiMention = ({ value, data, onChange, onAdd, disabled }) => (
   <MentionsInput
     value={value}
     onChange={onChange}
     style={defaultStyle}
     placeholder={"Mention people using '@'"}
     a11ySuggestionsListLabel={"Suggested mentions"}
+    disabled={disabled}
   >
     <Mention
       markup="@[__display__](user:__id__)"

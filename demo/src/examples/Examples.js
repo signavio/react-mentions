@@ -82,6 +82,7 @@ export default function Examples() {
         <Scrollable data={users} />
         <Advanced data={users} />
         <CutCopyPaste data={users} />
+        <CutCopyPaste data={users} disabledSource />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />
         <Emojis data={users} />

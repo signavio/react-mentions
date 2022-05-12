@@ -533,7 +533,8 @@ class MentionsInput extends React.Component {
       this.state.selectionEnd > startOfMention
     ) {
       // only if a deletion has taken place
-      selectionStart = startOfMention
+      selectionStart =
+        startOfMention + (ev.nativeEvent.data ? ev.nativeEvent.data.length : 0)
       selectionEnd = selectionStart
       setSelectionAfterMentionChange = true
     }

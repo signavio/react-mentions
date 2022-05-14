@@ -8,7 +8,7 @@ import defaultMentionStyle from './defaultMentionStyle'
 
 function CustomSuggestionsContainer({ value, data, onChange, onAdd }) {
   return (
-    <div className="single-line">
+    <div className="custom-suggestions">
       <h3>Custom Mentions Container</h3>
 
       <MentionsInput

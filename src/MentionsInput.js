@@ -484,7 +484,7 @@ class MentionsInput extends React.Component {
   // Handle input element's change event
   handleChange = (ev) => {
     isComposing = false
-    if(isIE()){
+    if (isIE()) {
       // if we are inside iframe, we need to find activeElement within its contentDocument
       const currentDocument =
         (document.activeElement && document.activeElement.contentDocument) ||
@@ -682,7 +682,11 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
-    const { suggestionsPortalHost, allowSuggestionsAboveCursor, forceSuggestionsAboveCursor } = this.props
+    const {
+      suggestionsPortalHost,
+      allowSuggestionsAboveCursor,
+      forceSuggestionsAboveCursor,
+    } = this.props
 
     if (!caretPosition || !this.suggestionsElement) {
       return
@@ -734,9 +738,9 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        top + suggestions.offsetHeight > viewportHeight &&
+          top + suggestions.offsetHeight > viewportHeight &&
           suggestions.offsetHeight < top - caretHeight) ||
-          forceSuggestionsAboveCursor
+        forceSuggestionsAboveCursor
       ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
@@ -960,7 +964,7 @@ class MentionsInput extends React.Component {
   }
 
   addMention = (
-    { id, display },
+    { id, display, ...rest },
     { childIndex, querySequenceStart, querySequenceEnd, plainTextValue }
   ) => {
     // Insert mention in the marked up value at the correct position
@@ -998,7 +1002,7 @@ class MentionsInput extends React.Component {
 
     // Propagate change
     const eventMock = { target: { value: newValue } }
-    const mentions = getMentions(newValue, config)
+    const mentions = getMentions(newValue, config, rest)
     const newPlainTextValue = spliceString(
       plainTextValue,
       querySequenceStart,

@@ -1,6 +1,6 @@
 import iterateMentionsMarkup from './iterateMentionsMarkup'
 
-const getMentions = (value, config) => {
+const getMentions = (value, config, rest) => {
   const mentions = []
   iterateMentionsMarkup(
     value,
@@ -12,6 +12,7 @@ const getMentions = (value, config) => {
         childIndex: childIndex,
         index: index,
         plainTextIndex: plainTextIndex,
+        ...rest,
       })
     }
   )

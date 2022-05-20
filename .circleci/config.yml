@@ -3,9 +3,10 @@ version: 2
 defaults: &defaults
   working_directory: ~/project/react-mentions
   docker:
-    - image: cimg/node:16.15.0-browsers
+    - image: cimg/node:16.15.0
       environment:
         CHROME_BIN: '/usr/bin/google-chrome'
+        CIRCLE_BRANCH: $CIRCLE_BRANCH
 
 attach_workspace: &attach_workspace
   attach_workspace:

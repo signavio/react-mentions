@@ -402,7 +402,10 @@ class MentionsInput extends React.Component {
   }
 
   saveSelectionToClipboard(event) {
-    const { selectionStart, selectionEnd } = this.state
+    // use the actual selectionStart & selectionEnd instead of the one stored
+    // in state to ensure copy & paste also works on disabled inputs & textareas
+    const selectionStart = this.inputElement.selectionStart
+    const selectionEnd = this.inputElement.selectionEnd
     const { children, value } = this.props
 
     const config = readConfigFromChildren(children)

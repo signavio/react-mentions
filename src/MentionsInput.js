@@ -79,6 +79,7 @@ const propTypes = {
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
+  customSuggestionsContainer: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
@@ -277,6 +278,7 @@ class MentionsInput extends React.Component {
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
+        customSuggestionsContainer ={this.props.customSuggestionsContainer}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
@@ -400,7 +402,10 @@ class MentionsInput extends React.Component {
   }
 
   saveSelectionToClipboard(event) {
-    const { selectionStart, selectionEnd } = this.state
+    // use the actual selectionStart & selectionEnd instead of the one stored
+    // in state to ensure copy & paste also works on disabled inputs & textareas
+    const selectionStart = this.inputElement.selectionStart
+    const selectionEnd = this.inputElement.selectionEnd
     const { children, value } = this.props
 
     const config = readConfigFromChildren(children)

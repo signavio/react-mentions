@@ -65,6 +65,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
+| customSuggestionsContainer    | function(children)                                                  | empty function | Allows customizing the container of the suggestions            |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

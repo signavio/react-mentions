@@ -95,6 +95,7 @@ class SuggestionsOverlay extends Component {
         onMouseDown={onMouseDown}
         ref={containerRef}
       >
+        
         <ul
           ref={this.setUlElement}
           id={id}
@@ -102,16 +103,16 @@ class SuggestionsOverlay extends Component {
           aria-label={a11ySuggestionsListLabel}
           {...style('list')}
         >
-          {this.renderSuggestions()}
+        {this.renderSuggestions()}
         </ul>
-
         {this.renderLoadingIndicator()}
       </div>
     )
   }
 
   renderSuggestions() {
-    return Object.values(this.props.suggestions).reduce(
+    const {customSuggestionsContainer} = this.props;
+    const suggestions = Object.values(this.props.suggestions).reduce(
       (accResults, { results, queryInfo }) => [
         ...accResults,
         ...results.map((result, index) =>
@@ -119,7 +120,12 @@ class SuggestionsOverlay extends Component {
         ),
       ],
       []
-    )
+    );
+
+    if(customSuggestionsContainer)
+      return customSuggestionsContainer(suggestions);
+    else
+      return suggestions;
   }
 
   renderSuggestion(result, queryInfo, index) {

@@ -53,7 +53,7 @@
     "babel-eslint": "^7.2.3",
     "babel-loader": "^8.0.6",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
-    "condition-circle": "^2.0.1",
+    "condition-circle": "^2.0.2",
     "core-js": "^3.1.4",
     "cross-env": "^5.2.1",
     "css-loader": "^3.0.0",
@@ -77,7 +77,7 @@
     "react-dom": "16.8.6",
     "recompose": "^0.30.0",
     "regenerator-runtime": "^0.13.2",
-    "semantic-release": "^17.2.3",
+    "semantic-release": "^19.0.2",
     "style-loader": "^0.23.1",
     "substyle-jss": "^4.0.1",
     "webpack": "^4.35.2",
@@ -93,8 +93,5 @@
   "peerDependencies": {
     "react": ">=16.8.3",
     "react-dom": ">=16.8.3"
-  },
-  "release": {
-    "verifyConditions": "condition-circle"
   }
 }

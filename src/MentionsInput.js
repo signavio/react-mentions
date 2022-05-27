@@ -196,6 +196,7 @@ class MentionsInput extends React.Component {
       ...style('input'),
 
       value: this.getPlainText(),
+      onScroll: this.updateHighlighterScroll,
 
       ...(!readOnly &&
         !disabled && {
@@ -205,7 +206,6 @@ class MentionsInput extends React.Component {
           onBlur: this.handleBlur,
           onCompositionStart: this.handleCompositionStart,
           onCompositionEnd: this.handleCompositionEnd,
-          onScroll: this.updateHighlighterScroll,
         }),
 
       ...(this.isOpened() && {

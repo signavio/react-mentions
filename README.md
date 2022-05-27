@@ -102,13 +102,8 @@ We recommend using [@testing-library/user-event](https://github.com/testing-libr
 Spawn a development server with an example page and module hot loading all set up:
 
 ```
-npm start
-```
+yarn start
 
-Update the examples page on Github Pages:
-
-```
-npm run pages-publish
 ```
 
 [build-badge]: https://circleci.com/gh/signavio/react-mentions/tree/master.svg?style=shield&circle-token=:circle-token

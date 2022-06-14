@@ -18,7 +18,7 @@ function CustomSuggestionsContainer({ value, data, onChange, onAdd }) {
         placeholder={"Mention people using '@'"}
         a11ySuggestionsListLabel={"Suggested mentions"}
         allowSuggestionsAboveCursor={true}
-        customSuggestionsContainer={(children)=><div><span style={{fontWeight: "bold"}}><h2>This dontainer has customised suggestions</h2></span>{children}</div>}
+        customSuggestionsContainer={(children)=><div><span style={{fontWeight: "bold"}}><h2>This container has customised suggestions</h2></span>{children}</div>}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>

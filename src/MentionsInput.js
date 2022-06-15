@@ -12,6 +12,7 @@ import {
   mapPlainTextIndex,
   readConfigFromChildren,
   spliceString,
+  isIE,
   isNumber,
   keys,
   omit,
@@ -78,6 +79,7 @@ const propTypes = {
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
+  customSuggestionsContainer: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
@@ -194,6 +196,7 @@ class MentionsInput extends React.Component {
       ...style('input'),
 
       value: this.getPlainText(),
+      onScroll: this.updateHighlighterScroll,
 
       ...(!readOnly &&
         !disabled && {
@@ -203,7 +206,6 @@ class MentionsInput extends React.Component {
           onBlur: this.handleBlur,
           onCompositionStart: this.handleCompositionStart,
           onCompositionEnd: this.handleCompositionEnd,
-          onScroll: this.updateHighlighterScroll,
         }),
 
       ...(this.isOpened() && {
@@ -262,7 +264,7 @@ class MentionsInput extends React.Component {
       return null
     }
 
-    const { position, left, top } = this.state.suggestionsPosition
+    const { position, left, top, right } = this.state.suggestionsPosition
 
     const suggestionsNode = (
       <SuggestionsOverlay
@@ -271,10 +273,12 @@ class MentionsInput extends React.Component {
         position={position}
         left={left}
         top={top}
+        right={right}
         focusIndex={this.state.focusIndex}
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
+        customSuggestionsContainer ={this.props.customSuggestionsContainer}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
@@ -384,10 +388,24 @@ class MentionsInput extends React.Component {
       newPlainTextValue,
       getMentions(newValue, config)
     )
+
+    // Move the cursor position to the end of the pasted data
+    const startOfMention = findStartOfMentionInPlainText(
+      value,
+      config,
+      selectionStart
+    )
+    const nextPos =
+      (startOfMention || selectionStart) +
+      getPlainText(pastedMentions || pastedData, config).length
+    this.setSelection(nextPos, nextPos)
   }
 
   saveSelectionToClipboard(event) {
-    const { selectionStart, selectionEnd } = this.state
+    // use the actual selectionStart & selectionEnd instead of the one stored
+    // in state to ensure copy & paste also works on disabled inputs & textareas
+    const selectionStart = this.inputElement.selectionStart
+    const selectionEnd = this.inputElement.selectionEnd
     const { children, value } = this.props
 
     const config = readConfigFromChildren(children)
@@ -471,13 +489,15 @@ class MentionsInput extends React.Component {
   // Handle input element's change event
   handleChange = (ev) => {
     isComposing = false
-    // if we are inside iframe, we need to find activeElement within its contentDocument
-    const currentDocument =
-      (document.activeElement && document.activeElement.contentDocument) ||
-      document
-    if (currentDocument.activeElement !== ev.target) {
-      // fix an IE bug (blur from empty input element with placeholder attribute trigger "input" event)
-      return
+    if(isIE()){
+      // if we are inside iframe, we need to find activeElement within its contentDocument
+      const currentDocument =
+        (document.activeElement && document.activeElement.contentDocument) ||
+        document
+      if (currentDocument.activeElement !== ev.target) {
+        // fix an IE bug (blur from empty input element with placeholder attribute trigger "input" event)
+        return
+      }
     }
 
     const value = this.props.value || ''
@@ -518,7 +538,8 @@ class MentionsInput extends React.Component {
       this.state.selectionEnd > startOfMention
     ) {
       // only if a deletion has taken place
-      selectionStart = startOfMention
+      selectionStart =
+        startOfMention + (ev.nativeEvent.data ? ev.nativeEvent.data.length : 0)
       selectionEnd = selectionStart
       setSelectionAfterMentionChange = true
     }

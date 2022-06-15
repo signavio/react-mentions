@@ -7,7 +7,7 @@
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
-Used in production at [Signavio](https://signavio.com), [State](https://state.com), [Snips](https://snips.ai), [Swat.io](https://swat.io), [GotDone](https://www.gotdone.me), [Volinspire](https://volinspire.com), [Marvin](https://amazingmarvin.com), [Timely](https://timelyapp.com), [GuideFitter](https://www.guidefitter.com/), [Evite](https://www.evite.com/), [Publer](https://publer.me/), [Kontentino](https://www.kontentino.com/), and [you?](https://github.com/signavio/react-mentions/edit/master/README.md)
+Used in production at [Signavio](https://signavio.com), [State](https://state.com), [Snips](https://snips.ai), [Swat.io](https://swat.io), [GotDone](https://www.gotdone.me), [Volinspire](https://volinspire.com), [Marvin](https://amazingmarvin.com), [Timely](https://timelyapp.com), [GuideFitter](https://www.guidefitter.com/), [Evite](https://www.evite.com/), [Publer](https://publer.me/), [Kontentino](https://www.kontentino.com/), [Wix.com](https://wix.com), [Highlight](https://highlight.run/) and [you?](https://github.com/signavio/react-mentions/edit/master/README.md)
 
 ## Getting started
 
@@ -65,6 +65,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
+| customSuggestionsContainer    | function(children)                                                  | empty function | Allows customizing the container of the suggestions            |
 
 Each data source is configured using a `Mention` component, which has the following props:
 
@@ -102,13 +103,8 @@ We recommend using [@testing-library/user-event](https://github.com/testing-libr
 Spawn a development server with an example page and module hot loading all set up:
 
 ```
-npm start
-```
+yarn start
 
-Update the examples page on Github Pages:
-
-```
-npm run pages-publish
 ```
 
 [build-badge]: https://circleci.com/gh/signavio/react-mentions/tree/master.svg?style=shield&circle-token=:circle-token

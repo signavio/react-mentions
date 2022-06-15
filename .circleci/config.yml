@@ -3,9 +3,9 @@ version: 2
 defaults: &defaults
   working_directory: ~/project/react-mentions
   docker:
-    - image: circleci/node:8-browsers
-      environment:
-        CHROME_BIN: '/usr/bin/google-chrome'
+    - image: cimg/node:16.15.0
+      # environment:
+      #   CHROME_BIN: '/usr/bin/google-chrome'
 
 attach_workspace: &attach_workspace
   attach_workspace:
@@ -60,10 +60,10 @@ jobs:
       - *restore_cache
       - run:
           name: Test
-          command: yarn test --coverage
-      - run:
-          name: Codecov
-          command: bash <(curl -s https://codecov.io/bash)
+          command: yarn test
+      # - run:
+      #     name: Codecov
+      #     command: bash <(curl -s https://codecov.io/bash)
 
   release:
     <<: *defaults

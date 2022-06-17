@@ -1,8 +1,8 @@
 import React from 'react'
 import useStyles from 'substyle'
 
-function LoadingIndicator({style}) {
-  const styles = useStyles({}, {style})
+function LoadingIndicator({ style, className, classNames }) {
+  const styles = useStyles({ defaultstyle }, { style, className, classNames })
   const spinnerStyles = styles('spinner')
   return (
     <div {...styles}>
@@ -16,5 +16,7 @@ function LoadingIndicator({style}) {
     </div>
   )
 }
+
+const defaultstyle = {}
 
 export default LoadingIndicator

@@ -9,7 +9,7 @@ import defaultMentionStyle from './defaultMentionStyle'
 function CustomSuggestionsContainer({ value, data, onChange, onAdd }) {
   return (
     <div className="custom-suggestions">
-      <h3>Custom Mentions Container</h3>
+      <h3>Custom Suggestions Container</h3>
 
       <MentionsInput
         value={value}
@@ -18,7 +18,7 @@ function CustomSuggestionsContainer({ value, data, onChange, onAdd }) {
         placeholder={"Mention people using '@'"}
         a11ySuggestionsListLabel={"Suggested mentions"}
         allowSuggestionsAboveCursor={true}
-        customSuggestionsContainer={(children)=><div>{children}<span>This is a customized container</span></div>}
+        customSuggestionsContainer={(children)=><div><span style={{fontWeight: "bold"}}><h2>This container has customised suggestions</h2></span>{children}</div>}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>

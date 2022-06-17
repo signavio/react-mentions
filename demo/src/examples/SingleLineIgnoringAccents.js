@@ -9,7 +9,7 @@ import defaultMentionStyle from './defaultMentionStyle'
 function SingleLineIgnoringAccents({ value, data, onChange, onAdd }) {
   return (
     <div className="single-line">
-      <h3>Single line input ignoring accents</h3>
+      <h3>Single line input ignoring character accents</h3>
 
       <MentionsInput
         singleLine

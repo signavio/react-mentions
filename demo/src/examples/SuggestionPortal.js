@@ -18,7 +18,7 @@ function SuggestionPortal({ value, data, onChange, onAdd }) {
     <div
       id="suggestionPortal"
       style={{
-        height: '400px',
+        height: '250px',
       }}
       ref={el => {
         container = el

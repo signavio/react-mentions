@@ -1,6 +1,6 @@
 {
   "name": "react-mentions",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
@@ -17,7 +17,6 @@
     "prerelease": "yarn build",
     "release": "changeset publish",
     "change": "changeset"
-
   },
   "repository": {
     "type": "git",

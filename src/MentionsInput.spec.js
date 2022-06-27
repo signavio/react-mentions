@@ -39,13 +39,13 @@ describe('MentionsInput', () => {
     expect(screen.getByTestId('multiInput')).toBeInTheDocument()
   })
 
-  it('should render a regular input when singleLine is set to true.', () => {
-    wrapper.setProps({
-      singleLine: true,
-    })
-
-    expect(wrapper.find('textarea').length).toEqual(0)
-    expect(wrapper.find('input').length).toEqual(1)
+  it.only('should render a regular input when singleLine is set to true.', () => {
+    render(
+      <MentionsInput singleLine value="">
+        <Mention trigger="@" data={data} />
+      </MentionsInput>
+    )
+    expect(screen.getByTestId('singleInput')).toBeInTheDocument()
   })
 
   it.todo(

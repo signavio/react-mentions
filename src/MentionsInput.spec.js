@@ -1,8 +1,11 @@
-import { Mention, MentionsInput } from './index'
-
 import React from 'react'
 import { makeTriggerRegex } from './MentionsInput'
 import { mount } from 'enzyme'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import '@testing-library/jest-dom'
+
+import { Mention, MentionsInput } from './index'
 
 const data = [
   { id: 'first', value: 'First entry' },
@@ -13,23 +16,27 @@ const data = [
 describe('MentionsInput', () => {
   let wrapper, host
 
-  beforeEach(() => {
-    // I don't know where enzmye mounts this, but apparently it is somewhere
-    // where our input cannot have a `scollHeight`/`offsetHeight`. Therefore, some tests would fail.
-    // By manually creating a wrapper in the DOM, we can work around that
-    host = document.createElement('div')
-    document.body.appendChild(host)
+  // beforeEach(() => {
+  //   // I don't know where enzmye mounts this, but apparently it is somewhere
+  //   // where our input cannot have a `scollHeight`/`offsetHeight`. Therefore, some tests would fail.
+  //   // By manually creating a wrapper in the DOM, we can work around that
+  //   host = document.createElement('div')
+  //   document.body.appendChild(host)
 
-    wrapper = mount(
+  //   wrapper = mount(
+  // <MentionsInput value="">
+  //   <Mention trigger="@" data={data} />
+  // </MentionsInput>
+  //   )
+  // })
+
+  it('should render a textarea by default.', () => {
+    render(
       <MentionsInput value="">
         <Mention trigger="@" data={data} />
       </MentionsInput>
     )
-  })
-
-  it('should render a textarea by default.', () => {
-    expect(wrapper.find('textarea').length).toEqual(1)
-    expect(wrapper.find('input').length).toEqual(0)
+    expect(screen.getByTestId('multiInput')).toBeInTheDocument()
   })
 
   it('should render a regular input when singleLine is set to true.', () => {
@@ -51,7 +58,10 @@ describe('MentionsInput', () => {
   it.todo('should be possible to close the suggestions with esc.')
 
   it('should be able to handle sync responses from multiple mentions sources', () => {
-    const extraData = [{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]
+    const extraData = [
+      { id: 'a', value: 'A' },
+      { id: 'b', value: 'B' },
+    ]
 
     const wrapper = mount(
       <MentionsInput value="@">
@@ -64,7 +74,10 @@ describe('MentionsInput', () => {
     wrapper.find('textarea').simulate('select', {
       target: { selectionStart: 1, selectionEnd: 1 },
     })
-    wrapper.find('textarea').getDOMNode().setSelectionRange(1, 1)
+    wrapper
+      .find('textarea')
+      .getDOMNode()
+      .setSelectionRange(1, 1)
 
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
@@ -133,7 +146,10 @@ describe('MentionsInput', () => {
   })
 
   it('should accept a custom regex attribute', () => {
-    const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
+    const data = [
+      { id: 'aaaa', display: '@A' },
+      { id: 'bbbb', display: '@B' },
+    ]
     const wrapper = mount(
       <MentionsInput value=":aaaa and :bbbb and :invalidId">
         <Mention

@@ -237,11 +237,20 @@ class MentionsInput extends React.Component {
   }
 
   renderInput = (props) => {
-    return <input type="text" ref={this.setInputRef} {...props} />
+    return (
+      <input
+        type="text"
+        data-testid="singleInput"
+        ref={this.setInputRef}
+        {...props}
+      />
+    )
   }
 
   renderTextarea = (props) => {
-    return <textarea ref={this.setInputRef} {...props} />
+    return (
+      <textarea data-testid="multiInput" ref={this.setInputRef} {...props} />
+    )
   }
 
   setInputRef = (el) => {
@@ -278,7 +287,7 @@ class MentionsInput extends React.Component {
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
-        customSuggestionsContainer ={this.props.customSuggestionsContainer}
+        customSuggestionsContainer={this.props.customSuggestionsContainer}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
@@ -489,7 +498,7 @@ class MentionsInput extends React.Component {
   // Handle input element's change event
   handleChange = (ev) => {
     isComposing = false
-    if(isIE()){
+    if (isIE()) {
       // if we are inside iframe, we need to find activeElement within its contentDocument
       const currentDocument =
         (document.activeElement && document.activeElement.contentDocument) ||
@@ -687,7 +696,11 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
-    const { suggestionsPortalHost, allowSuggestionsAboveCursor, forceSuggestionsAboveCursor } = this.props
+    const {
+      suggestionsPortalHost,
+      allowSuggestionsAboveCursor,
+      forceSuggestionsAboveCursor,
+    } = this.props
 
     if (!caretPosition || !this.suggestionsElement) {
       return
@@ -739,9 +752,9 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        top + suggestions.offsetHeight > viewportHeight &&
+          top + suggestions.offsetHeight > viewportHeight &&
           suggestions.offsetHeight < top - caretHeight) ||
-          forceSuggestionsAboveCursor
+        forceSuggestionsAboveCursor
       ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {

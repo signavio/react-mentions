@@ -61,39 +61,34 @@ jobs:
       - run:
           name: Test
           command: yarn test
-      # - run:
-      #     name: Codecov
-      #     command: bash <(curl -s https://codecov.io/bash)
+  # release:
+  #   <<: *defaults
+  #   steps:
+  #     - *attach_workspace
+  #     - *restore_cache
+  #     - run:
+  #         name: Build
+  #         command: yarn build
+  # - run:
+  #     name: Release
+  #     command: yarn release
+# workflows:
+#   version: 2
+# qa-publish-release:
+#   jobs:
+#     - install
+#     - lint:
+#         requires:
+#           - install
+#     - test:
+#         requires:
+#           - install
 
-  release:
-    <<: *defaults
-    steps:
-      - *attach_workspace
-      - *restore_cache
-      - run:
-          name: Build
-          command: yarn build
-      - run:
-          name: Release
-          command: yarn semantic-release
-
-workflows:
-  version: 2
-  qa-publish-release:
-    jobs:
-      - install
-      - lint:
-          requires:
-            - install
-      - test:
-          requires:
-            - install
-
-      - release:
-          context: NPM
-          requires:
-            - lint
-            - test
-          filters:
-            branches:
-              only: master
+# - release:
+#     context: NPM
+#     requires:
+#       - lint
+#       - test
+#     filters:
+#       branches:
+#         only: master

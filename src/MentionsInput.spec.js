@@ -2,7 +2,7 @@ import React from 'react'
 import { makeTriggerRegex } from './MentionsInput'
 import { mount } from 'enzyme'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import userEvent, { setup } from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
 import { Mention, MentionsInput } from './index'
@@ -15,6 +15,13 @@ const data = [
 
 describe('MentionsInput', () => {
   let wrapper, host
+
+  function setup(jsx) {
+    return {
+      user: userEvent.setup(),
+      ...render(jsx),
+    }
+  }
 
   // beforeEach(() => {
   //   // I don't know where enzmye mounts this, but apparently it is somewhere
@@ -39,7 +46,7 @@ describe('MentionsInput', () => {
     expect(screen.getByTestId('multiInput')).toBeInTheDocument()
   })
 
-  it.only('should render a regular input when singleLine is set to true.', () => {
+  it('should render a regular input when singleLine is set to true.', () => {
     render(
       <MentionsInput singleLine value="">
         <Mention trigger="@" data={data} />
@@ -48,9 +55,20 @@ describe('MentionsInput', () => {
     expect(screen.getByTestId('singleInput')).toBeInTheDocument()
   })
 
-  it.todo(
-    'should show a list of suggestions once the trigger key has been entered.'
-  )
+  it.only('should show a list of suggestions once the trigger key has been entered.', async () => {
+    const { user } = setup(
+      <MentionsInput value="">
+        <Mention trigger="@" data={data} />
+      </MentionsInput>
+    )
+    expect(screen.getByRole('textbox')).toBeInTheDocument()
+    await user.click(screen.getByRole('textbox'))
+    await user.keyboard('Hello!')
+    await user.keyboard('Hello!')
+
+    screen.debug()
+  })
+
   it.todo(
     'should be possible to navigate through the suggestions with the up and down arrows.'
   )

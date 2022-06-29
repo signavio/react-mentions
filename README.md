@@ -1,9 +1,6 @@
 # [React Mentions](https://react-mentions.now.sh)
 
-[![CircleCI][build-badge]][build]
-[![codecov][codecov-badge]][codecov]
 [![npm package][npm-badge]][npm]
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 
@@ -65,7 +62,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
-| customSuggestionsContainer    | function(children)                                                  | empty function | Allows customizing the container of the suggestions            |
+| customSuggestionsContainer  | function(children)                                      | empty function | Allows customizing the container of the suggestions                                    |
 
 Each data source is configured using a `Mention` component, which has the following props:
 
@@ -77,7 +74,7 @@ Each data source is configured using a `Mention` component, which has the follow
 | markup           | string                                                       | `'@[__display__](__id__)'`                  | A template string for the markup to use for mentions                                                                                                   |
 | displayTransform | function (id, display)                                       | returns `display`                           | Accepts a function for customizing the string that is displayed for a mention                                                                          |
 | regex            | RegExp                                                       | automatically derived from `markup` pattern | Allows providing a custom regular expression for parsing your markup and extracting the placeholder interpolations (optional)                          |  |
-| onAdd            | function (id, display, startPos, endPos)                                       | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
+| onAdd            | function (id, display, startPos, endPos)                     | empty function                              | Callback invoked when a suggestion has been added (optional)                                                                                           |
 | appendSpaceOnAdd | boolean                                                      | `false`                                     | Append a space when a suggestion has been added (optional)                                                                                             |
 
 If a function is passed as the `data` prop, that function will be called with the current search query as first, and a callback function as second argument. The callback can be used to provide results asynchronously, e.g., after fetch requests. (It can even be called multiple times to update the list of suggestions.)
@@ -97,18 +94,7 @@ You can also assign `className` and `style` props to the `Mention` elements to d
 Due to react-mentions' internal cursor tracking it is not good enough to simulate the editing of the textarea value using `ReactTestUtils.Simulate.change`.
 We recommend using [@testing-library/user-event](https://github.com/testing-library/user-event) for a realistic simulation of events as they would happen in the browser as the user interacts the textarea.
 
-## Contributing
+---
 
-Spawn a development server with an example page and module hot loading all set up:
-
-```
-yarn start
-
-```
-
-[build-badge]: https://circleci.com/gh/signavio/react-mentions/tree/master.svg?style=shield&circle-token=:circle-token
-[build]: https://circleci.com/gh/signavio/react-mentions/tree/master
-[npm-badge]: https://img.shields.io/npm/v/react-mentions.png?style=flat-square
-[npm]: https://www.npmjs.org/package/react-mentions
-[codecov-badge]: https://img.shields.io/codecov/c/github/signavio/react-mentions.svg
-[codecov]: https://codecov.io/gh/signavio/react-mentions
+If you want to contribute, first of all: thank you ❤️.
+Please check [CONTRIBUTING.md](/CONTRIBUTING.md) and/or create an issue.

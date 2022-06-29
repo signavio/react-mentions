@@ -1,9 +1,16 @@
 import React from 'react'
 import { makeTriggerRegex } from './MentionsInput'
 import { mount } from 'enzyme'
-import { render, screen } from '@testing-library/react'
+import {
+  render,
+  screen,
+  fireEvent,
+  getByTestId,
+  waitFor,
+} from '@testing-library/react'
 import userEvent, { setup } from '@testing-library/user-event'
 import '@testing-library/jest-dom'
+import { act } from 'react-dom/test-utils'
 
 import { Mention, MentionsInput } from './index'
 
@@ -56,15 +63,20 @@ describe('MentionsInput', () => {
   })
 
   it.only('should show a list of suggestions once the trigger key has been entered.', async () => {
+    // jest.useFakeTimers()
+    // jest.setTimeout(10000)
     const { user } = setup(
       <MentionsInput value="">
         <Mention trigger="@" data={data} />
       </MentionsInput>
     )
+
     expect(screen.getByRole('textbox')).toBeInTheDocument()
     await user.click(screen.getByRole('textbox'))
     await user.keyboard('Hello!')
-    await user.keyboard('Hello!')
+    // await act(async () => {
+    //   jest.runOnlyPendingTimers()
+    // })
 
     screen.debug()
   })

@@ -1,5 +1,11 @@
 # react-mentions
 
+## 4.4.5
+
+### Patch Changes
+
+- f40cff2: Fix #507 for forceSuggestionsAboveCursor when suggestionsPortalHost is not being used
+
 ## 4.4.4
 
 ### Patch Changes

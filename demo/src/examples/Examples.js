@@ -12,11 +12,36 @@ import SingleLine from './SingleLine'
 import SingleLineIgnoringAccents from './SingleLineIgnoringAccents'
 import SuggestionPortal from './SuggestionPortal'
 import BottomGuard from './BottomGuard'
+import CustomSuggestionsContainer from './CustomSuggestionsContainer'
 
 const users = [
   {
     id: 'walter',
     display: 'Walter White',
+  },
+  {
+    id: 'pipilu',
+    display: '皮皮鲁',
+  },
+  {
+    id: 'luxixi',
+    display: '鲁西西',
+  },
+  {
+    id: 'satoshi1',
+    display: '中本聪',
+  },
+  {
+    id: 'satoshi2',
+    display: 'サトシ・ナカモト',
+  },
+  {
+    id: 'nobi',
+    display: '野比のび太',
+  },
+  {
+    id: 'sung',
+    display: '성덕선',
   },
   {
     id: 'jesse',
@@ -58,11 +83,13 @@ export default function Examples() {
         <Scrollable data={users} />
         <Advanced data={users} />
         <CutCopyPaste data={users} />
+        <CutCopyPaste data={users} disabledSource />
         <CssModules data={users} />
         <AsyncGithubUserMentions data={users} />
         <Emojis data={users} />
         <SuggestionPortal data={users} />
         <BottomGuard data={users} />
+        <CustomSuggestionsContainer data={users} />
       </div>
     </StylesViaJss>
   )

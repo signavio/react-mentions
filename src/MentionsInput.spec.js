@@ -64,6 +64,7 @@ describe('MentionsInput', () => {
     wrapper.find('textarea').simulate('select', {
       target: { selectionStart: 1, selectionEnd: 1 },
     })
+    wrapper.find('textarea').getDOMNode().setSelectionRange(1, 1)
 
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
@@ -224,6 +225,7 @@ describe('MentionsInput', () => {
         textarea.simulate('select', {
           target: { selectionStart, selectionEnd },
         })
+        textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
         const setData = jest.fn()
 
@@ -258,6 +260,7 @@ describe('MentionsInput', () => {
         textarea.simulate('select', {
           target: { selectionStart, selectionEnd },
         })
+        textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
         const setData = jest.fn()
 
@@ -294,6 +297,7 @@ describe('MentionsInput', () => {
         textarea.simulate('select', {
           target: { selectionStart, selectionEnd },
         })
+        textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
         const preventDefault = jest.fn()
         const event = new Event(eventType, { bubbles: true })
@@ -318,6 +322,7 @@ describe('MentionsInput', () => {
       textarea.simulate('select', {
         target: { selectionStart, selectionEnd },
       })
+      textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
       const event = new Event('cut', { bubbles: true })
       event.clipboardData = { setData: jest.fn() }
@@ -347,6 +352,7 @@ describe('MentionsInput', () => {
       textarea.simulate('select', {
         target: { selectionStart, selectionEnd },
       })
+      textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
       const event = new Event('cut', { bubbles: true })
       event.clipboardData = { setData: jest.fn() }
@@ -459,6 +465,7 @@ describe('MentionsInput', () => {
       textarea.simulate('select', {
         target: { selectionStart, selectionEnd },
       })
+      textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
 
       const preventDefault = jest.fn()
       const event = new Event('paste', { bubbles: true })

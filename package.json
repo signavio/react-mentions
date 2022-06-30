@@ -1,6 +1,6 @@
 {
   "name": "react-mentions",
-  "version": "0.0.0-development",
+  "version": "4.4.4",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
@@ -11,10 +11,12 @@
     "build": "preconstruct build",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,test,demo/src}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src test demo",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
-    "semantic-release": "semantic-release",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack-dev-server --config demo/webpack.config.js",
     "test": "jest",
-    "now-build": "webpack --config demo/webpack.config.js"
+    "now-build": "webpack --config demo/webpack.config.js",
+    "prerelease": "yarn build",
+    "release": "changeset publish",
+    "change": "changeset"
   },
   "repository": {
     "type": "git",
@@ -31,7 +33,7 @@
     "safari >= 10",
     "ie >= 11"
   ],
-  "author": "Jan-Felix Schwarz",
+  "author": "SAP-Signavio",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/signavio/react-mentions/issues"
@@ -47,10 +49,13 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@changesets/cli": "^2.23.0",
+    "@testing-library/dom": "^8.13.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^8.0.6",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
-    "condition-circle": "^2.0.1",
     "core-js": "^3.1.4",
     "cross-env": "^5.2.1",
     "css-loader": "^3.0.0",
@@ -74,7 +79,6 @@
     "react-dom": "16.8.6",
     "recompose": "^0.30.0",
     "regenerator-runtime": "^0.13.2",
-    "semantic-release": "^12.4.1",
     "style-loader": "^0.23.1",
     "substyle-jss": "^4.0.1",
     "webpack": "^4.35.2",
@@ -90,8 +94,5 @@
   "peerDependencies": {
     "react": ">=16.8.3",
     "react-dom": ">=16.8.3"
-  },
-  "release": {
-    "verifyConditions": "condition-circle"
   }
 }

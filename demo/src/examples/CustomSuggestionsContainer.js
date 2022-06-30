@@ -6,19 +6,19 @@ import { provideExampleValue } from './higher-order'
 import defaultStyle from './defaultStyle'
 import defaultMentionStyle from './defaultMentionStyle'
 
-function SingleLineIgnoringAccents({ value, data, onChange, onAdd }) {
+function CustomSuggestionsContainer({ value, data, onChange, onAdd }) {
   return (
-    <div className="single-line">
-      <h3>Single line input ignoring character accents</h3>
+    <div className="custom-suggestions">
+      <h3>Custom Suggestions Container</h3>
 
       <MentionsInput
-        singleLine
         value={value}
         onChange={onChange}
         style={defaultStyle}
         placeholder={"Mention people using '@'"}
-        ignoreAccents
         a11ySuggestionsListLabel={"Suggested mentions"}
+        allowSuggestionsAboveCursor={true}
+        customSuggestionsContainer={(children)=><div><span style={{fontWeight: "bold"}}><h2>This container has customised suggestions</h2></span>{children}</div>}
       >
         <Mention data={data} onAdd={onAdd} style={defaultMentionStyle} />
       </MentionsInput>
@@ -28,4 +28,4 @@ function SingleLineIgnoringAccents({ value, data, onChange, onAdd }) {
 
 const asExample = provideExampleValue('')
 
-export default asExample(SingleLineIgnoringAccents)
+export default asExample(CustomSuggestionsContainer)

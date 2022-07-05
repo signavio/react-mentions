@@ -1,18 +1,24 @@
 import React from 'react'
 import { defaultStyle } from './utils'
+import { getSubstringIndex } from './utils'
 
-import { getSubstringIndex, keys, omit } from './utils'
-
-function Suggestion(props) {
-  const rest = omit(
-    props,
-    ['style', 'classNames', 'className'], // substyle props
-    keys(Suggestion.propTypes)
-  )
+function Suggestion({
+  id,
+  focused,
+  ignoreAccents,
+  index,
+  onClick,
+  onMouseEnter,
+  query,
+  renderSuggestion,
+  suggestion,
+  style,
+  className,
+  classNames,
+}) {
+  const rest = { onClick, onMouseEnter }
 
   const renderContent = () => {
-    let { query, renderSuggestion, suggestion, index, focused } = props
-
     let display = getDisplay()
     let highlightedDisplay = renderHighlightedDisplay(display, query)
 
@@ -30,8 +36,6 @@ function Suggestion(props) {
   }
 
   const getDisplay = () => {
-    let { suggestion } = props
-
     if (typeof suggestion === 'string') {
       return suggestion
     }
@@ -46,8 +50,6 @@ function Suggestion(props) {
   }
 
   const renderHighlightedDisplay = (display) => {
-    const { ignoreAccents, query, style } = props
-
     let i = getSubstringIndex(display, query, ignoreAccents)
 
     if (i === -1) {
@@ -64,13 +66,7 @@ function Suggestion(props) {
   }
 
   return (
-    <li
-      id={props.id}
-      role="option"
-      aria-selected={props.focused}
-      {...rest}
-      {...props.style}
-    >
+    <li id={id} role="option" aria-selected={focused} {...rest} {...style}>
       {renderContent()}
     </li>
   )

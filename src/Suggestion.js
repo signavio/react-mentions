@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { defaultStyle } from './utils'
 import { getSubstringIndex } from './utils'
 
@@ -70,6 +71,24 @@ function Suggestion({
       {renderContent()}
     </li>
   )
+}
+
+Suggestion.propTypes = {
+  id: PropTypes.string.isRequired,
+  query: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  ignoreAccents: PropTypes.bool,
+
+  suggestion: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      display: PropTypes.string,
+    }),
+  ]).isRequired,
+  renderSuggestion: PropTypes.func,
+
+  focused: PropTypes.bool,
 }
 
 const styled = defaultStyle(

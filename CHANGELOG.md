@@ -1,5 +1,11 @@
 # react-mentions
 
+## 4.4.6
+
+### Patch Changes
+
+- 959625b: Suggestions.js refactored to functional component
+
 ## 4.4.5
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import React, { Component, Children, useState, useEffect } from 'react'
+import React, { Children, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { inline } from 'substyle'
 import { defaultStyle } from './utils'
@@ -28,9 +28,10 @@ function SuggestionsOverlay({
   onMouseDown,
   onMouseEnter,
 }) {
-  const [ulElement, setUlElement] = useState({})
+  const [ulElement, setUlElement] = useState()
 
   useEffect(() => {
+    console.log(ulElement)
     if (
       !ulElement ||
       ulElement.offsetHeight >= ulElement.scrollHeight ||
@@ -50,7 +51,7 @@ function SuggestionsOverlay({
     } else if (bottom > ulElement.offsetHeight) {
       ulElement.scrollTop = bottom - ulElement.offsetHeight
     }
-  })
+  }, [])
 
   const renderSuggestions = () => {
     const suggestionsToRender = Object.values(suggestions).reduce(

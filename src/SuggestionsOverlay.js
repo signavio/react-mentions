@@ -31,7 +31,6 @@ function SuggestionsOverlay({
   const [ulElement, setUlElement] = useState()
 
   useEffect(() => {
-    console.log(ulElement)
     if (
       !ulElement ||
       ulElement.offsetHeight >= ulElement.scrollHeight ||

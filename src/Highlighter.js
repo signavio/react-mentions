@@ -70,16 +70,18 @@ function Highlighter({
   let substringComponentKey = 0
 
   const textIteratee = (substr, index, indexInPlainText) => {
+    // check whether the caret element has to be inserted inside the current plain substring
     if (
       isNumber(caretPositionInMarkup) &&
       caretPositionInMarkup >= index &&
       caretPositionInMarkup <= index + substr.length
     ) {
+      // if yes, split substr at the caret position and insert the caret component
       const splitIndex = caretPositionInMarkup - index
       components.push(
         renderSubstring(substr.substring(0, splitIndex), substringComponentKey)
       )
-
+      // add all following substrings and mention components as children of the caret component
       components = [
         renderSubstring(substr.substring(splitIndex), substringComponentKey),
       ]
@@ -106,6 +108,7 @@ function Highlighter({
   }
 
   const renderSubstring = (string, key) => {
+    // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
     return (
       <span {...style('substring')} key={key}>
         {string}
@@ -128,9 +131,12 @@ function Highlighter({
   }
 
   iterateMentionsMarkup(value, config, mentionIteratee, textIteratee)
+
+  // append a span containing a space, to ensure the last text line has the correct height
   components.push(' ')
 
   if (components !== resultComponents) {
+    // if a caret component is to be rendered, add all components that followed as its children
     resultComponents.push(renderHighlighterCaret(components))
   }
 

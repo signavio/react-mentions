@@ -1,4 +1,4 @@
-import React, { Component, Children } from 'react'
+import React, { Children, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { inline } from 'substyle'
 import { defaultStyle } from './utils'
@@ -7,181 +7,162 @@ import { getSuggestionHtmlId } from './utils'
 import Suggestion from './Suggestion'
 import LoadingIndicator from './LoadingIndicator'
 
-class SuggestionsOverlay extends Component {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    suggestions: PropTypes.object.isRequired,
-    a11ySuggestionsListLabel: PropTypes.string,
-    focusIndex: PropTypes.number,
-    position: PropTypes.string,
-    left: PropTypes.number,
-    right: PropTypes.number,
-    top: PropTypes.number,
-    scrollFocusedIntoView: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    isOpened: PropTypes.bool.isRequired,
-    onSelect: PropTypes.func,
-    ignoreAccents: PropTypes.bool,
-    containerRef: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.shape({
-        current:
-          typeof Element === 'undefined'
-            ? PropTypes.any
-            : PropTypes.instanceOf(Element),
-      }),
-    ]),
+function SuggestionsOverlay({
+  id,
+  suggestions = {},
+  a11ySuggestionsListLabel,
+  focusIndex,
+  position,
+  left,
+  right,
+  top,
+  scrollFocusedIntoView,
+  isLoading,
+  isOpened,
+  onSelect = () => null,
+  ignoreAccents,
+  containerRef,
+  children,
+  style,
+  customSuggestionsContainer,
+  onMouseDown,
+  onMouseEnter,
+}) {
+  const [ulElement, setUlElement] = useState()
 
-    children: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.arrayOf(PropTypes.element),
-    ]).isRequired,
-  }
-
-  static defaultProps = {
-    suggestions: {},
-    onSelect: () => null,
-  }
-
-  componentDidUpdate() {
+  useEffect(() => {
     if (
-      !this.ulElement ||
-      this.ulElement.offsetHeight >= this.ulElement.scrollHeight ||
-      !this.props.scrollFocusedIntoView
+      !ulElement ||
+      ulElement.offsetHeight >= ulElement.scrollHeight ||
+      !scrollFocusedIntoView
     ) {
       return
     }
+    const scrollTop = ulElement.scrollTop
 
-    const scrollTop = this.ulElement.scrollTop
-    let { top, bottom } = this.ulElement.children[
-      this.props.focusIndex
-    ].getBoundingClientRect()
-    const { top: topContainer } = this.ulElement.getBoundingClientRect()
+    let { top, bottom } = ulElement.children[focusIndex].getBoundingClientRect()
+    const { top: topContainer } = ulElement.getBoundingClientRect()
     top = top - topContainer + scrollTop
     bottom = bottom - topContainer + scrollTop
 
     if (top < scrollTop) {
-      this.ulElement.scrollTop = top
-    } else if (bottom > this.ulElement.offsetHeight) {
-      this.ulElement.scrollTop = bottom - this.ulElement.offsetHeight
+      ulElement.scrollTop = top
+    } else if (bottom > ulElement.offsetHeight) {
+      ulElement.scrollTop = bottom - ulElement.offsetHeight
     }
-  }
+  }, [])
 
-  render() {
-    const {
-      id,
-      a11ySuggestionsListLabel,
-      isOpened,
-      style,
-      onMouseDown,
-      containerRef,
-      position,
-      left,
-      right,
-      top,
-    } = this.props
-
-    // do not show suggestions until there is some data
-    if (!isOpened) {
-      return null
-    }
-
-    return (
-      <div
-        {...inline(
-          { position: position || 'absolute', left, right, top },
-          style
-        )}
-        onMouseDown={onMouseDown}
-        ref={containerRef}
-      >
-        
-        <ul
-          ref={this.setUlElement}
-          id={id}
-          role="listbox"
-          aria-label={a11ySuggestionsListLabel}
-          {...style('list')}
-        >
-        {this.renderSuggestions()}
-        </ul>
-        {this.renderLoadingIndicator()}
-      </div>
-    )
-  }
-
-  renderSuggestions() {
-    const {customSuggestionsContainer} = this.props;
-    const suggestions = Object.values(this.props.suggestions).reduce(
+  const renderSuggestions = () => {
+    const suggestionsToRender = Object.values(suggestions).reduce(
       (accResults, { results, queryInfo }) => [
         ...accResults,
         ...results.map((result, index) =>
-          this.renderSuggestion(result, queryInfo, accResults.length + index)
+          renderSuggestion(result, queryInfo, accResults.length + index)
         ),
       ],
       []
-    );
+    )
 
-    if(customSuggestionsContainer)
-      return customSuggestionsContainer(suggestions);
-    else
-      return suggestions;
+    if (customSuggestionsContainer)
+      return customSuggestionsContainer(suggestionsToRender)
+    else return suggestionsToRender
   }
 
-  renderSuggestion(result, queryInfo, index) {
-    const isFocused = index === this.props.focusIndex
+  const renderSuggestion = (result, queryInfo, index) => {
+    const isFocused = index === focusIndex
     const { childIndex, query } = queryInfo
-    const { renderSuggestion } = Children.toArray(this.props.children)[
-      childIndex
-    ].props
-    const { ignoreAccents } = this.props
+    const { renderSuggestion } = Children.toArray(children)[childIndex].props
 
     return (
       <Suggestion
-        style={this.props.style('item')}
+        style={style('item')}
         key={`${childIndex}-${getID(result)}`}
-        id={getSuggestionHtmlId(this.props.id, index)}
+        id={getSuggestionHtmlId(id, index)}
         query={query}
         index={index}
         ignoreAccents={ignoreAccents}
         renderSuggestion={renderSuggestion}
         suggestion={result}
         focused={isFocused}
-        onClick={() => this.select(result, queryInfo)}
-        onMouseEnter={() => this.handleMouseEnter(index)}
+        onClick={() => select(result, queryInfo)}
+        onMouseEnter={() => handleMouseEnter(index)}
       />
     )
   }
 
-  renderLoadingIndicator() {
-    if (!this.props.isLoading) {
+  const renderLoadingIndicator = () => {
+    if (!isLoading) {
       return
     }
 
-    return <LoadingIndicator style={this.props.style('loadingIndicator')} />
+    return <LoadingIndicator style={style('loadingIndicator')} />
   }
 
-  handleMouseEnter = (index, ev) => {
-    if (this.props.onMouseEnter) {
-      this.props.onMouseEnter(index)
+  const handleMouseEnter = (index, ev) => {
+    if (onMouseEnter) {
+      onMouseEnter(index)
     }
   }
 
-  select = (suggestion, queryInfo) => {
-    this.props.onSelect(suggestion, queryInfo)
+  const select = (suggestion, queryInfo) => {
+    onSelect(suggestion, queryInfo)
   }
 
-  setUlElement = (el) => {
-    this.ulElement = el
+  const getID = (suggestion) => {
+    if (typeof suggestion === 'string') {
+      return suggestion
+    }
+    return suggestion.id
   }
+
+  if (!isOpened) {
+    return null
+  }
+
+  return (
+    <div
+      {...inline({ position: position || 'absolute', left, right, top }, style)}
+      onMouseDown={onMouseDown}
+      ref={containerRef}
+    >
+      <ul
+        ref={setUlElement}
+        id={id}
+        role="listbox"
+        aria-label={a11ySuggestionsListLabel}
+        {...style('list')}
+      >
+        {renderSuggestions()}
+      </ul>
+      {renderLoadingIndicator()}
+    </div>
+  )
 }
 
-const getID = (suggestion) => {
-  if (typeof suggestion === 'string') {
-    return suggestion
-  }
-
-  return suggestion.id
+SuggestionsOverlay.propTypes = {
+  id: PropTypes.string.isRequired,
+  suggestions: PropTypes.object.isRequired,
+  a11ySuggestionsListLabel: PropTypes.string,
+  focusIndex: PropTypes.number,
+  position: PropTypes.string,
+  left: PropTypes.number,
+  right: PropTypes.number,
+  top: PropTypes.number,
+  scrollFocusedIntoView: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  isOpened: PropTypes.bool.isRequired,
+  onSelect: PropTypes.func,
+  ignoreAccents: PropTypes.bool,
+  customSuggestionsContainer: PropTypes.any,
+  containerRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({
+      current:
+        typeof Element === 'undefined'
+          ? PropTypes.any
+          : PropTypes.instanceOf(Element),
+    }),
+  ]),
 }
 
 const styled = defaultStyle({

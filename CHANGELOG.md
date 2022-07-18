@@ -1,5 +1,12 @@
 # react-mentions
 
+## 4.4.7
+
+### Patch Changes
+
+- 834240e: SuggestionsOverlay.js refactored to functional component
+- f8e5793: Highlighter.js converted to functional component
+
 ## 4.4.6
 
 ### Patch Changes

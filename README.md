@@ -1,6 +1,4 @@
-# [React Mentions](https://react-mentions.now.sh)
-
-[![npm package][npm-badge]][npm]
+# [React Mentions](https://react-mentions.vercel.app)
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 

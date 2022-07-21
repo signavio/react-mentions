@@ -153,7 +153,7 @@ SuggestionsOverlay.propTypes = {
   isOpened: PropTypes.bool.isRequired,
   onSelect: PropTypes.func,
   ignoreAccents: PropTypes.bool,
-  customSuggestionsContainer: PropTypes.any,
+  customSuggestionsContainer: PropTypes.func,
   containerRef: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({

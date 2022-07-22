@@ -278,7 +278,7 @@ class MentionsInput extends React.Component {
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
-        customSuggestionsContainer ={this.props.customSuggestionsContainer}
+        customSuggestionsContainer={this.props.customSuggestionsContainer}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
@@ -489,7 +489,7 @@ class MentionsInput extends React.Component {
   // Handle input element's change event
   handleChange = (ev) => {
     isComposing = false
-    if(isIE()){
+    if (isIE()) {
       // if we are inside iframe, we need to find activeElement within its contentDocument
       const currentDocument =
         (document.activeElement && document.activeElement.contentDocument) ||
@@ -687,7 +687,11 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
-    const { suggestionsPortalHost, allowSuggestionsAboveCursor, forceSuggestionsAboveCursor } = this.props
+    const {
+      suggestionsPortalHost,
+      allowSuggestionsAboveCursor,
+      forceSuggestionsAboveCursor,
+    } = this.props
 
     if (!caretPosition || !this.suggestionsElement) {
       return
@@ -739,9 +743,9 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        top + suggestions.offsetHeight > viewportHeight &&
+          top + suggestions.offsetHeight > viewportHeight &&
           suggestions.offsetHeight < top - caretHeight) ||
-          forceSuggestionsAboveCursor
+        forceSuggestionsAboveCursor
       ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
@@ -761,12 +765,12 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        viewportRelative.top -
-          highlighter.scrollTop +
-          suggestions.offsetHeight >
-          viewportHeight &&
-        suggestions.offsetHeight <
-          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
+          viewportRelative.top -
+            highlighter.scrollTop +
+            suggestions.offsetHeight >
+            viewportHeight &&
+          suggestions.offsetHeight <
+            caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
         forceSuggestionsAboveCursor
       ) {
         position.top = top - suggestions.offsetHeight - caretHeight
@@ -901,19 +905,20 @@ class MentionsInput extends React.Component {
     const { children, ignoreAccents } = this.props
     const mentionChild = Children.toArray(children)[childIndex]
     const provideData = getDataProvider(mentionChild.props.data, ignoreAccents)
-    const syncResult = provideData(
+
+    const callback = this.updateSuggestions.bind(
+      null,
+      this._queryId,
+      childIndex,
       query,
-      this.updateSuggestions.bind(
-        null,
-        this._queryId,
-        childIndex,
-        query,
-        querySequenceStart,
-        querySequenceEnd,
-        plainTextValue
-      )
+      querySequenceStart,
+      querySequenceEnd,
+      plainTextValue
     )
-    if (syncResult instanceof Array) {
+
+    const result = provideData(query, callback)
+
+    if (result instanceof Array) {
       this.updateSuggestions(
         this._queryId,
         childIndex,
@@ -921,8 +926,10 @@ class MentionsInput extends React.Component {
         querySequenceStart,
         querySequenceEnd,
         plainTextValue,
-        syncResult
+        result
       )
+    } else if (result && typeof result.then === 'function') {
+      result.then(callback)
     }
   }
 

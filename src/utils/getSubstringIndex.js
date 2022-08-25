@@ -1,3 +1,4 @@
+import createMatcher from './createMatcher'
 import lettersDiacritics from './diacritics'
 
 const removeAccents = str => {
@@ -16,11 +17,13 @@ const removeAccents = str => {
 export const normalizeString = str => removeAccents(str).toLowerCase()
 
 const getSubstringIndex = (str, substr, ignoreAccents) => {
-  if (!ignoreAccents) {
-    return str.toLowerCase().indexOf(substr.toLowerCase())
-  }
+  const display = ignoreAccents ? normalizeString(str) : str
+  const query = ignoreAccents ? normalizeString(substr) : substr
 
-  return normalizeString(str).indexOf(normalizeString(substr))
+  const regex = createMatcher(query)
+  const match = display.match(regex)
+
+  return match ? match.index : -1
 }
 
 export default getSubstringIndex

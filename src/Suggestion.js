@@ -9,7 +9,7 @@ function Suggestion({
   ignoreAccents,
   index,
   onClick,
-  onMouseEnter,
+  onMouseMove,
   query,
   renderSuggestion,
   suggestion,
@@ -17,7 +17,7 @@ function Suggestion({
   className,
   classNames,
 }) {
-  const rest = { onClick, onMouseEnter }
+  const rest = { onClick, onMouseMove }
 
   const renderContent = () => {
     let display = getDisplay()

@@ -50,7 +50,7 @@ You can find more examples here: [demo/src/examples](https://github.com/signavio
 The `MentionsInput` supports the following props for configuring the widget:
 
 | Prop name                   | Type                                                    | Default value  | Description                                                                            |
-| --------------------------- | ------------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------- |
+|-----------------------------|---------------------------------------------------------|----------------|----------------------------------------------------------------------------------------|
 | value                       | string                                                  | `''`           | The value containing markup for mentions                                               |
 | onChange                    | function (event, newValue, newPlainTextValue, mentions) | empty function | A callback that is invoked when the user changes the value in the mentions input       |
 | onKeyDown                   | function (event)                                        | empty function | A callback that is invoked when the user presses a key in the mentions input           |
@@ -63,6 +63,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | forceSuggestionsAboveCursor | boolean                                                 | false          | Forces the SuggestionList to be rendered above the cursor                              |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
 | customSuggestionsContainer  | function(children)                                      | empty function | Allows customizing the container of the suggestions                                    |
+| renderInput                 | React component                                         | undefined      | Allows customizing the input element                                                   |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

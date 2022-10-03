@@ -41,6 +41,18 @@ describe('MentionsInput', () => {
     expect(wrapper.find('input').length).toEqual(1)
   })
 
+  it('should render a custom input when supplied.', () => {
+    wrapper.setProps({
+      renderInput: React.forwardRef((props, ref) => (
+        <div id="testDiv" {...props} ref={ref} />
+      )),
+    })
+
+    expect(wrapper.find('textarea').length).toEqual(0)
+    expect(wrapper.find('input').length).toEqual(0)
+    expect(wrapper.find('#testDiv').length).toEqual(1)
+  })
+
   it.todo(
     'should show a list of suggestions once the trigger key has been entered.'
   )
@@ -51,7 +63,10 @@ describe('MentionsInput', () => {
   it.todo('should be possible to close the suggestions with esc.')
 
   it('should be able to handle sync responses from multiple mentions sources', () => {
-    const extraData = [{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]
+    const extraData = [
+      { id: 'a', value: 'A' },
+      { id: 'b', value: 'B' },
+    ]
 
     const wrapper = mount(
       <MentionsInput value="@">
@@ -64,7 +79,10 @@ describe('MentionsInput', () => {
     wrapper.find('textarea').simulate('select', {
       target: { selectionStart: 1, selectionEnd: 1 },
     })
-    wrapper.find('textarea').getDOMNode().setSelectionRange(1, 1)
+    wrapper
+      .find('textarea')
+      .getDOMNode()
+      .setSelectionRange(1, 1)
 
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
@@ -104,7 +122,7 @@ describe('MentionsInput', () => {
       <div id="root">
         <div
           id="portalDiv"
-          ref={(el) => {
+          ref={el => {
             portalNode = el
           }}
         >
@@ -133,7 +151,10 @@ describe('MentionsInput', () => {
   })
 
   it('should accept a custom regex attribute', () => {
-    const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
+    const data = [
+      { id: 'aaaa', display: '@A' },
+      { id: 'bbbb', display: '@B' },
+    ]
     const wrapper = mount(
       <MentionsInput value=":aaaa and :bbbb and :invalidId">
         <Mention
@@ -141,8 +162,8 @@ describe('MentionsInput', () => {
           data={data}
           markup=":__id__"
           regex={/:(\S+)/}
-          displayTransform={(id) => {
-            let mention = data.find((item) => item.id === id)
+          displayTransform={id => {
+            let mention = data.find(item => item.id === id)
             return mention ? mention.display : `:${id}`
           }}
         />
@@ -216,7 +237,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should include the whole mention for a "%s" event when the selection starts in one.',
-      (eventType) => {
+      eventType => {
         const textarea = component.find('textarea')
 
         const selectionStart = plainTextValue.indexOf('First') + 2
@@ -251,7 +272,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should include the whole mention for a "%s" event when the selection ends in one.',
-      (eventType) => {
+      eventType => {
         const textarea = component.find('textarea')
 
         const selectionStart = 0
@@ -286,7 +307,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should fallback to the browsers behavior if the "%s" event does not support clipboardData',
-      (eventType) => {
+      eventType => {
         // IE 11 has no clipboardData attached to the event and only supports mime type "text"
         // therefore, the new mechanism should ignore those events and let the browser handle them
         const textarea = component.find('textarea')
@@ -380,7 +401,7 @@ describe('MentionsInput', () => {
 
       const event = new Event('paste', { bubbles: true })
       event.clipboardData = {
-        getData: jest.fn((type) =>
+        getData: jest.fn(type =>
           type === 'text/react-mentions' ? pastedText : ''
         ),
       }
@@ -408,7 +429,7 @@ describe('MentionsInput', () => {
 
       const event = new Event('paste', { bubbles: true })
       event.clipboardData = {
-        getData: jest.fn((type) => (type === 'text/plain' ? pastedText : '')),
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
       }
 
       expect(onChange).not.toHaveBeenCalled()
@@ -430,7 +451,7 @@ describe('MentionsInput', () => {
       const event = new Event('paste', { bubbles: true })
 
       event.clipboardData = {
-        getData: jest.fn((type) => (type === 'text/plain' ? pastedText : '')),
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
       }
 
       const onChange = jest.fn()

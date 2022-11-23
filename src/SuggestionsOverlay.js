@@ -50,7 +50,7 @@ function SuggestionsOverlay({
     } else if (bottom > ulElement.offsetHeight) {
       ulElement.scrollTop = bottom - ulElement.offsetHeight
     }
-  }, [])
+  }, [focusIndex])
 
   const renderSuggestions = () => {
     const suggestionsToRender = Object.values(suggestions).reduce(

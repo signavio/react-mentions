@@ -6,9 +6,13 @@ const defaultStyle = {
   fontWeight: 'inherit',
 }
 
-const Mention = ({ display, style, className, classNames }) => {
+const Mention = ({ display, style, className, classNames, onClick }) => {
   const styles = useStyles(defaultStyle, { style, className, classNames })
-  return <strong {...styles}>{display}</strong>
+  return (
+    <strong onClick={onClick} {...styles}>
+      {display}
+    </strong>
+  )
 }
 
 Mention.propTypes = {
@@ -24,6 +28,7 @@ Mention.propTypes = {
    * ```
    */
   onAdd: PropTypes.func,
+  onClick: PropTypes.func,
   onRemove: PropTypes.func,
 
   renderSuggestion: PropTypes.func,
@@ -49,6 +54,7 @@ Mention.defaultProps = {
     return display || id
   },
   onAdd: () => null,
+  onClick: () => null,
   onRemove: () => null,
   renderSuggestion: null,
   isLoading: false,

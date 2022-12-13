@@ -26,7 +26,7 @@ function SuggestionsOverlay({
   style,
   customSuggestionsContainer,
   onMouseDown,
-  onMouseEnter,
+  onMouseMove,
 }) {
   const [ulElement, setUlElement] = useState()
 
@@ -85,7 +85,7 @@ function SuggestionsOverlay({
         suggestion={result}
         focused={isFocused}
         onClick={() => select(result, queryInfo)}
-        onMouseEnter={() => handleMouseEnter(index)}
+        onMouseMove={() => handleMouseMove(index)}
       />
     )
   }
@@ -98,9 +98,9 @@ function SuggestionsOverlay({
     return <LoadingIndicator style={style('loadingIndicator')} />
   }
 
-  const handleMouseEnter = (index, ev) => {
-    if (onMouseEnter) {
-      onMouseEnter(index)
+  const handleMouseMove = (index, ev) => {
+    if (onMouseMove) {
+      onMouseMove(index)
     }
   }
 

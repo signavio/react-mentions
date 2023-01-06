@@ -1,0 +1,15 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  test:
+    docker:
+      - image: cimg/node:16.13.0-browsers
+    steps:
+      - run: echo "this is the test job"
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - test

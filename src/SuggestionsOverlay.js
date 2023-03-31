@@ -41,7 +41,7 @@ function SuggestionsOverlay({
 
         const scrollTop = ulElement.scrollTop
 
-        let { top, bottom } = ulElement.children[
+        let { top = 0, bottom = 0 } = ulElement.children[
             focusIndex
         ]?.getBoundingClientRect()
         const { top: topContainer } = ulElement.getBoundingClientRect()

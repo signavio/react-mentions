@@ -1037,11 +1037,8 @@ class MentionsInput extends React.Component {
         )
         const end = start + querySequenceEnd - querySequenceStart
 
-        console.log('THE MARKUP >>', markup)
-        console.log('id >>', id)
-        console.log('display >>', display)
         let insert = makeMentionsMarkup(markup, id, display)
-        console.log('TO BE INSERTED >>', insert)
+
         if (appendSpaceOnAdd) {
             insert += ' '
         }

@@ -38,12 +38,13 @@ function SuggestionsOverlay({
         ) {
             return
         }
+
         const scrollTop = ulElement.scrollTop
 
         let { top, bottom } = ulElement.children[
             focusIndex
-        ].getBoundingClientRect()
-        const { top: topContainer } = ulElement?.getBoundingClientRect()
+        ]?.getBoundingClientRect()
+        const { top: topContainer } = ulElement.getBoundingClientRect()
         top = top - topContainer + scrollTop
         bottom = bottom - topContainer + scrollTop
 

@@ -244,7 +244,7 @@ class MentionsInput extends React.Component {
     }
 
     renderTextarea = (props) => {
-        return <textarea ref={this.setInputRef} {...props} />
+        return <textarea autoFocus ref={this.setInputRef} {...props} />
     }
 
     setInputRef = (el) => {

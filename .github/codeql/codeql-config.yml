@@ -1,0 +1,6 @@
+paths-ignore:
+  - '**/*.min.js'
+  - build/
+  - dist/
+  - packages/**/dist
+  - '**/*.readonly.js'

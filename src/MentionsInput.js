@@ -76,13 +76,13 @@ const propTypes = {
   forceSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,
   a11ySuggestionsListLabel: PropTypes.string,
-
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
   customSuggestionsContainer: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  setPastedFiles: PropTypes.func,
   suggestionsPortalHost:
     typeof Element === 'undefined'
       ? PropTypes.any
@@ -113,6 +113,7 @@ class MentionsInput extends React.Component {
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
+    setPastedFiles: () => null,
   }
 
   constructor(props) {
@@ -370,35 +371,36 @@ class MentionsInput extends React.Component {
 
     const pastedMentions = event.clipboardData.getData('text/react-mentions')
     const pastedData = event.clipboardData.getData('text/plain')
+    const pastedFiles = (event.clipboardData || event.originalEvent.clipboardData).files;
+    if (pastedFiles.length) {
+      this.props.setPastedFiles(pastedFiles);
+    } else {
+      const newValue = spliceString(
+        value,
+        markupStartIndex,
+        markupEndIndex,
+        pastedMentions || pastedData
+      ).replace(/\r/g, '')
+      const newPlainTextValue = getPlainText(newValue, config)
+      const eventMock = { target: { ...event.target, value: newValue } }
+      this.executeOnChange(
+        eventMock,
+        newValue,
+        newPlainTextValue,
+        getMentions(newValue, config)
+      )
 
-    const newValue = spliceString(
-      value,
-      markupStartIndex,
-      markupEndIndex,
-      pastedMentions || pastedData
-    ).replace(/\r/g, '')
-
-    const newPlainTextValue = getPlainText(newValue, config)
-
-    const eventMock = { target: { ...event.target, value: newValue } }
-
-    this.executeOnChange(
-      eventMock,
-      newValue,
-      newPlainTextValue,
-      getMentions(newValue, config)
-    )
-
-    // Move the cursor position to the end of the pasted data
-    const startOfMention = findStartOfMentionInPlainText(
-      value,
-      config,
-      selectionStart
-    )
-    const nextPos =
-      (startOfMention || selectionStart) +
-      getPlainText(pastedMentions || pastedData, config).length
-    this.setSelection(nextPos, nextPos)
+      // Move the cursor position to the end of the pasted data
+      const startOfMention = findStartOfMentionInPlainText(
+        value,
+        config,
+        selectionStart
+      )
+      const nextPos =
+        (startOfMention || selectionStart) +
+        getPlainText(pastedMentions || pastedData, config).length
+      this.setSelection(nextPos, nextPos)
+    }
   }
 
   saveSelectionToClipboard(event) {

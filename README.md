@@ -1,4 +1,5 @@
 # [React Mentions](https://react-mentions.vercel.app)
+[![REUSE status](https://api.reuse.software/badge/github.com/signavio/react-mentions)](https://api.reuse.software/info/github.com/signavio/react-mentions)
 
 A React component that let's you mention people in a textarea like you are used to on Facebook or Twitter.
 

@@ -7,21 +7,16 @@ import {
   getEndOfLastMention,
   getMentions,
   getPlainText,
-  getSubstringIndex,
-  makeMentionsMarkup,
-  mapPlainTextIndex,
-  readConfigFromChildren,
-  spliceString,
-  isIE,
+  getSubstringIndex, getSuggestionHtmlId, isIE,
   isNumber,
-  keys,
-  omit,
-  getSuggestionHtmlId,
+  keys, makeMentionsMarkup,
+  mapPlainTextIndex, omit, readConfigFromChildren,
+  spliceString
 } from './utils'
 
-import Highlighter from './Highlighter'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
+import Highlighter from './Highlighter'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import { defaultStyle } from './utils'
 
@@ -83,6 +78,7 @@ const propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
+  propogateSelection: PropTypes.bool,
   suggestionsPortalHost:
     typeof Element === 'undefined'
       ? PropTypes.any
@@ -594,9 +590,12 @@ class MentionsInput extends React.Component {
       return
     }
 
+
     if (Object.values(KEY).indexOf(ev.keyCode) >= 0) {
-      ev.preventDefault()
-      ev.stopPropagation()
+      if (!this.props.propogateSelection) {
+        ev.preventDefault()
+        ev.stopPropagation()
+      }
     }
 
     switch (ev.keyCode) {

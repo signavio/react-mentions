@@ -28,7 +28,7 @@ function SuggestionsOverlay({
   onMouseDown,
   onMouseEnter,
 }) {
-  const [ulElement, setUlElement] = useState()
+  const [ulElement, setUlElement] = useState(undefined)
 
   useEffect(() => {
     if (

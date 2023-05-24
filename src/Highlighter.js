@@ -28,12 +28,15 @@ function Highlighter({
   singleLine,
   style,
 }) {
-  const [position, setPosition] = useState({ left: undefined, top: undefined })
+  const [position, setPosition] = useState({
+    left: undefined,
+    top: undefined,
+  })
   const [caretElement, setCaretElement] = useState()
 
   useEffect(() => {
     notifyCaretPosition()
-  }, [caretElement])
+  })
 
   const notifyCaretPosition = () => {
     if (!caretElement) {

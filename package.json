@@ -1,6 +1,6 @@
 {
-  "name": "@lagroms/react-mentions",
-  "version": "4.5.9",
+  "name": "react-mentions",
+  "version": "4.4.7",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lagroms/react-mentions#suggestions-container-position"
+    "url": "https://github.com/signavio/react-mentions.git"
   },
   "keywords": [
     "react",

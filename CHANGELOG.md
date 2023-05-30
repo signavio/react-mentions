@@ -1,5 +1,13 @@
 # react-mentions
 
+## 4.4.8
+
+## Patch Changes
+
+- db2d81a - Selection should be correctly set after pasting text
+- 1eef7df - Fix scroll into view automatically
+- 3f40576 - Fix suggestions container not properly aligned with caret position
+
 ## 4.4.7
 
 ### Patch Changes

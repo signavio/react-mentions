@@ -4,11 +4,11 @@
 
 ### Patch Changes
 
-- ad43016: typing fix in SuggestionsOverlay.js
+- ad43016: Typing fix in SuggestionsOverlay.js
 - e13731f: Fix package.json properties for release
 - 3f40576: Fixed the suggestions container that was not aligned with the caret position
 - db2d91a: Fix cursor jumping to the end of the textfield when pasting and using React 18
-- 1eef7df: fix scroll into view automatically
+- 1eef7df: Fix scroll into view automatically
 - a69db87: Custom container scrolling fixed, now works like other containers
 
 ## 4.4.7

@@ -53,19 +53,29 @@ function SuggestionsOverlay({
   }, [focusIndex, scrollFocusedIntoView, ulElement])
 
   const renderSuggestions = () => {
-    const suggestionsToRender = Object.values(suggestions).reduce(
-      (accResults, { results, queryInfo }) => [
-        ...accResults,
-        ...results.map((result, index) =>
-          renderSuggestion(result, queryInfo, accResults.length + index)
-        ),
-      ],
-      []
+    const suggestionsToRender = (
+      <ul
+        ref={setUlElement}
+        id={id}
+        role="listbox"
+        aria-label={a11ySuggestionsListLabel}
+        {...style('list')}
+      >
+        {Object.values(suggestions).reduce(
+          (accResults, { results, queryInfo }) => [
+            ...accResults,
+            ...results.map((result, index) =>
+              renderSuggestion(result, queryInfo, accResults.length + index)
+            ),
+          ],
+          []
+        )}
+      </ul>
     )
 
     if (customSuggestionsContainer)
       return customSuggestionsContainer(suggestionsToRender)
-    else return suggestionsToRender
+    return suggestionsToRender
   }
 
   const renderSuggestion = (result, queryInfo, index) => {
@@ -125,15 +135,7 @@ function SuggestionsOverlay({
       onMouseDown={onMouseDown}
       ref={containerRef}
     >
-      <ul
-        ref={setUlElement}
-        id={id}
-        role="listbox"
-        aria-label={a11ySuggestionsListLabel}
-        {...style('list')}
-      >
-        {renderSuggestions()}
-      </ul>
+      {renderSuggestions()}
       {renderLoadingIndicator()}
     </div>
   )

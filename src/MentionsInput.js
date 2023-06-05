@@ -359,7 +359,7 @@ class MentionsInput extends React.Component {
       return
     }
 
-    // event.preventDefault()
+    event.preventDefault()
 
     const { selectionStart, selectionEnd } = this.state
     const { value, children } = this.props

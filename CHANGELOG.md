@@ -1,5 +1,11 @@
 # react-mentions
 
+## 4.4.9
+
+### Patch Changes
+
+- 0e26027: Fix double-paste bug
+
 ## 4.4.8
 
 ### Patch Changes

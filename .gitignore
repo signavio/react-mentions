@@ -3,7 +3,7 @@
 /reports
 /coverage
 /demo/dist
-/dist
+# /dist
 /demo/build
 
 npm-debug.log*

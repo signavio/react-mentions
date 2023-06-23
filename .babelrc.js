@@ -10,6 +10,7 @@ module.exports = {
     ],
     '@babel/react',
     '@babel/preset-flow',
+    '@babel/preset-typescript'
   ],
   comments: true,
   plugins: [

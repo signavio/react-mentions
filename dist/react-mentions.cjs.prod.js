@@ -121,7 +121,7 @@ var _toConsumableArray = _interopDefault(require("@babel/runtime/helpers/toConsu
     };
   });
 }, coerceCapturingGroups = function(regex, markup) {
-  var numberOfGroups = new RegExp(regex.toString() + "|").exec("").length - 1, numberOfPlaceholders = countPlaceholders(markup);
+  var _RegExp$exec, numberOfGroups = (null === (_RegExp$exec = new RegExp(regex.toString() + "|").exec("")) || void 0 === _RegExp$exec ? void 0 : _RegExp$exec.length) - 1, numberOfPlaceholders = countPlaceholders(markup);
   return invariant(numberOfGroups === numberOfPlaceholders, "Number of capturing groups in RegExp ".concat(regex.toString(), " (").concat(numberOfGroups, ") does not match the number of placeholders in the markup '").concat(markup, "' (").concat(numberOfPlaceholders, ")")), 
   regex;
 }, makeMentionsMarkup = function(markup, id, display) {
@@ -634,7 +634,8 @@ function LoadingUserItem() {
     style: {
       display: "flex",
       padding: "1rem",
-      alignItems: "center"
+      alignItems: "center",
+      background: "red"
     }
   }, React.createElement("div", {
     style: {
@@ -1305,16 +1306,7 @@ var getComputedStyleLengthProp = function(forElement, propertyName) {
   return React__default.createElement("strong", styles, display);
 };
 
-Mention.propTypes = {
-  onAdd: PropTypes.func,
-  onRemove: PropTypes.func,
-  renderSuggestion: PropTypes.func,
-  trigger: PropTypes.oneOfType([ PropTypes.string, PropTypes.instanceOf(RegExp) ]),
-  markup: PropTypes.string,
-  displayTransform: PropTypes.func,
-  allowSpaceInQuery: PropTypes.bool,
-  isLoading: PropTypes.bool
-}, Mention.defaultProps = {
+Mention.defaultProps = {
   trigger: "@",
   markup: "@[__display__](__id__)",
   displayTransform: function(id, display) {

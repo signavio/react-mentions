@@ -53,6 +53,7 @@
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
+    "@types/invariant": "^2.2.35",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^8.0.6",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
@@ -86,6 +87,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.22.5",
     "@babel/runtime": "7.4.5",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",

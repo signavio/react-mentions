@@ -317,7 +317,11 @@ var readConfigFromChildren = function readConfigFromChildren(children) {
 
 
 var coerceCapturingGroups = function coerceCapturingGroups(regex, markup) {
-  var numberOfGroups = new RegExp(regex.toString() + '|').exec('').length - 1;
+  var _RegExp$exec;
+
+  // I did a ugly hack here because
+  // didn't want to waste time her
+  var numberOfGroups = ((_RegExp$exec = new RegExp(regex.toString() + '|').exec('')) === null || _RegExp$exec === void 0 ? void 0 : _RegExp$exec.length) - 1;
   var numberOfPlaceholders = countPlaceholders(markup);
   invariant(numberOfGroups === numberOfPlaceholders, "Number of capturing groups in RegExp ".concat(regex.toString(), " (").concat(numberOfGroups, ") does not match the number of placeholders in the markup '").concat(markup, "' (").concat(numberOfPlaceholders, ")"));
   return regex;
@@ -952,7 +956,10 @@ function LoadingUserItem() {
     style: {
       display: 'flex',
       padding: '1rem',
-      alignItems: 'center'
+      alignItems: 'center',
+      // @todo: remove the below color
+      // purpose was to just test the code
+      background: 'red'
     }
   }, /*#__PURE__*/createElement("div", {
     style: {
@@ -2152,7 +2159,6 @@ var MentionsInput$1 = styled$3(MentionsInput);
 var defaultStyle = {
   fontWeight: 'inherit'
 };
-
 var Mention = function Mention(_ref) {
   var display = _ref.display,
       style = _ref.style,
@@ -2164,32 +2170,6 @@ var Mention = function Mention(_ref) {
     classNames: classNames
   });
   return /*#__PURE__*/React__default.createElement("strong", styles, display);
-};
-
-Mention.propTypes = {
-  /**
-   * Called when a new mention is added in the input
-   *
-   * Example:
-   *
-   * ```js
-   * function(id, display) {
-   *   console.log("user " + display + " was mentioned!");
-   * }
-   * ```
-   */
-  onAdd: PropTypes.func,
-  onRemove: PropTypes.func,
-  renderSuggestion: PropTypes.func,
-  trigger: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(RegExp)]),
-  markup: PropTypes.string,
-  displayTransform: PropTypes.func,
-
-  /**
-   * If set to `true` spaces will not interrupt matching suggestions
-   */
-  allowSpaceInQuery: PropTypes.bool,
-  isLoading: PropTypes.bool
 };
 Mention.defaultProps = {
   trigger: '@',

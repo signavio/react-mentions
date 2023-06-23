@@ -3,7 +3,16 @@ import { lineStyle } from '../style'
 
 export function LoadingUserItem() {
   return (
-    <div style={{ display: 'flex', padding: '1rem', alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        padding: '1rem',
+        alignItems: 'center',
+        // @todo: remove the below color
+        // purpose was to just test the code
+        background: 'red',
+      }}
+    >
       <div
         style={{
           background: lineStyle.background,

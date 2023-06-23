@@ -634,8 +634,7 @@ function LoadingUserItem() {
     style: {
       display: "flex",
       padding: "1rem",
-      alignItems: "center",
-      background: "red"
+      alignItems: "center"
     }
   }, React.createElement("div", {
     style: {

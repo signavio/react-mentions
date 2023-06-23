@@ -964,10 +964,7 @@ function LoadingUserItem() {
     style: {
       display: 'flex',
       padding: '1rem',
-      alignItems: 'center',
-      // @todo: remove the below color
-      // purpose was to just test the code
-      background: 'red'
+      alignItems: 'center'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {

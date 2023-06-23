@@ -7,7 +7,7 @@ import _inherits from '@babel/runtime/helpers/esm/inherits';
 import _possibleConstructorReturn from '@babel/runtime/helpers/esm/possibleConstructorReturn';
 import _getPrototypeOf from '@babel/runtime/helpers/esm/getPrototypeOf';
 import _defineProperty from '@babel/runtime/helpers/esm/defineProperty';
-import React, { Children, useState, useEffect } from 'react';
+import React__default, { Children, useState, useEffect, createElement } from 'react';
 import invariant from 'invariant';
 import _slicedToArray from '@babel/runtime/helpers/esm/slicedToArray';
 import _objectWithoutProperties from '@babel/runtime/helpers/esm/objectWithoutProperties';
@@ -671,7 +671,7 @@ function createDefaultStyle(defaultStyle, getModifiers) {
         className: className,
         classNames: classNames
       }, modifiers);
-      return /*#__PURE__*/React.createElement(ComponentToWrap, _extends({}, rest, {
+      return /*#__PURE__*/React__default.createElement(ComponentToWrap, _extends({}, rest, {
         style: styles
       }));
     };
@@ -679,7 +679,7 @@ function createDefaultStyle(defaultStyle, getModifiers) {
     var displayName = ComponentToWrap.displayName || ComponentToWrap.name || 'Component';
     DefaultStyleEnhancer.displayName = "defaultStyle(".concat(displayName, ")"); // return DefaultStyleEnhancer
 
-    return /*#__PURE__*/React.forwardRef(function (props, ref) {
+    return /*#__PURE__*/React__default.forwardRef(function (props, ref) {
       return DefaultStyleEnhancer(_objectSpread(_objectSpread({}, props), {}, {
         ref: ref
       }));
@@ -782,7 +782,7 @@ function Highlighter(_ref) {
 
   var renderSubstring = function renderSubstring(string, key) {
     // set substring span to hidden, so that Emojis are not shown double in Mobile Safari
-    return /*#__PURE__*/React.createElement("span", _extends({}, style('substring'), {
+    return /*#__PURE__*/React__default.createElement("span", _extends({}, style('substring'), {
       key: key
     }), string);
   };
@@ -794,11 +794,11 @@ function Highlighter(_ref) {
       key: key
     };
     var child = Children.toArray(children)[mentionChildIndex];
-    return /*#__PURE__*/React.cloneElement(child, props);
+    return /*#__PURE__*/React__default.cloneElement(child, props);
   };
 
   var renderHighlighterCaret = function renderHighlighterCaret(children) {
-    return /*#__PURE__*/React.createElement("span", _extends({}, style('caret'), {
+    return /*#__PURE__*/React__default.createElement("span", _extends({}, style('caret'), {
       ref: setCaretElement,
       key: "caret"
     }), children);
@@ -813,7 +813,7 @@ function Highlighter(_ref) {
     resultComponents.push(renderHighlighterCaret(components));
   }
 
-  return /*#__PURE__*/React.createElement("div", _extends({}, style, {
+  return /*#__PURE__*/React__default.createElement("div", _extends({}, style, {
     ref: containerRef
   }), resultComponents);
 }
@@ -900,13 +900,13 @@ function Suggestion(_ref) {
     var i = getSubstringIndex(display, query, ignoreAccents);
 
     if (i === -1) {
-      return /*#__PURE__*/React.createElement("span", style('display'), display);
+      return /*#__PURE__*/React__default.createElement("span", style('display'), display);
     }
 
-    return /*#__PURE__*/React.createElement("span", style('display'), display.substring(0, i), /*#__PURE__*/React.createElement("b", style('highlight'), display.substring(i, i + query.length)), display.substring(i + query.length));
+    return /*#__PURE__*/React__default.createElement("span", style('display'), display.substring(0, i), /*#__PURE__*/React__default.createElement("b", style('highlight'), display.substring(i, i + query.length)), display.substring(i + query.length));
   };
 
-  return /*#__PURE__*/React.createElement("li", _extends({
+  return /*#__PURE__*/React__default.createElement("li", _extends({
     id: id,
     role: "option",
     "aria-selected": focused
@@ -934,9 +934,55 @@ var styled$1 = createDefaultStyle({
 });
 var Suggestion$1 = styled$1(Suggestion);
 
+var lineStyle = {
+  borderRadius: '1.25rem',
+  height: '0.5rem',
+  marginBottom: '0.5rem',
+  background: 'linear-gradient(to right, #99A0A3 0%, #707679 20%, #464A4D 40%, #464A4D 60%, #707679 80% , #99A0A3 100%)',
+  backgroundSize: '1000px',
+  animation: 'placeholderShimmer 1.2s infinite linear',
+  amimationFillMode: 'forwards'
+};
+
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys$1(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function LoadingUserItem() {
+  return /*#__PURE__*/createElement("div", {
+    style: {
+      display: 'flex',
+      padding: '1rem',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/createElement("div", {
+    style: {
+      background: lineStyle.background,
+      backgroundSize: lineStyle.backgroundSize,
+      width: '2rem',
+      height: '2rem',
+      borderRadius: '50%',
+      animation: lineStyle.animation
+    }
+  }), /*#__PURE__*/createElement("div", {
+    style: {
+      display: 'block',
+      alignItems: 'center',
+      marginLeft: '0.5rem'
+    }
+  }, /*#__PURE__*/createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '12rem'
+    })
+  }), /*#__PURE__*/createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '10rem'
+    })
+  }), /*#__PURE__*/createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '8rem'
+    })
+  })));
+}
 
 function LoadingIndicator(_ref) {
   var style = _ref.style,
@@ -948,60 +994,12 @@ function LoadingIndicator(_ref) {
     classNames: classNames
   });
   var spinnerStyles = styles('spinner');
-  var lineStyle = {
-    borderRadius: '1.25rem',
-    height: '0.5rem',
-    marginBottom: '0.5rem',
-    background: 'linear-gradient(to right, #99A0A3 0%, #707679 20%, #464A4D 40%, #464A4D 60%, #707679 80% , #99A0A3 100%)',
-    backgroundSize: '1000px',
-    animation: 'placeholderShimmer 1.2s infinite linear',
-    amimationFillMode: 'forwards'
-  };
-
-  function LoadingUserItem() {
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'flex',
-        padding: '1rem',
-        alignItems: 'center'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        background: lineStyle.background,
-        backgroundSize: lineStyle.backgroundSize,
-        width: '2rem',
-        height: '2rem',
-        borderRadius: '50%',
-        animation: lineStyle.animation
-      }
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'block',
-        alignItems: 'center',
-        marginLeft: '0.5rem'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '12rem'
-      })
-    }), /*#__PURE__*/React.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '10rem'
-      })
-    }), /*#__PURE__*/React.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '8rem'
-      })
-    })));
-  }
-
-  return /*#__PURE__*/React.createElement("div", styles, /*#__PURE__*/React.createElement("div", spinnerStyles, /*#__PURE__*/React.createElement(React.Fragment, null, _toConsumableArray(Array(4)).map(function (ele) {
-    return /*#__PURE__*/React.createElement(LoadingUserItem, {
+  return /*#__PURE__*/React__default.createElement("div", styles, /*#__PURE__*/React__default.createElement("div", spinnerStyles, /*#__PURE__*/React__default.createElement(React__default.Fragment, null, _toConsumableArray(Array(4)).map(function (ele) {
+    return /*#__PURE__*/React__default.createElement(LoadingUserItem, {
       key: ele
     });
   }))));
 }
-
 var defaultstyle = {};
 
 function SuggestionsOverlay(_ref) {
@@ -1059,7 +1057,7 @@ function SuggestionsOverlay(_ref) {
   }, [focusIndex, scrollFocusedIntoView, ulElement]);
 
   var renderSuggestions = function renderSuggestions() {
-    var suggestionsToRender = /*#__PURE__*/React.createElement("ul", _extends({
+    var suggestionsToRender = /*#__PURE__*/React__default.createElement("ul", _extends({
       ref: setUlElement,
       id: id,
       role: "listbox",
@@ -1080,7 +1078,7 @@ function SuggestionsOverlay(_ref) {
     var childIndex = queryInfo.childIndex,
         query = queryInfo.query;
     var renderSuggestion = Children.toArray(children)[childIndex].props.renderSuggestion;
-    return /*#__PURE__*/React.createElement(Suggestion$1, {
+    return /*#__PURE__*/React__default.createElement(Suggestion$1, {
       style: style('item'),
       key: "".concat(childIndex, "-").concat(getID(result)),
       id: getSuggestionHtmlId(id, index),
@@ -1104,7 +1102,7 @@ function SuggestionsOverlay(_ref) {
       return;
     }
 
-    return /*#__PURE__*/React.createElement(LoadingIndicator, {
+    return /*#__PURE__*/React__default.createElement(LoadingIndicator, {
       style: style('loadingIndicator')
     });
   };
@@ -1131,7 +1129,7 @@ function SuggestionsOverlay(_ref) {
     return null;
   }
 
-  return /*#__PURE__*/React.createElement("div", _extends({}, inline({
+  return /*#__PURE__*/React__default.createElement("div", _extends({}, inline({
     position: position || 'absolute',
     left: left,
     right: right,
@@ -1300,18 +1298,18 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
 
       var inputProps = _this.getInputProps();
 
-      return /*#__PURE__*/React.createElement("div", style('control'), _this.renderHighlighter(), singleLine ? _this.renderInput(inputProps) : _this.renderTextarea(inputProps));
+      return /*#__PURE__*/React__default.createElement("div", style('control'), _this.renderHighlighter(), singleLine ? _this.renderInput(inputProps) : _this.renderTextarea(inputProps));
     });
 
     _defineProperty(_assertThisInitialized(_this), "renderInput", function (props) {
-      return /*#__PURE__*/React.createElement("input", _extends({
+      return /*#__PURE__*/React__default.createElement("input", _extends({
         type: "text",
         ref: _this.setInputRef
       }, props));
     });
 
     _defineProperty(_assertThisInitialized(_this), "renderTextarea", function (props) {
-      return /*#__PURE__*/React.createElement("textarea", _extends({
+      return /*#__PURE__*/React__default.createElement("textarea", _extends({
         autoFocus: true,
         ref: _this.setInputRef
       }, props));
@@ -1343,7 +1341,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
           left = _this$state$suggestio.left,
           top = _this$state$suggestio.top,
           right = _this$state$suggestio.right;
-      var suggestionsNode = /*#__PURE__*/React.createElement(SuggestionsOverlay$1, {
+      var suggestionsNode = /*#__PURE__*/React__default.createElement(SuggestionsOverlay$1, {
         id: _this.uuidSuggestionsOverlay,
         style: _this.props.style('suggestions'),
         position: position,
@@ -1380,7 +1378,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
           children = _this$props3.children,
           value = _this$props3.value,
           style = _this$props3.style;
-      return /*#__PURE__*/React.createElement(Highlighter$1, {
+      return /*#__PURE__*/React__default.createElement(Highlighter$1, {
         containerRef: _this.setHighlighterElement,
         style: style('highlighter'),
         value: value,
@@ -1772,7 +1770,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
       var substring = plainTextValue.substring(substringStartIndex, caretPosition); // Check if suggestions have to be shown:
       // Match the trigger patterns of all Mention children on the extracted substring
 
-      React.Children.forEach(children, function (child, childIndex) {
+      React__default.Children.forEach(children, function (child, childIndex) {
         if (!child) {
           return;
         }
@@ -1899,7 +1897,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "isLoading", function () {
       var isLoading = false;
-      React.Children.forEach(_this.props.children, function (child) {
+      React__default.Children.forEach(_this.props.children, function (child) {
         isLoading = isLoading || child && child.props.isLoading;
       });
       return isLoading;
@@ -1971,7 +1969,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", _extends({
+      return /*#__PURE__*/React__default.createElement("div", _extends({
         ref: this.setContainerElement
       }, this.props.style), this.renderControl(), this.renderSuggestionsOverlay());
     }
@@ -2085,7 +2083,7 @@ var MentionsInput = /*#__PURE__*/function (_React$Component) {
   }]);
 
   return MentionsInput;
-}(React.Component);
+}(React__default.Component);
 /**
  * Returns the computed length property value for the provided element.
  * Note: According to spec and testing, can count on length values coming back in pixels. See https://developer.mozilla.org/en-US/docs/Web/CSS/used_value#Difference_from_computed_value
@@ -2165,7 +2163,7 @@ var Mention = function Mention(_ref) {
     className: className,
     classNames: classNames
   });
-  return /*#__PURE__*/React.createElement("strong", styles, display);
+  return /*#__PURE__*/React__default.createElement("strong", styles, display);
 };
 
 Mention.propTypes = {

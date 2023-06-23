@@ -942,9 +942,55 @@ var styled$1 = createDefaultStyle({
 });
 var Suggestion$1 = styled$1(Suggestion);
 
+var lineStyle = {
+  borderRadius: '1.25rem',
+  height: '0.5rem',
+  marginBottom: '0.5rem',
+  background: 'linear-gradient(to right, #99A0A3 0%, #707679 20%, #464A4D 40%, #464A4D 60%, #707679 80% , #99A0A3 100%)',
+  backgroundSize: '1000px',
+  animation: 'placeholderShimmer 1.2s infinite linear',
+  amimationFillMode: 'forwards'
+};
+
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys$1(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function LoadingUserItem() {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      padding: '1rem',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: lineStyle.background,
+      backgroundSize: lineStyle.backgroundSize,
+      width: '2rem',
+      height: '2rem',
+      borderRadius: '50%',
+      animation: lineStyle.animation
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'block',
+      alignItems: 'center',
+      marginLeft: '0.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '12rem'
+    })
+  }), /*#__PURE__*/React.createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '10rem'
+    })
+  }), /*#__PURE__*/React.createElement("div", {
+    style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
+      width: '8rem'
+    })
+  })));
+}
 
 function LoadingIndicator(_ref) {
   var style = _ref.style,
@@ -956,60 +1002,12 @@ function LoadingIndicator(_ref) {
     classNames: classNames
   });
   var spinnerStyles = styles('spinner');
-  var lineStyle = {
-    borderRadius: '1.25rem',
-    height: '0.5rem',
-    marginBottom: '0.5rem',
-    background: 'linear-gradient(to right, #99A0A3 0%, #707679 20%, #464A4D 40%, #464A4D 60%, #707679 80% , #99A0A3 100%)',
-    backgroundSize: '1000px',
-    animation: 'placeholderShimmer 1.2s infinite linear',
-    amimationFillMode: 'forwards'
-  };
-
-  function LoadingUserItem() {
-    return /*#__PURE__*/React__default.createElement("div", {
-      style: {
-        display: 'flex',
-        padding: '1rem',
-        alignItems: 'center'
-      }
-    }, /*#__PURE__*/React__default.createElement("div", {
-      style: {
-        background: lineStyle.background,
-        backgroundSize: lineStyle.backgroundSize,
-        width: '2rem',
-        height: '2rem',
-        borderRadius: '50%',
-        animation: lineStyle.animation
-      }
-    }), /*#__PURE__*/React__default.createElement("div", {
-      style: {
-        display: 'block',
-        alignItems: 'center',
-        marginLeft: '0.5rem'
-      }
-    }, /*#__PURE__*/React__default.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '12rem'
-      })
-    }), /*#__PURE__*/React__default.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '10rem'
-      })
-    }), /*#__PURE__*/React__default.createElement("div", {
-      style: _objectSpread$1(_objectSpread$1({}, lineStyle), {}, {
-        width: '8rem'
-      })
-    })));
-  }
-
   return /*#__PURE__*/React__default.createElement("div", styles, /*#__PURE__*/React__default.createElement("div", spinnerStyles, /*#__PURE__*/React__default.createElement(React__default.Fragment, null, _toConsumableArray(Array(4)).map(function (ele) {
     return /*#__PURE__*/React__default.createElement(LoadingUserItem, {
       key: ele
     });
   }))));
 }
-
 var defaultstyle = {};
 
 function SuggestionsOverlay(_ref) {

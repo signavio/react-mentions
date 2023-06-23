@@ -1,3 +1,4 @@
+// @ts-check
 import React, { Children, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { inline } from 'substyle'
@@ -5,7 +6,7 @@ import { defaultStyle } from './utils'
 
 import { getSuggestionHtmlId } from './utils'
 import Suggestion from './Suggestion'
-import LoadingIndicator from './LoadingIndicator'
+import { LoadingIndicator } from './TypescriptCamp/LoadingIndicator'
 
 function SuggestionsOverlay({
   id,

@@ -6,7 +6,7 @@ import { defaultStyle } from './utils'
 
 import { getSuggestionHtmlId } from './utils'
 import Suggestion from './Suggestion'
-import { LoadingIndicator } from './TypescriptCamp/LoadingIndicator'
+import { LoadingIndicator } from './Typescript/LoadingIndicator'
 
 function SuggestionsOverlay({
   id,

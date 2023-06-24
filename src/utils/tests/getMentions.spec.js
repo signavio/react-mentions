@@ -1,5 +1,5 @@
-import getMentions from './getMentions'
-import markupToRegex from './markupToRegex'
+import getMentions from '../getMentions'
+import markupToRegex from '../markupToRegex'
 
 describe('#getMentions', () => {
   const userMarkup = '@[__display__](user:__id__)'

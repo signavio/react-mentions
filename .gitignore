@@ -3,9 +3,10 @@
 /reports
 /coverage
 /demo/dist
-# /dist
+/dist/react-mentions.tsbuildinfo
 /demo/build
 
 npm-debug.log*
 
 *.log
+tsconfig.tsbuildinfo

@@ -1,5 +1,5 @@
-import findStartOfMentionInPlainText from './findStartOfMentionInPlainText'
-import markupToRegex from './markupToRegex'
+import findStartOfMentionInPlainText from '../findStartOfMentionInPlainText'
+import markupToRegex from '../markupToRegex'
 
 describe('#findStartOfMentionInPlainText', () => {
   const userMarkup = '@[__display__](user:__id__)'

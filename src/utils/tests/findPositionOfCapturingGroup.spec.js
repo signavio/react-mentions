@@ -1,4 +1,4 @@
-import findPositionOfCapturingGroup from './findPositionOfCapturingGroup'
+import findPositionOfCapturingGroup from '../findPositionOfCapturingGroup'
 
 describe('#findPositionOfCapturingGroup', () => {
   const testData = {

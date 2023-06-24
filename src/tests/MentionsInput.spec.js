@@ -1,7 +1,7 @@
-import { Mention, MentionsInput } from './index'
+import { Mention, MentionsInput } from '../index'
 
 import React from 'react'
-import { makeTriggerRegex } from './MentionsInput'
+import { makeTriggerRegex } from '../MentionsInput'
 import { mount } from 'enzyme'
 
 const data = [

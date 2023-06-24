@@ -1,5 +1,5 @@
-import getEndOfLastMention from './getEndOfLastMention'
-import markupToRegex from './markupToRegex'
+import getEndOfLastMention from '../getEndOfLastMention'
+import markupToRegex from '../markupToRegex'
 
 describe('#getEndOfLastMention', () => {
   const userMarkup = '@[__display__](user:__id__)'

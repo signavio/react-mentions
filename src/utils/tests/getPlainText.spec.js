@@ -1,5 +1,5 @@
-import getPlainText from './getPlainText'
-import markupToRegex from './markupToRegex'
+import getPlainText from '../getPlainText'
+import markupToRegex from '../markupToRegex'
 
 describe('#getPlainText', () => {
   const userMarkup = '@[__display__](user:__id__)'

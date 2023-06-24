@@ -1,4 +1,4 @@
-import spliceString from './spliceString'
+import spliceString from '../spliceString'
 
 describe('#spliceString', () => {
   it('should replace the substring between start and end with the provided insertion', () => {

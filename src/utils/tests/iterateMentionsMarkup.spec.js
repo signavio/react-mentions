@@ -1,5 +1,5 @@
-import iterateMentionsMarkup from './iterateMentionsMarkup'
-import markupToRegex from './markupToRegex'
+import iterateMentionsMarkup from '../iterateMentionsMarkup'
+import markupToRegex from '../markupToRegex'
 
 describe('#iterateMentionsMarkup', () => {
   const userMarkup = '@[__display__](user:__id__)'

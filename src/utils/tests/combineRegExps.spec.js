@@ -1,4 +1,4 @@
-import combineRegExps from './combineRegExps'
+import combineRegExps from '../combineRegExps'
 
 describe('combineRegExps', () => {
   it('should concatenate all regexps using | and wrap each one in a capturing group', () => {

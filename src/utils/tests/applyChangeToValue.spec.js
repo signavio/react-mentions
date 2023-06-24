@@ -1,5 +1,5 @@
-import applyChangeToValue from './applyChangeToValue'
-import markupToRegex from './markupToRegex'
+import applyChangeToValue from '../applyChangeToValue'
+import markupToRegex from '../markupToRegex'
 
 describe('#applyChangeToValue', () => {
   const userMarkup = '@[__display__](user:__id__)'

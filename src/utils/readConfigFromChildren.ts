@@ -2,7 +2,7 @@ import { Children } from 'react'
 import invariant from 'invariant'
 import markupToRegex from './markupToRegex'
 import countPlaceholders from './countPlaceholders'
-import { MentionProps } from '../TypescriptCamp/types/types'
+import { MentionProps } from '../Typescript/types/types'
 
 type MentionChild = React.ReactElement<MentionProps>
 

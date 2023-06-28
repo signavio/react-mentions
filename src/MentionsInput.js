@@ -25,7 +25,7 @@ import ReactDOM from 'react-dom'
 import SuggestionsOverlay from './SuggestionsOverlay'
 import { defaultStyle } from './utils'
 
-export const makeTriggerRegex = function(trigger, options = {}) {
+export const makeTriggerRegex = function (trigger, options = {}) {
   if (trigger instanceof RegExp) {
     return trigger
   } else {
@@ -35,17 +35,16 @@ export const makeTriggerRegex = function(trigger, options = {}) {
     // first capture group is the part to be replaced on completion
     // second capture group is for extracting the search query
     return new RegExp(
-      `(?:^|\\s)(${escapedTriggerChar}([^${
-        allowSpaceInQuery ? '' : '\\s'
+      `(?:^|\\s)(${escapedTriggerChar}([^${allowSpaceInQuery ? '' : '\\s'
       }${escapedTriggerChar}]*))$`
     )
   }
 }
 
-const getDataProvider = function(data, ignoreAccents) {
+const getDataProvider = function (data, ignoreAccents) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
-    return function(query, callback) {
+    return function (query, callback) {
       const results = []
       for (let i = 0, l = data.length; i < l; ++i) {
         const display = data[i].display || data[i].id
@@ -96,7 +95,7 @@ const propTypes = {
           : PropTypes.instanceOf(Element),
     }),
   ]),
-
+  renderInput: PropTypes.elementType,
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
@@ -206,13 +205,13 @@ class MentionsInput extends React.Component {
 
       ...(!readOnly &&
         !disabled && {
-          onChange: this.handleChange,
-          onSelect: this.handleSelect,
-          onKeyDown: this.handleKeyDown,
-          onBlur: this.handleBlur,
-          onCompositionStart: this.handleCompositionStart,
-          onCompositionEnd: this.handleCompositionEnd,
-        }),
+        onChange: this.handleChange,
+        onSelect: this.handleSelect,
+        onKeyDown: this.handleKeyDown,
+        onBlur: this.handleBlur,
+        onCompositionStart: this.handleCompositionStart,
+        onCompositionEnd: this.handleCompositionEnd,
+      }),
 
       ...(this.isOpened() && {
         role: 'combobox',
@@ -229,17 +228,24 @@ class MentionsInput extends React.Component {
   }
 
   renderControl = () => {
-    let { singleLine, style } = this.props
+    let { singleLine, style, renderInput } = this.props
     let inputProps = this.getInputProps()
 
     return (
       <div {...style('control')}>
         {this.renderHighlighter()}
-        {singleLine
-          ? this.renderInput(inputProps)
-          : this.renderTextarea(inputProps)}
+        {renderInput
+          ? this.renderCustom(inputProps)
+          : singleLine
+            ? this.renderInput(inputProps)
+            : this.renderTextarea(inputProps)}
       </div>
     )
+  }
+
+  renderCustom = props => {
+    let { renderInput: RenderInput } = this.props
+    return <RenderInput ref={this.setInputRef} {...props} />
   }
 
   renderInput = (props) => {
@@ -778,11 +784,11 @@ class MentionsInput extends React.Component {
       if (
         (allowSuggestionsAboveCursor &&
           viewportRelative.top -
-            highlighter.scrollTop +
-            suggestions.offsetHeight >
-            viewportHeight &&
+          highlighter.scrollTop +
+          suggestions.offsetHeight >
+          viewportHeight &&
           suggestions.offsetHeight <
-            caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
+          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
         forceSuggestionsAboveCursor
       ) {
         position.top = top - suggestions.offsetHeight - caretHeight
@@ -1042,7 +1048,7 @@ class MentionsInput extends React.Component {
 
   isLoading = () => {
     let isLoading = false
-    React.Children.forEach(this.props.children, function(child) {
+    React.Children.forEach(this.props.children, function (child) {
       isLoading = isLoading || (child && child.props.isLoading)
     })
     return isLoading
@@ -1099,9 +1105,9 @@ const styled = defaultStyle(
         // fix weird textarea padding in mobile Safari (see: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea)
         ...(isMobileSafari
           ? {
-              marginTop: 1,
-              marginLeft: -3,
-            }
+            marginTop: 1,
+            marginLeft: -3,
+          }
           : null),
       },
     },

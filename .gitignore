@@ -1,5 +1,4 @@
 /node_modules
-/.idea
 
 /reports
 /coverage
@@ -9,4 +8,4 @@
 
 npm-debug.log*
 
-*.log
+

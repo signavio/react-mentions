@@ -150,11 +150,7 @@ class MentionsInput extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Update position of suggestions unless this componentDidUpdate was
-    // triggered by an update to suggestionsPosition.
-    if (prevState.suggestionsPosition === this.state.suggestionsPosition) {
-      this.updateSuggestionsPosition()
-    }
+    this.updateSuggestionsPosition()
 
     // maintain selection in case a mention is added/removed causing
     // the cursor to jump to the end
@@ -517,14 +513,14 @@ class MentionsInput extends React.Component {
 
     let newPlainTextValue = ev.target.value
 
-    let selectionStartBefore = this.state.selectionStart;
-    if(selectionStartBefore == null) {
-      selectionStartBefore = ev.target.selectionStart;
+    let selectionStartBefore = this.state.selectionStart
+    if (selectionStartBefore == null) {
+      selectionStartBefore = ev.target.selectionStart
     }
 
-    let selectionEndBefore = this.state.selectionEnd;
-    if(selectionEndBefore == null) {
-      selectionEndBefore = ev.target.selectionEnd;
+    let selectionEndBefore = this.state.selectionEnd
+    if (selectionEndBefore == null) {
+      selectionEndBefore = ev.target.selectionEnd
     }
 
     // Derive the new value to set by applying the local change in the textarea's plain text

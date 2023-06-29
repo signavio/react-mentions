@@ -564,6 +564,10 @@ class MentionsInput extends React.Component {
 
     let mentions = getMentions(newValue, config)
 
+    if (ev.nativeEvent.isComposing && selectionStart === selectionEnd) {
+      this.updateMentionsQueries(this.inputElement.value, selectionStart)
+    }
+
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;
     let eventMock = { target: { value: newValue } }

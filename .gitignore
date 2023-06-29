@@ -8,4 +8,4 @@
 
 npm-debug.log*
 
-
+*.log

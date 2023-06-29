@@ -284,7 +284,7 @@ class MentionsInput extends React.Component {
         scrollFocusedIntoView={this.state.scrollFocusedIntoView}
         containerRef={this.setSuggestionsElement}
         suggestions={this.state.suggestions}
-        customSuggestionsContainer ={this.props.customSuggestionsContainer}
+        customSuggestionsContainer={this.props.customSuggestionsContainer}
         onSelect={this.addMention}
         onMouseDown={this.handleSuggestionsMouseDown}
         onMouseEnter={this.handleSuggestionsMouseEnter}
@@ -486,7 +486,9 @@ class MentionsInput extends React.Component {
     ].join('')
     const newPlainTextValue = getPlainText(newValue, config)
 
-    const eventMock = { target: { ...event.target, value: newPlainTextValue } }
+    const eventMock = {
+      target: { ...event.target, value: newPlainTextValue },
+    }
 
     this.executeOnChange(
       eventMock,
@@ -499,7 +501,7 @@ class MentionsInput extends React.Component {
   // Handle input element's change event
   handleChange = (ev) => {
     isComposing = false
-    if(isIE()){
+    if (isIE()) {
       // if we are inside iframe, we need to find activeElement within its contentDocument
       const currentDocument =
         (document.activeElement && document.activeElement.contentDocument) ||
@@ -571,6 +573,10 @@ class MentionsInput extends React.Component {
     })
 
     let mentions = getMentions(newValue, config)
+
+    if (ev.nativeEvent.isComposing && selectionStart === selectionEnd) {
+      this.updateMentionsQueries(this.inputElement.value, selectionStart)
+    }
 
     // Propagate change
     // let handleChange = this.getOnChange(this.props) || emptyFunction;
@@ -707,7 +713,11 @@ class MentionsInput extends React.Component {
 
   updateSuggestionsPosition = () => {
     let { caretPosition } = this.state
-    const { suggestionsPortalHost, allowSuggestionsAboveCursor, forceSuggestionsAboveCursor } = this.props
+    const {
+      suggestionsPortalHost,
+      allowSuggestionsAboveCursor,
+      forceSuggestionsAboveCursor,
+    } = this.props
 
     if (!caretPosition || !this.suggestionsElement) {
       return
@@ -759,9 +769,9 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        top + suggestions.offsetHeight > viewportHeight &&
+          top + suggestions.offsetHeight > viewportHeight &&
           suggestions.offsetHeight < top - caretHeight) ||
-          forceSuggestionsAboveCursor
+        forceSuggestionsAboveCursor
       ) {
         position.top = Math.max(0, top - suggestions.offsetHeight - caretHeight)
       } else {
@@ -781,12 +791,12 @@ class MentionsInput extends React.Component {
       // is small enough to NOT cover up the caret
       if (
         (allowSuggestionsAboveCursor &&
-        viewportRelative.top -
-          highlighter.scrollTop +
-          suggestions.offsetHeight >
-          viewportHeight &&
-        suggestions.offsetHeight <
-          caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
+          viewportRelative.top -
+            highlighter.scrollTop +
+            suggestions.offsetHeight >
+            viewportHeight &&
+          suggestions.offsetHeight <
+            caretOffsetParentRect.top - caretHeight - highlighter.scrollTop) ||
         forceSuggestionsAboveCursor
       ) {
         position.top = top - suggestions.offsetHeight - caretHeight
@@ -1002,7 +1012,9 @@ class MentionsInput extends React.Component {
 
     const start = mapPlainTextIndex(value, config, querySequenceStart, 'START')
     const end = start + querySequenceEnd - querySequenceStart
+
     let insert = makeMentionsMarkup(markup, id, display)
+
     if (appendSpaceOnAdd) {
       insert += ' '
     }

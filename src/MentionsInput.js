@@ -517,13 +517,23 @@ class MentionsInput extends React.Component {
 
     let newPlainTextValue = ev.target.value
 
+    let selectionStartBefore = this.state.selectionStart;
+    if(selectionStartBefore == null) {
+      selectionStartBefore = ev.target.selectionStart;
+    }
+
+    let selectionEndBefore = this.state.selectionEnd;
+    if(selectionEndBefore == null) {
+      selectionEndBefore = ev.target.selectionEnd;
+    }
+
     // Derive the new value to set by applying the local change in the textarea's plain text
     let newValue = applyChangeToValue(
       value,
       newPlainTextValue,
       {
-        selectionStartBefore: this.state.selectionStart,
-        selectionEndBefore: this.state.selectionEnd,
+        selectionStartBefore,
+        selectionEndBefore,
         selectionEndAfter: ev.target.selectionEnd,
       },
       config

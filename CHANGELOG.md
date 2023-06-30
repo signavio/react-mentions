@@ -1,5 +1,13 @@
 # react-mentions
 
+## 4.4.10
+
+### Patch Changes
+
+- c9fd8ca: Remove autofocus from textarea by default
+- 32d9728: Fix suggestions not showing while composing
+- 4ef52dd: Fixed native undo/redo in case the input was not focused before the operation
+
 ## 4.4.9
 
 ### Patch Changes

@@ -70,6 +70,23 @@ describe('MentionsInput', () => {
     ).toEqual(data.length + extraData.length)
   })
 
+  it('should be able to limit the number of suggestions rendered', () => {
+    const wrapper = mount(
+      <MentionsInput value="@">
+        <Mention trigger="@" data={data} suggestionLimit={data.length - 1}/>
+      </MentionsInput>
+    )
+
+    wrapper.find('textarea').simulate('focus')
+    wrapper.find('textarea').simulate('select', {
+      target: { selectionStart: 1, selectionEnd: 1 },
+    })
+
+    expect(
+      wrapper.find('SuggestionsOverlay').find('Suggestion').length
+    ).toEqual(data.length - 1)
+  })
+
   it('should scroll the highlighter in sync with the textarea', () => {
     const wrapper = mount(
       <MentionsInput

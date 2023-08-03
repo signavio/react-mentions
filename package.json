@@ -1,6 +1,6 @@
 {
   "name": "@highlight-run/react-mentions",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "description": "React mentions input",
   "main": "dist/react-mentions.cjs.js",
   "module": "dist/react-mentions.esm.js",

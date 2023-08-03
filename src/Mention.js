@@ -27,6 +27,7 @@ Mention.propTypes = {
   onRemove: PropTypes.func,
 
   renderSuggestion: PropTypes.func,
+  suggestionLimit: PropTypes.number,
 
   trigger: PropTypes.oneOfType([
     PropTypes.string,
@@ -40,6 +41,7 @@ Mention.propTypes = {
   allowSpaceInQuery: PropTypes.bool,
 
   isLoading: PropTypes.bool,
+
 }
 
 Mention.defaultProps = {
@@ -51,6 +53,7 @@ Mention.defaultProps = {
   onAdd: () => null,
   onRemove: () => null,
   renderSuggestion: null,
+  suggestionLimit: 100,
   isLoading: false,
   appendSpaceOnAdd: false,
 }

@@ -41,7 +41,7 @@ export const makeTriggerRegex = function(trigger, options = {}) {
   }
 }
 
-const getDataProvider = function(data, ignoreAccents) {
+const getDataProvider = function(data, ignoreAccents, limit) {
   if (data instanceof Array) {
     // if data is an array, create a function to query that
     return function(query, callback) {
@@ -50,6 +50,9 @@ const getDataProvider = function(data, ignoreAccents) {
         const display = data[i].display || data[i].id
         if (getSubstringIndex(display, query, ignoreAccents) >= 0) {
           results.push(data[i])
+        }
+        if (results.length >= limit) {
+          break;
         }
       }
       return results
@@ -892,7 +895,7 @@ class MentionsInput extends React.Component {
   ) => {
     const { children, ignoreAccents } = this.props
     const mentionChild = Children.toArray(children)[childIndex]
-    const provideData = getDataProvider(mentionChild.props.data, ignoreAccents)
+    const provideData = getDataProvider(mentionChild.props.data, ignoreAccents, mentionChild.props.suggestionLimit)
     const syncResult = provideData(
       query,
       this.updateSuggestions.bind(

@@ -1,0 +1,23 @@
+---
+name: Mirror Repository Workflow
+on:
+  push:
+    branches: ['main', 'master']     # Change this to the branch you want to trigger the action on, it can be a single branch or a list
+  workflow_dispatch:     # Allows manual trigger of action from Github UI
+
+jobs:
+  mirror_job:
+    name: Mirror Repository Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3     # Checks out our code into github runner.
+
+      - name: Mirror Repository
+        uses: signavio/manser-repo-mirror-action@v1     # Our custom Action
+        with:
+          target_org: signavio-backup
+          source_access_token: ${{ secrets.GITHUB_TOKEN }}     # Secrets created within Github Organisation.
+          target_access_token: ${{ secrets.MANSER_ENT_MIRROR_TOKEN }}
+          slack_webhook_url: ${{ secrets.MANSER_REPOCOMP_SLACK_WEBHOOK_URL }}

@@ -50,20 +50,21 @@ You can find more examples here: [demo/src/examples](https://github.com/signavio
 
 The `MentionsInput` supports the following props for configuring the widget:
 
-| Prop name                   | Type                                                    | Default value  | Description                                                                            |
-| --------------------------- | ------------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------- |
-| value                       | string                                                  | `''`           | The value containing markup for mentions                                               |
+| Prop name                   | Type                                                | Default value  | Description                                                                            |
+| --------------------------- | --------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------- |
+| value                       | string                                              | `''`           | The value containing markup for mentions                                               |
 | onChange                    | function (event, newValue, newPlainTextValue, mentions) | empty function | A callback that is invoked when the user changes the value in the mentions input       |
-| onKeyDown                   | function (event)                                        | empty function | A callback that is invoked when the user presses a key in the mentions input           |
-| singleLine                  | boolean                                                 | `false`        | Renders a single line text input instead of a textarea, if set to `true`               |
-| onBlur                      | function (event, clickedSuggestion)                     | empty function | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
-| allowSpaceInQuery           | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
-| suggestionsPortalHost       | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
-| inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
-| allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
-| forceSuggestionsAboveCursor | boolean                                                 | false          | Forces the SuggestionList to be rendered above the cursor                              |
-| a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
-| customSuggestionsContainer  | function(children)                                      | empty function | Allows customizing the container of the suggestions                                    |
+| onKeyDown                   | function (event)                                    | empty function | A callback that is invoked when the user presses a key in the mentions input           |
+| singleLine                  | boolean                                             | `false`        | Renders a single line text input instead of a textarea, if set to `true`               |
+| onBlur                      | function (event, clickedSuggestion)                 | empty function | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
+| allowSpaceInQuery           | boolean                                             | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
+| suggestionsPortalHost       | DOM Element                                         | undefined      | Render suggestions into the DOM in the supplied host element.                          |
+| inputRef                    | React ref                                           | undefined      | Accepts a React ref to forward to the underlying input element                         |
+| allowSuggestionsAboveCursor | boolean                                             | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
+| forceSuggestionsAboveCursor | boolean                                             | false          | Forces the SuggestionList to be rendered above the cursor                              |
+| a11ySuggestionsListLabel    | string                                              | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
+| customSuggestionsContainer  | function(children)                                  | empty function | Allows customizing the container of the suggestions                                    |
+| render                      | function (display)                                  | `null`         | Allows customizing how mention value is rendered (optional)                            |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

@@ -996,9 +996,13 @@ class MentionsInput extends React.Component {
   }
 
   addMention = (
-    { id, display },
+    { id, display, disabled },
     { childIndex, querySequenceStart, querySequenceEnd, plainTextValue }
   ) => {
+    if (disabled) {
+      return;
+    }
+
     // Insert mention in the marked up value at the correct position
     const value = this.props.value || ''
     const config = readConfigFromChildren(this.props.children)

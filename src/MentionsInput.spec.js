@@ -476,4 +476,54 @@ describe('MentionsInput', () => {
       expect(preventDefault).not.toHaveBeenCalled()
     })
   })
+
+  describe('when using the useRawValueOnCopy', () => {
+    const plainTextValue = "Hi First, \n\nlet's add Second to the conversation."
+    const value =
+      "Hi @[First](first), \n\nlet's add @[Second](second) to the conversation."
+
+    it.each(['cut', 'copy'])(
+      'should copy the raw value to the clipboard.',
+      (eventType) => {
+        const component = mount(
+          <MentionsInput value={value} useRawValueOnCopy>
+            <Mention trigger="@[__display__](__id__)" data={data} />
+          </MentionsInput>,
+          {
+            attachTo: host,
+          }
+        )
+
+        const textarea = component.find('textarea')
+
+        const selectionStart = plainTextValue.indexOf('First') + 2
+        const selectionEnd = plainTextValue.length
+
+        textarea.simulate('select', {
+          target: { selectionStart, selectionEnd },
+        })
+        textarea.getDOMNode().setSelectionRange(selectionStart, selectionEnd)
+
+        const setData = jest.fn()
+
+        const event = new Event(eventType, { bubbles: true })
+        event.clipboardData = { setData }
+
+        textarea.getDOMNode().dispatchEvent(event)
+
+        expect(setData).toHaveBeenCalledTimes(2)
+
+        expect(setData).toHaveBeenNthCalledWith(
+          1,
+          'text/plain',
+          "@[First](first), \n\nlet's add @[Second](second) to the conversation."
+        )
+        expect(setData).toHaveBeenNthCalledWith(
+          2,
+          'text/react-mentions',
+          "@[First](first), \n\nlet's add @[Second](second) to the conversation."
+        )
+      }
+    )
+  });
 })

@@ -64,6 +64,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | forceSuggestionsAboveCursor | boolean                                                 | false          | Forces the SuggestionList to be rendered above the cursor                              |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
 | customSuggestionsContainer  | function(children)                                      | empty function | Allows customizing the container of the suggestions                                    |
+| useRawValueOnCopy           | boolean                                                 | false          | Returns the raw value (with tags) when copying the content                             |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

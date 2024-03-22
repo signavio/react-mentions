@@ -76,6 +76,7 @@ const propTypes = {
   forceSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,
   a11ySuggestionsListLabel: PropTypes.string,
+  useRawValueOnCopy: PropTypes.bool,
 
   value: PropTypes.string,
   onKeyDown: PropTypes.func,
@@ -110,6 +111,7 @@ class MentionsInput extends React.Component {
     ignoreAccents: false,
     singleLine: false,
     allowSuggestionsAboveCursor: false,
+    useRawValueOnCopy: false,
     onKeyDown: () => null,
     onSelect: () => null,
     onBlur: () => null,
@@ -428,14 +430,14 @@ class MentionsInput extends React.Component {
     )
     const markupEndIndex = mapPlainTextIndex(value, config, selectionEnd, 'END')
 
+    const textValue = event.target.value.slice(selectionStart, selectionEnd)
+    const rawValue = value.slice(markupStartIndex, markupEndIndex)
+
     event.clipboardData.setData(
       'text/plain',
-      event.target.value.slice(selectionStart, selectionEnd)
+      this.props.useRawValueOnCopy ? rawValue : textValue
     )
-    event.clipboardData.setData(
-      'text/react-mentions',
-      value.slice(markupStartIndex, markupEndIndex)
-    )
+    event.clipboardData.setData('text/react-mentions', rawValue)
   }
 
   supportsClipboardActions(event) {

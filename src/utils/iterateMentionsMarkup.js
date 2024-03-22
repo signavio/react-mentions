@@ -16,9 +16,13 @@ const iterateMentionsMarkup = (
 
   let accOffset = 2 // first is whole match, second is the for the capturing group of first regexp component
   const captureGroupOffsets = config.map(({ markup }) => {
-    const result = accOffset
     // + 1 is for the capturing group we add around each regexp component in combineRegExps
-    accOffset += countPlaceholders(markup) + 1
+    let result
+    if (markup !== undefined) {
+      result = accOffset
+      accOffset += countPlaceholders(markup) + 1
+      return result
+    }
     return result
   })
 

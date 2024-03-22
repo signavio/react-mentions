@@ -5,7 +5,7 @@ function LoadingIndicator({ style, className, classNames }) {
   const styles = useStyles(defaultstyle, { style, className, classNames })
   const spinnerStyles = styles('spinner')
   return (
-    <div {...styles}>
+    <div {...styles} aria-label="Loading indicator">
       <div {...spinnerStyles}>
         <div {...spinnerStyles(['element', 'element1'])} />
         <div {...spinnerStyles(['element', 'element2'])} />

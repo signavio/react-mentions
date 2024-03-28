@@ -931,19 +931,20 @@ class MentionsInput extends React.Component {
     const { children, ignoreAccents } = this.props
     const mentionChild = Children.toArray(children)[childIndex]
     const provideData = getDataProvider(mentionChild.props.data, ignoreAccents)
-    const syncResult = provideData(
+
+    const callback = this.updateSuggestions.bind(
+      null,
+      this._queryId,
+      childIndex,
       query,
-      this.updateSuggestions.bind(
-        null,
-        this._queryId,
-        childIndex,
-        query,
-        querySequenceStart,
-        querySequenceEnd,
-        plainTextValue
-      )
+      querySequenceStart,
+      querySequenceEnd,
+      plainTextValue
     )
-    if (syncResult instanceof Array) {
+
+    const result = provideData(query, callback)
+
+    if (result instanceof Array) {
       this.updateSuggestions(
         this._queryId,
         childIndex,
@@ -951,8 +952,10 @@ class MentionsInput extends React.Component {
         querySequenceStart,
         querySequenceEnd,
         plainTextValue,
-        syncResult
+        result
       )
+    } else if (result && typeof result.then === 'function') {
+      result.then(callback)
     }
   }
 

@@ -70,6 +70,49 @@ describe('#applyChangeToValue', () => {
     )
   })
 
+  it('should correctly add characters with cursor in the middle at the end, beginning, and in the middle of text', () => {
+    let changed = 'S[start]' + plainText
+    let result = applyChangeToValue(
+      value,
+      changed,
+      {
+        selectionStartBefore: 0,
+        selectionEndBefore: 0,
+        selectionEndAfter: 1,
+      },
+      config
+    )
+    expect(result).toEqual('S[start]' + value)
+
+    changed = plainText + 'E[end]'
+    result = applyChangeToValue(
+      value,
+      changed,
+      {
+        selectionStartBefore: plainText.length,
+        selectionEndBefore: plainText.length,
+        selectionEndAfter: plainText.length + 1,
+      },
+      config
+    )
+    expect(result).toEqual(value + 'E[end]')
+
+    changed = "Hi John Doe, \n\nlet's M[mid]add joe@smoe.com to this conversation..."
+    result = applyChangeToValue(
+      value,
+      changed,
+      {
+        selectionStartBefore: 21,
+        selectionEndBefore: 21,
+        selectionEndAfter: 22,
+      },
+      config
+    )
+    expect(result).toEqual(
+      "Hi @[John Doe](user:johndoe), \n\nlet's M[mid]add @[joe@smoe.com](email:joe@smoe.com) to this conversation..."
+    )
+  })
+
   it('should correctly delete single characters and ranges of selected text', () => {
     // delete "i"
     let changed =
@@ -133,6 +176,20 @@ describe('#applyChangeToValue', () => {
       config
     )
     expect(result).toEqual(value.replace('add', 'remove'))
+
+    // replace range with cursor in the middle, eg. remove|[remove]
+    changed = plainText.replace('add', 'remove[remove]')
+    result = applyChangeToValue(
+      value,
+      changed,
+      {
+        selectionStartBefore: plainText.indexOf('add'),
+        selectionEndBefore: plainText.indexOf('add') + 'add'.length,
+        selectionEndAfter: plainText.indexOf('add') + 'remove'.length,
+      },
+      config
+    )
+    expect(result).toEqual(value.replace('add', 'remove[remove]'))
   })
 
   it('should remove mentions markup contained in deleted text ranges', () => {
@@ -257,7 +314,7 @@ describe('#applyChangeToValue', () => {
   })
 
   it('should correctly handle text auto-correction', () => {
-    const result = applyChangeToValue(
+    let result = applyChangeToValue(
       'ill',
       "I'll",
       {
@@ -268,5 +325,20 @@ describe('#applyChangeToValue', () => {
       config
     )
     expect(result).toEqual("I'll")
+
+    // case like
+    // input queue: s -> a -> d
+    // IME queue(| is the cursor position): s|[sa] -> s'a|[sa'a] -> sad|[sad]
+    result = applyChangeToValue(
+      "s'a[sa'a]",
+      "sad[sad]",
+      {
+        selectionStartBefore: 2,
+        selectionEndBefore: 2,
+        selectionEndAfter: 3,
+      },
+      config
+    )
+    expect(result).toEqual("sad[sad]")
   })
 })

@@ -177,6 +177,21 @@ describe('MentionsInput', () => {
     expect(inputRef).toHaveBeenCalledWith(el)
   })
 
+  it('should render a custom input when supplied.', () => {
+    const CustomInput = React.forwardRef((props, ref) => {
+      return <input id="testInput" ref={ref} {...props} />
+    })
+    const wrapper = mount(
+      <MentionsInput value="test" inputComponent={CustomInput}>
+        <Mention trigger="@" data={data} />
+      </MentionsInput>
+    )
+
+    expect(wrapper.find('textarea').length).toEqual(0)
+    expect(wrapper.find('input').length).toEqual(1)
+    expect(wrapper.find('input#testInput').length).toEqual(1)
+  })
+
   describe('makeTriggerRegex', () => {
     it('should return regular expressions', () => {
       const trigger = /abc/

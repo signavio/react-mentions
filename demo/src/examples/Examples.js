@@ -13,6 +13,7 @@ import SingleLineIgnoringAccents from './SingleLineIgnoringAccents'
 import SuggestionPortal from './SuggestionPortal'
 import BottomGuard from './BottomGuard'
 import CustomSuggestionsContainer from './CustomSuggestionsContainer'
+import CustomInputComponent from './CustomInputComponent'
 
 const users = [
   {
@@ -90,6 +91,7 @@ export default function Examples() {
         <SuggestionPortal data={users} />
         <BottomGuard data={users} />
         <CustomSuggestionsContainer data={users} />
+        <CustomInputComponent data={users} />
       </div>
     </StylesViaJss>
   )

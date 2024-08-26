@@ -71,7 +71,9 @@ function Suggestion({
       id={id}
       role="option"
       aria-selected={focused}
-      aria-disabled={Boolean(suggestion.disabled)}
+      aria-disabled={Boolean(
+        typeof suggestion === 'string' ? false : suggestion.disabled
+      )}
       {...rest}
       {...style}
     >

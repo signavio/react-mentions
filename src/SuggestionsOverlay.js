@@ -115,7 +115,7 @@ function SuggestionsOverlay({
   }
 
   const select = (suggestion, queryInfo) => {
-    if (suggestion.disabled) {
+    if (typeof suggestion !== 'string' && suggestion.disabled) {
       return
     }
 

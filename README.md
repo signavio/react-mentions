@@ -57,13 +57,15 @@ The `MentionsInput` supports the following props for configuring the widget:
 | onKeyDown                   | function (event)                                        | empty function | A callback that is invoked when the user presses a key in the mentions input           |
 | singleLine                  | boolean                                                 | `false`        | Renders a single line text input instead of a textarea, if set to `true`               |
 | onBlur                      | function (event, clickedSuggestion)                     | empty function | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
-| allowSpaceInQuery           | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
+| allowSpaceInQuery           | boolean                                                 | `false`          | Keep suggestions open even if the user separates keywords with spaces.                 |
 | suggestionsPortalHost       | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
-| allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |
-| forceSuggestionsAboveCursor | boolean                                                 | false          | Forces the SuggestionList to be rendered above the cursor                              |
+| allowSuggestionsAboveCursor | boolean                                                 | `false`          | Renders the SuggestionList above the cursor if there is not enough space below         |
+| forceSuggestionsAboveCursor | boolean                                                 | `false`          | Forces the SuggestionList to be rendered above the cursor                              |
 | a11ySuggestionsListLabel    | string                                                  | `''`           | This label would be exposed to screen readers when suggestion popup appears            |
 | customSuggestionsContainer  | function(children)                                      | empty function | Allows customizing the container of the suggestions                                    |
+| ignoreAccents               | boolean                                                 | `false`          | Ignores any accents on letters during search if set to `true`                                 |
+| onSelect                    | function (event)                                        | empty function  | A callback that is invoked when the user selects a portion of the text in the input       |
 
 Each data source is configured using a `Mention` component, which has the following props:
 

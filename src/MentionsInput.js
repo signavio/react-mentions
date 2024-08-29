@@ -29,7 +29,7 @@ export const makeTriggerRegex = function(trigger, options = {}) {
   if (trigger instanceof RegExp) {
     return trigger
   } else {
-    const { allowSpaceInQuery } = options
+    const { allowSpaceInQuery,allowTriggerInQuery } = options
     const escapedTriggerChar = escapeRegex(trigger)
 
     // first capture group is the part to be replaced on completion
@@ -37,7 +37,7 @@ export const makeTriggerRegex = function(trigger, options = {}) {
     return new RegExp(
       `(?:^|\\s)(${escapedTriggerChar}([^${
         allowSpaceInQuery ? '' : '\\s'
-      }${escapedTriggerChar}]*))$`
+      }${allowTriggerInQuery ? '' : escapedTriggerChar}]*))$`
     )
   }
 }
@@ -72,6 +72,7 @@ const propTypes = {
    */
   singleLine: PropTypes.bool,
   allowSpaceInQuery: PropTypes.bool,
+  allowTriggerInQuery: PropTypes.bool,
   allowSuggestionsAboveCursor: PropTypes.bool,
   forceSuggestionsAboveCursor: PropTypes.bool,
   ignoreAccents: PropTypes.bool,

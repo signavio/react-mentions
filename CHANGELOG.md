@@ -1,5 +1,11 @@
 # react-mentions
 
+## 4.5.0
+
+### Minor Changes
+
+- 3a5036d: Allow the use of a custom input component
+
 ## 4.4.10
 
 ### Patch Changes

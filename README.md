@@ -58,6 +58,7 @@ The `MentionsInput` supports the following props for configuring the widget:
 | singleLine                  | boolean                                                 | `false`        | Renders a single line text input instead of a textarea, if set to `true`               |
 | onBlur                      | function (event, clickedSuggestion)                     | empty function | Passes `true` as second argument if the blur was caused by a mousedown on a suggestion |
 | allowSpaceInQuery           | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with spaces.                 |
+| allowTriggerInQuery           | boolean                                                 | false          | Keep suggestions open even if the user separates keywords with trigger.                 |
 | suggestionsPortalHost       | DOM Element                                             | undefined      | Render suggestions into the DOM in the supplied host element.                          |
 | inputRef                    | React ref                                               | undefined      | Accepts a React ref to forward to the underlying input element                         |
 | allowSuggestionsAboveCursor | boolean                                                 | false          | Renders the SuggestionList above the cursor if there is not enough space below         |

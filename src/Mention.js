@@ -38,7 +38,7 @@ Mention.propTypes = {
    * If set to `true` spaces will not interrupt matching suggestions
    */
   allowSpaceInQuery: PropTypes.bool,
-
+  allowTriggerInQuery: PropTypes.bool,
   isLoading: PropTypes.bool,
 }
 

@@ -18,8 +18,8 @@ Mention.propTypes = {
    * Example:
    *
    * ```js
-   * function(id, display) {
-   *   console.log("user " + display + " was mentioned!");
+   * function(id, display, start, end) {
+   *   console.log("user " + display + " was mentioned!" + " [start, end ]" + [start , end]);
    * }
    * ```
    */

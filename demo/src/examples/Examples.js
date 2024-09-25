@@ -47,6 +47,7 @@ const users = [
   {
     id: 'jesse',
     display: 'Jesse Pinkman',
+    disabled: true,
   },
   {
     id: 'gus',

@@ -67,7 +67,16 @@ function Suggestion({
   }
 
   return (
-    <li id={id} role="option" aria-selected={focused} {...rest} {...style}>
+    <li
+      id={id}
+      role="option"
+      aria-selected={focused}
+      aria-disabled={Boolean(
+        typeof suggestion === 'string' ? false : suggestion.disabled
+      )}
+      {...rest}
+      {...style}
+    >
       {renderContent()}
     </li>
   )
@@ -95,7 +104,12 @@ const styled = defaultStyle(
   {
     cursor: 'pointer',
   },
-  (props) => ({ '&focused': props.focused })
+  (props) => ({
+    '&focused': props.focused,
+    '&disabled': Boolean(
+      typeof props.suggestion === 'string' ? false : props.suggestion.disabled
+    ),
+  })
 )
 
 export default styled(Suggestion)

@@ -115,6 +115,10 @@ function SuggestionsOverlay({
   }
 
   const select = (suggestion, queryInfo) => {
+    if (typeof suggestion !== 'string' && suggestion.disabled) {
+      return
+    }
+
     onSelect(suggestion, queryInfo)
   }
 

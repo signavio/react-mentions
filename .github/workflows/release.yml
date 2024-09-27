@@ -3,22 +3,28 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - fix-release-action
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
     name: Release
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js 12.x
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v4
         with:
-          node-version: 12.x
+          # This makes Actions fetch all Git history so that
+          # Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+
+      # - name: Setup Node.js 12.x
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 12.x
 
       - name: Install Dependencies
         run: yarn

@@ -51,7 +51,10 @@ describe('MentionsInput', () => {
   it.todo('should be possible to close the suggestions with esc.')
 
   it('should be able to handle sync responses from multiple mentions sources', () => {
-    const extraData = [{ id: 'a', value: 'A' }, { id: 'b', value: 'B' }]
+    const extraData = [
+      { id: 'a', value: 'A' },
+      { id: 'b', value: 'B' },
+    ]
 
     const wrapper = mount(
       <MentionsInput value="@">
@@ -64,7 +67,10 @@ describe('MentionsInput', () => {
     wrapper.find('textarea').simulate('select', {
       target: { selectionStart: 1, selectionEnd: 1 },
     })
-    wrapper.find('textarea').getDOMNode().setSelectionRange(1, 1)
+    wrapper
+      .find('textarea')
+      .getDOMNode()
+      .setSelectionRange(1, 1)
 
     expect(
       wrapper.find('SuggestionsOverlay').find('Suggestion').length
@@ -104,7 +110,7 @@ describe('MentionsInput', () => {
       <div id="root">
         <div
           id="portalDiv"
-          ref={(el) => {
+          ref={el => {
             portalNode = el
           }}
         >
@@ -133,7 +139,10 @@ describe('MentionsInput', () => {
   })
 
   it('should accept a custom regex attribute', () => {
-    const data = [{ id: 'aaaa', display: '@A' }, { id: 'bbbb', display: '@B' }]
+    const data = [
+      { id: 'aaaa', display: '@A' },
+      { id: 'bbbb', display: '@B' },
+    ]
     const wrapper = mount(
       <MentionsInput value=":aaaa and :bbbb and :invalidId">
         <Mention
@@ -141,8 +150,8 @@ describe('MentionsInput', () => {
           data={data}
           markup=":__id__"
           regex={/:(\S+)/}
-          displayTransform={(id) => {
-            let mention = data.find((item) => item.id === id)
+          displayTransform={id => {
+            let mention = data.find(item => item.id === id)
             return mention ? mention.display : `:${id}`
           }}
         />
@@ -231,7 +240,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should include the whole mention for a "%s" event when the selection starts in one.',
-      (eventType) => {
+      eventType => {
         const textarea = component.find('textarea')
 
         const selectionStart = plainTextValue.indexOf('First') + 2
@@ -266,7 +275,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should include the whole mention for a "%s" event when the selection ends in one.',
-      (eventType) => {
+      eventType => {
         const textarea = component.find('textarea')
 
         const selectionStart = 0
@@ -301,7 +310,7 @@ describe('MentionsInput', () => {
 
     it.each(['cut', 'copy'])(
       'should fallback to the browsers behavior if the "%s" event does not support clipboardData',
-      (eventType) => {
+      eventType => {
         // IE 11 has no clipboardData attached to the event and only supports mime type "text"
         // therefore, the new mechanism should ignore those events and let the browser handle them
         const textarea = component.find('textarea')
@@ -395,7 +404,7 @@ describe('MentionsInput', () => {
 
       const event = new Event('paste', { bubbles: true })
       event.clipboardData = {
-        getData: jest.fn((type) =>
+        getData: jest.fn(type =>
           type === 'text/react-mentions' ? pastedText : ''
         ),
       }
@@ -423,7 +432,7 @@ describe('MentionsInput', () => {
 
       const event = new Event('paste', { bubbles: true })
       event.clipboardData = {
-        getData: jest.fn((type) => (type === 'text/plain' ? pastedText : '')),
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
       }
 
       expect(onChange).not.toHaveBeenCalled()
@@ -445,7 +454,7 @@ describe('MentionsInput', () => {
       const event = new Event('paste', { bubbles: true })
 
       event.clipboardData = {
-        getData: jest.fn((type) => (type === 'text/plain' ? pastedText : '')),
+        getData: jest.fn(type => (type === 'text/plain' ? pastedText : '')),
       }
 
       const onChange = jest.fn()
@@ -490,5 +499,39 @@ describe('MentionsInput', () => {
 
       expect(preventDefault).not.toHaveBeenCalled()
     })
+  })
+
+  it('should not track mentions if `trackMentions` is false', () => {
+    const data = [{ id: 'first', display: 'First Entry' }]
+    const onChange = jest.fn()
+
+    const wrapper = mount(
+      <MentionsInput onChange={onChange} trackMentions={false} value="@">
+        <Mention trigger="@" data={data} />
+      </MentionsInput>
+    )
+
+    expect(onChange).not.toHaveBeenCalled()
+
+    wrapper.find('textarea').simulate('focus')
+    wrapper.find('textarea').simulate('select', {
+      target: { selectionStart: 1, selectionEnd: 1 },
+    })
+    wrapper
+      .find('textarea')
+      .getDOMNode()
+      .setSelectionRange(1, 1)
+
+    expect(
+      wrapper.find('SuggestionsOverlay').find('Suggestion').length
+    ).toEqual(data.length)
+    wrapper
+      .find('SuggestionsOverlay')
+      .find('Suggestion')
+      .at(0)
+      .simulate('click')
+    const [[, newValue, newPlainTextValue]] = onChange.mock.calls
+    expect(newValue).toEqual('First Entry')
+    expect(newPlainTextValue).toEqual('First Entry')
   })
 })

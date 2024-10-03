@@ -177,7 +177,6 @@ const styled = defaultStyle(
     width: '100%',
     color: 'transparent',
     overflow: 'hidden',
-    whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',
     border: '1px solid transparent',
     textAlign: 'start',
